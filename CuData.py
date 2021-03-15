@@ -1,7 +1,7 @@
 import time
 #import Measurements
 
-global count 
+global count
 global lines
 global lon
 global lat
@@ -13,20 +13,20 @@ lon = []
 lat = []
 alt = []
 mea = []
-lines = list(open('./testfile.txt'))
+lines = list(open('./PAMP.txt'))
 
-def getData():  
-    global count  
+
+def getData():
+    global count
     global lines
     line = lines[count]
-    lo = line[32:42]
-    la = line[46:56]
-    al = line[60:64]
-    me = line[67:85]
+    lo = line[32:44]
+    la = line[48:60]
+    al = line[64:67]
+    me = line[70:84]
     lon.append(float(lo))
     lat.append(float(la))
     alt.append(float(al))
     mea.append(float(me))
     count = count + 1
     return line, lon, lat, alt, mea
-    
