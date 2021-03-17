@@ -13,7 +13,7 @@ lon = []
 lat = []
 alt = []
 mea = []
-lines = list(open('./PAMP.txt'))
+lines = list(open('./test3.txt'))
 
 
 def getData():
@@ -22,8 +22,8 @@ def getData():
     line = lines[count]
     lo = line[32:44]
     la = line[48:60]
-    al = line[64:67]
-    me = line[70:84]
+    al = line[64:66]
+    me = line[69:83]
     lon.append(float(lo))
     lat.append(float(la))
     alt.append(float(al))
