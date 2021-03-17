@@ -13,7 +13,7 @@ lon = []
 lat = []
 alt = []
 mea = []
-lines = list(open('./test3.txt'))
+lines = list(open('./Measurements/test3.txt'))
 
 
 def getData():

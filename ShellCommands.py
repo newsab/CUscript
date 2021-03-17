@@ -1,35 +1,42 @@
 import paramiko
 
+class ShellCommands:
 
-hostname = "172.16.06"
-username = "pi"
-password = "pamp"
+    def __init__(self, ip):
+        self.hostname = ip
+        self.username = "pi"
+        self.password = "pamp"
+        self.client = paramiko.SSHClient()
+        self.connect()
 
-commands = [
-    "pwd",
-    "id",
-    "uname -a",
-    "df -h",
-    "sudo stty -aF /dev/ttyAMA0",
-    "sudo /./rtkscript/./str2str.sh"
-]
+    def connect(self):
+        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        try: 
+            self.client.connect(hostname=self.hostname, username=self.username, password=self.password)
+        except:
+            return "[!] Cannot connect to the SSH Server"
+            exit()
 
+    def setBaudrate(self):
+        """
+        If I really hate pressing `enter` and
+        typing all those hash marks, I could
+        just do this instead
+        """
+        command = "sudo stty -F /dev/ttyAMA0 115200 raw; stty -aF /dev/ttyAMA0"     
+        #for command in commands:
+            #print("="*50, command, "="*50)
+        stdin, stdout, stderr = self.client.exec_command(command)
+        return(stdout.read().decode())
+        err = stderr.read().decode()
+        if err:
+            return(err)
 
-# initialize the SSH client
-client = paramiko.SSHClient()
-# add to known hosts
-client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-try:
-    client.connect(hostname=hostname, username=username, password=password)
-except:
-    print("[!] Cannot connect to the SSH Server")
-    exit()
+    def coldRestart(self):
+        return "Restart done"
 
-    # execute the commands
-for command in commands:
-    print("="*50, command, "="*50)
-    stdin, stdout, stderr = client.exec_command(command)
-    print(stdout.read().decode())
-    err = stderr.read().decode()
-    if err:
-        print(err)
+    def startStr2StrServer(self):
+        return "Server startar"
+
+    def startStr2StrClient(self):
+        return "Server startar"

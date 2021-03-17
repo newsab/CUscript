@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import CuData
+from ShellCommands import *
 
 global on
 global x
@@ -18,7 +19,8 @@ y = []
 z = []
 m = []
 my_cmap = plt.get_cmap('autumn')
-
+pmuSc = ShellCommands("81.16.170.67")
+rbuSc = ShellCommands("81.16.170.67")
 
 def clickStartBtn():
     global on
@@ -35,8 +37,8 @@ def clickStartBtn():
             measurement = str(_data)
             tbMeasure.insert(1.0, measurement)
             tbMeasure.update()
-            x = lo
-            y = la
+            x = la
+            y = lo
             z = al
             m = me
             # time.sleep(0.5)
@@ -45,39 +47,39 @@ def clickStartBtn():
         startBtn.config(text="Starta mätning")
         on = False
 
-
 def clickPmuBtn():
     frequency = pmuEnt.get()
     tbOthers.insert(1.0, 'PMU frekvens satt till ' + frequency + '\n')
     tbOthers.update()
-
 
 def clickPtuBtn():
     frequency = pmuEnt.get()
     tbOthers.insert(1.0, 'PTU frekvens satt till ' + frequency + '\n')
     tbOthers.update()
 
-
 def clickRbuBtn():
-    running = True
-    count = 0
-    tbOthers.insert(1.0, 'RBU startar'+'\n')
+    msg = rbuSc.setBaudrate()
+    tbOthers.insert(1.0, msg)
+    tbOthers.update()
+    #running = True
+    #count = 0
+    #tbOthers.insert(1.0, 'RBU startar'+'\n')
 
-    while running:
-        if count < 100:
-            tbOthers.insert(1.0, 'RBU startad till: ' + str(count) + '%\n')
-            tbOthers.update()
-            count = count + 5
-            time.sleep(1)
-        else:
-            tbOthers.insert(1.0, 'RBU startad!'+'\n')
-            tbOthers.update()
-            running = False
+    #while running:
+        #if count < 100:
+            #tbOthers.insert(1.0, 'RBU startad till: ' + str(count) + '%\n')
+            #tbOthers.update()
+            #count = count + 5
+            #time.sleep(1)
+        #else:
+            #tbOthers.insert(1.0, 'RBU startad!'+'\n')
+            #tbOthers.update()
+            #running = False
 
 
 def clickGrafBtn():
     fig = plt.figure(figsize=(10, 7))
-    sctt = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='^')
+    sctt = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     fig.colorbar(sctt, shrink=0.8, aspect=5)
     plt.show()
 
@@ -147,5 +149,6 @@ ptuBtn.grid(row=5, column=2)
 
 grafBtn.grid(row=5, column=4)
 graf3dBtn.grid(row=5, column=5)
+
 
 win.mainloop()
