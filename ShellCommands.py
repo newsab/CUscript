@@ -17,15 +17,38 @@ class ShellCommands:
             return "[!] Cannot connect to the SSH Server"
             exit()
 
-    def setBaudrate(self):
+    def setBaudrate(self, baudrate):
         """
         If I really hate pressing `enter` and
         typing all those hash marks, I could
         just do this instead
         """
-        command = "sudo stty -F /dev/ttyAMA0 115200 raw; stty -aF /dev/ttyAMA0"     
-        #for command in commands:
-            #print("="*50, command, "="*50)
+        command = "sudo stty -F /dev/ttyAMA0 " + baudrate + " raw; stty -aF /dev/ttyAMA0"     
+        stdin, stdout, stderr = self.client.exec_command(command)
+        return(stdout.read().decode())
+        err = stderr.read().decode()
+        if err:
+            return(err)
+    
+
+    def startStr2StrServer(self):
+        command = ""   
+        stdin, stdout, stderr = self.client.exec_command(command)
+        return(stdout.read().decode())
+        err = stderr.read().decode()
+        if err:
+            return(err)
+
+    def startStr2StrClient(self):
+        command = ""     
+        stdin, stdout, stderr = self.client.exec_command(command)
+        return(stdout.read().decode())
+        err = stderr.read().decode()
+        if err:
+            return(err)
+
+    def startPyro(self):
+        command = ""     
         stdin, stdout, stderr = self.client.exec_command(command)
         return(stdout.read().decode())
         err = stderr.read().decode()
@@ -33,10 +56,9 @@ class ShellCommands:
             return(err)
 
     def coldRestart(self):
-        return "Restart done"
-
-    def startStr2StrServer(self):
-        return "Server startar"
-
-    def startStr2StrClient(self):
-        return "Server startar"
+        command = ""     
+        stdin, stdout, stderr = self.client.exec_command(command)
+        return(stdout.read().decode())
+        err = stderr.read().decode()
+        if err:
+            return(err)

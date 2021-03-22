@@ -6,7 +6,6 @@ import numpy as np
 from mpl_toolkits import mplot3d
 
 import CuData
-
 from pyro import *
 from ShellCommands import *
 
@@ -27,64 +26,48 @@ pmuSc = ShellCommands("81.16.170.67")
 rbuSc = ShellCommands("81.16.170.67")
 sas = StartAndStop()
 
-"""
 def clickStartBtn():
-    global on
-    global x
-    global y
-    global z
-    global m
-
     if not on:
         on = True
         startBtn.config(text="Stoppa mätning")
-        while on:
-            _data, lo, la, al, me = CuData.getData()
-            measurement = str(_data)
-            tbMeasure.insert(1.0, measurement)
-            tbMeasure.update()
-            x = la
-            y = lo
-            z = al
-            m = me
-            # time.sleep(0.5)
-
+        sas.start()
     else:
         startBtn.config(text="Starta mätning")
         on = False
-"""
+        sas.stop()
 
 
-def clickStartBtn():
-    sas.start()
-
-
-def clickPmuBtn():
-    StartAndStop.test2()
-
-
-def clickPtuBtn():
-    sas.stop()
-
-
-def clickRbuBtn():
-    msg = rbuSc.setBaudrate()
-    tbOthers.insert(1.0, msg)
+def clickBrBtn():
+    baudrate = brEnt.get()
+    msg = rbuSc.setBaudrate(baudrate)
+    tbOthers.insert(1.0, msg + '\n')
     tbOthers.update()
-    #running = True
-    #count = 0
-    #tbOthers.insert(1.0, 'RBU startar'+'\n')
+    time.sleep(0.5)
 
-    # while running:
-    # if count < 100:
-    #tbOthers.insert(1.0, 'RBU startad till: ' + str(count) + '%\n')
-    # tbOthers.update()
-    #count = count + 5
-    # time.sleep(1)
-    # else:
-    #tbOthers.insert(1.0, 'RBU startad!'+'\n')
-    # tbOthers.update()
-    #running = False
+    msg2 = pmuSc.setBaudrate(baudrate)
+    tbOthers.insert(1.0, msg2 + '\n')
+    tbOthers.update()
+    time.sleep(0.5)
+
+    msg3 = rbuSc.startStr2StrServer()
+    tbOthers.insert(1.0, msg3 + '\n')
+    tbOthers.update()
+    time.sleep(0.5)
+
+    msg4 = pmuSc.startStr2StrClient()
+    tbOthers.insert(1.0, msg4 + '\n')
+    tbOthers.update()
+    time.sleep(0.5)
+
+    msg5 = pmuSc.startPyro()
+    tbOthers.insert(1.0, msg5 + '\n')
+    tbOthers.update()
+    time.sleep(0.5)
+
+
+def clickFqBtn():
+    #kalla på funktion för att sätta frekvens
+    print ('hej')
 
 
 def clickGrafBtn():
@@ -121,19 +104,15 @@ startLbl = Label(text="Starta mätning", bg=bgColor, fg=textColor)
 startBtn = Button(text="Starta", width=20, height=2,
                   bg=frameColor, fg=bgColor, command=clickStartBtn)
 
-pmuLbl = Label(text="Sätt PMU Frekvens", bg=bgColor, fg=textColor)
-pmuEnt = Entry(bg=frameColor, fg=textColor)
-pmuBtn = Button(text="Spara och starta", width=20, height=2,
-                bg=frameColor, fg=bgColor, command=clickPmuBtn)
+brLbl = Label(text="Sätt baudrate", bg=bgColor, fg=textColor)
+brEnt = Entry(bg=frameColor, fg=textColor)
+brBtn = Button(text="Spara", width=20, height=2,
+                bg=frameColor, fg=bgColor, command=clickBrBtn)
 
-ptuLbl = Label(text="Sätt PTU Frekvens", bg=bgColor, fg=textColor)
-ptuEnt = Entry(bg=frameColor, fg=textColor)
-ptuBtn = Button(text="Spara och starta", width=20, height=2,
-                bg=frameColor, fg=bgColor, command=clickPtuBtn)
-
-rbuLbl = Label(text="Starta RBU", bg=bgColor, fg=textColor)
-rbuBtn = Button(text="Starta", width=20, height=2,
-                bg=frameColor, fg=bgColor, command=clickRbuBtn)
+fqLbl = Label(text="Sätt mätrekvens", bg=bgColor, fg=textColor)
+fqEnt = Entry(bg=frameColor, fg=textColor)
+fqBtn = Button(text="Spara", width=20, height=2,
+                bg=frameColor, fg=bgColor, command=clickFqBtn)
 
 grafBtn = Button(text="Visa Graf", width=20, height=2,
                  bg=frameColor, fg=bgColor, command=clickGrafBtn)
@@ -143,19 +122,16 @@ graf3dBtn = Button(text="Visa 3D Graf", width=20, height=2,
 tbOthers.grid(row=0, column=0, columnspan=3)
 tbMeasure.grid(row=0, column=3, columnspan=3)
 
-rbuLbl.grid(row=1, column=1)
-rbuBtn.grid(row=2, column=1)
+startLbl.grid(row=1, column=1)
+startBtn.grid(row=1, column=2)
 
-startLbl.grid(row=1, column=2)
-startBtn.grid(row=2, column=2)
+brLbl.grid(row=2, column=1)
+brEnt.grid(row=3, column=1)
+brBtn.grid(row=3, column=2)
 
-pmuLbl.grid(row=3, column=1)
-pmuEnt.grid(row=4, column=1)
-pmuBtn.grid(row=5, column=1)
-
-ptuLbl.grid(row=3, column=2)
-ptuEnt.grid(row=4, column=2)
-ptuBtn.grid(row=5, column=2)
+fqLbl.grid(row=4, column=1)
+fqEnt.grid(row=5, column=1)
+fqBtn.grid(row=5, column=2)
 
 grafBtn.grid(row=5, column=4)
 graf3dBtn.grid(row=5, column=5)
