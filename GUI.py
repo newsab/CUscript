@@ -1,9 +1,13 @@
-from tkinter import *
-from mpl_toolkits import mplot3d
-import numpy as np
-import matplotlib.pyplot as plt
 import time
+from tkinter import *
+
+import matplotlib.pyplot as plt
+import numpy as np
+from mpl_toolkits import mplot3d
+
 import CuData
+
+from pyro import *
 from ShellCommands import *
 
 global on
@@ -21,7 +25,9 @@ m = []
 my_cmap = plt.get_cmap('autumn')
 pmuSc = ShellCommands("81.16.170.67")
 rbuSc = ShellCommands("81.16.170.67")
+sas = StartAndStop()
 
+"""
 def clickStartBtn():
     global on
     global x
@@ -46,16 +52,20 @@ def clickStartBtn():
     else:
         startBtn.config(text="Starta mätning")
         on = False
+"""
+
+
+def clickStartBtn():
+    sas.start()
+
 
 def clickPmuBtn():
-    frequency = pmuEnt.get()
-    tbOthers.insert(1.0, 'PMU frekvens satt till ' + frequency + '\n')
-    tbOthers.update()
+    StartAndStop.test2()
+
 
 def clickPtuBtn():
-    frequency = pmuEnt.get()
-    tbOthers.insert(1.0, 'PTU frekvens satt till ' + frequency + '\n')
-    tbOthers.update()
+    sas.stop()
+
 
 def clickRbuBtn():
     msg = rbuSc.setBaudrate()
@@ -65,16 +75,16 @@ def clickRbuBtn():
     #count = 0
     #tbOthers.insert(1.0, 'RBU startar'+'\n')
 
-    #while running:
-        #if count < 100:
-            #tbOthers.insert(1.0, 'RBU startad till: ' + str(count) + '%\n')
-            #tbOthers.update()
-            #count = count + 5
-            #time.sleep(1)
-        #else:
-            #tbOthers.insert(1.0, 'RBU startad!'+'\n')
-            #tbOthers.update()
-            #running = False
+    # while running:
+    # if count < 100:
+    #tbOthers.insert(1.0, 'RBU startad till: ' + str(count) + '%\n')
+    # tbOthers.update()
+    #count = count + 5
+    # time.sleep(1)
+    # else:
+    #tbOthers.insert(1.0, 'RBU startad!'+'\n')
+    # tbOthers.update()
+    #running = False
 
 
 def clickGrafBtn():
