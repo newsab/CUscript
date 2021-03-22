@@ -16,6 +16,7 @@ global z
 global m
 global my_cmap
 
+
 on = False
 x = []
 y = []
@@ -26,7 +27,9 @@ pmuSc = ShellCommands("81.16.170.67")
 rbuSc = ShellCommands("81.16.170.67")
 sas = StartAndStop()
 
+
 def clickStartBtn():
+    global on
     if not on:
         on = True
         startBtn.config(text="Stoppa mätning")
@@ -35,6 +38,11 @@ def clickStartBtn():
         startBtn.config(text="Starta mätning")
         on = False
         sas.stop()
+        z = sas.mesurement
+        print("list done!")
+        for line in z:
+            tbMeasure.insert(1.0, str(line) + '\n')
+            tbMeasure.update()
 
 
 def clickBrBtn():
@@ -66,8 +74,8 @@ def clickBrBtn():
 
 
 def clickFqBtn():
-    #kalla på funktion för att sätta frekvens
-    print ('hej')
+    # kalla på funktion för att sätta frekvens
+    print('hej')
 
 
 def clickGrafBtn():
@@ -107,12 +115,12 @@ startBtn = Button(text="Starta", width=20, height=2,
 brLbl = Label(text="Sätt baudrate", bg=bgColor, fg=textColor)
 brEnt = Entry(bg=frameColor, fg=textColor)
 brBtn = Button(text="Spara", width=20, height=2,
-                bg=frameColor, fg=bgColor, command=clickBrBtn)
+               bg=frameColor, fg=bgColor, command=clickBrBtn)
 
 fqLbl = Label(text="Sätt mätrekvens", bg=bgColor, fg=textColor)
 fqEnt = Entry(bg=frameColor, fg=textColor)
 fqBtn = Button(text="Spara", width=20, height=2,
-                bg=frameColor, fg=bgColor, command=clickFqBtn)
+               bg=frameColor, fg=bgColor, command=clickFqBtn)
 
 grafBtn = Button(text="Visa Graf", width=20, height=2,
                  bg=frameColor, fg=bgColor, command=clickGrafBtn)

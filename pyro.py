@@ -14,6 +14,7 @@ class StartAndStop:
         self.quitlock = threading.Lock()
         self.thing = Pyro4.Proxy("PYRONAME:PMUApp")
         self.t = threading.Thread(target=self.start2)
+        self.mesurement = list
 
     def start2(self):
         print("Hej från tråden")
@@ -22,10 +23,9 @@ class StartAndStop:
     def stop(self):
         print("Hej tråden ska vi nysta?")
         # self.t.join()
-        self.thing.stopMeasure()
+        self.mesurement = self.thing.stopMeasure()
         print("Progress")
-        return
-        print("Måste starta först!")
+        return self.mesurement
 
     def start(self):
         if self.t.is_alive():

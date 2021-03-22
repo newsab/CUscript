@@ -1,4 +1,5 @@
 import time
+from GUI import z
 #import Measurements
 
 global count
@@ -13,7 +14,7 @@ lon = []
 lat = []
 alt = []
 mea = []
-lines = list(open('./Measurements/test3.txt'))
+lines = list(z)
 
 
 def getData():
@@ -29,4 +30,5 @@ def getData():
     alt.append(float(al))
     mea.append(float(me))
     count = count + 1
+    print(line, lon, lat, alt, mea)
     return line, lon, lat, alt, mea
