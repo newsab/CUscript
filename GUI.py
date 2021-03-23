@@ -1,35 +1,35 @@
 import time
 from tkinter import *
-
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits import mplot3d
-
 import CuData
 from pyro import *
 from ShellCommands import *
 
 global on
+global a
 global x
 global y
 global z
 global m
 global my_cmap
 
-
 on = False
+a = []
 x = []
 y = []
 z = []
 m = []
 my_cmap = plt.get_cmap('autumn')
-pmuSc = ShellCommands("81.16.170.67")
-rbuSc = ShellCommands("81.16.170.67")
+pmuSc = ShellCommands("172.16.0.3")
+rbuSc = ShellCommands("172.16.0.6")
 sas = StartAndStop()
 
 
 def clickStartBtn():
     global on
+    global a
     if not on:
         on = True
         startBtn.config(text="Stoppa mätning")
@@ -38,12 +38,19 @@ def clickStartBtn():
         startBtn.config(text="Starta mätning")
         on = False
         sas.stop()
-        z = sas.mesurement
+        a = sas.mesurement
         print("list done!")
-        for line in z:
+        for line in a:
+            lo = line[32:44]
+            la = line[48:60]
+            al = line[64:66]
+            me = line[69:83]
+            x.append(float(lo))
+            y.append(float(la))
+            z.append(float(al))
+            m.append(float(me))
             tbMeasure.insert(1.0, str(line) + '\n')
             tbMeasure.update()
-
 
 def clickBrBtn():
     baudrate = brEnt.get()
@@ -94,7 +101,6 @@ def clickGraf3dBtn():
     ax.set_zlabel('Altitude', fontweight='bold')
     fig.colorbar(sctt, ax=ax, shrink=0.8, aspect=5)
     plt.show()
-
 
 bgColor = 'black'
 frameColor = '#222222'
