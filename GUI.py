@@ -24,7 +24,10 @@ m = []
 my_cmap = plt.get_cmap('autumn')
 pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
+#pmuIp = "172.16.0.3"
+#rbuIp = "172.16.0.6"
 sas = StartAndStop()
+print(sas)
 
 
 def clickStartBtn():
@@ -61,6 +64,16 @@ def clickStartBtn():
 
 def clickPmuBtn():
     #baudrate = brEnt.get()
+    #sc1 = ShellCommands(pmuIp)
+    # sc1.PMUBaud()
+    #tbOthers.insert(1.0, "Baud" + '\n')
+    # tbOthers.update()
+    # time.sleep(1.5)
+    #sc2 = ShellCommands(rbuIp)
+    # sc2.PMUBaud()
+    #tbOthers.insert(1.0, "Baud" + '\n')
+    # tbOthers.update()
+    # time.sleep(1.5)
 
     pmuSc.PMUbaud()
     tbOthers.insert(1.0, "Baud" + '\n')

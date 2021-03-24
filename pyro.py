@@ -1,6 +1,7 @@
 import threading
 import time
 from logging import shutdown
+from os.path import commonpath, exists, lexists
 
 import Pyro4
 
@@ -15,6 +16,7 @@ class StartAndStop:
         self.thing = Pyro4.Proxy("PYRONAME:PMUApp")
         self.t = threading.Thread(target=self.start2)
         self.mesurement = list
+        print(self.thing)
 
     def start2(self):
         print("Hej från tråden")
