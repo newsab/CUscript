@@ -1,6 +1,5 @@
 import paramiko
 
-
 class ShellCommands:
 
     def __init__(self, ip):
@@ -15,27 +14,29 @@ class ShellCommands:
         try:
             self.client.connect(hostname=self.hostname,
                                 username=self.username, password=self.password)
-            print("connected")
-            return
-
+            print("Connected")            
         except:
             return "[!] Cannot connect to the SSH Server"
             exit()
 
     def executeCmd(self, cmd):
-        self.client.close()
         self.connect()
         command = cmd
         try:
             stdin, stdout, stderr = self.client.exec_command(command)
-            print(stdout.read().decode())
-            return
+            returnString = stdout.read().decode()
+            self.client.close()
+            print("Connection closed")
+            return(returnString)
 
         except:
-            print("someting wnt wrong!!!")
+            err = stderr.read().decode()
+            self.client.close()
+            print("Connection closed")
+            return(err)
 
-    def PMUbaud(self):
-        command = "sudo stty -F /dev/ttyAMA0 115200 raw; stty -aF /dev/ttyAMA0"
+    def setBaudrate(self):
+        command = "sudo stty -F /dev/ttyAMA0 115200 raw; stty -F /dev/ttyAMA0"
         print(command)
         self.executeCmd(command)
 
@@ -44,8 +45,13 @@ class ShellCommands:
         print(command)
         self.executeCmd(command)
 
-    def startStr2StrClient(self):
+    def startStr2StrServer(self):
         command = "sudo kill -9 $(sudo lsof -t -i:2101); sudo /./rtkscript/./str2str.sh"
+        print(command)
+        self.executeCmd(command)
+
+    def startStr2StrClient(self):
+        command = "sudo kill -9 $(sudo lsof -t -i:2101); str2str -in tcpcli://:@172.16.0.6:2101 -out serial://ttyAMA0:115200:8:n:1:off"
         print(command)
         self.executeCmd(command)
 
@@ -73,6 +79,18 @@ class ShellCommands:
         except:
             err = stderr.read().decode()
             return(err)
+    
+    def SetBaudrate(self, baudrate):
+        self.connect()
+        try:
+            command = "sudo stty -F /dev/ttyAMA0 " + str(baudrate) + " raw; stty -aF /dev/ttyAMA0"
+            stdin, stdout, stderr = self.client.exec_command(command)
+
+            return(stdout.read().decode())
+            self.client.close()
+        except:
+            err = stderr.read().decode()
+            return(err)
 
     def StartPMUapp2(self):
         """[Set PMU ready]
@@ -83,8 +101,8 @@ class ShellCommands:
             command = "sudo /home/pi/pmuScript/PMUapp.py"
             stdin, stdout, stderr = self.client.exec_command(command)
             self.client.close()
-            print(stdout.read().decode())
-            return
+            return(stdout.read().decode())
+            
 
         except:
             err = stderr.read().decode()
@@ -110,6 +128,7 @@ class ShellCommands:
         stdin, stdout, stderr = self.client.exec_command(command)
         self.client.close()
         return(stdout.read().decode())
+        
         err = stderr.read().decode()
         if err:
             return(err)
@@ -149,3 +168,30 @@ class ShellCommands:
         sudo lsof -i:2101                     == check process on port 2101
 
         """
+    ############################
+
+    def setBaudrate(self, baudrate):
+        self.connect()
+        try:
+            command = "sudo stty -F /dev/ttyAMA0 " + str(baudrate) + " raw; stty -aF /dev/ttyAMA0"
+            stdin, stdout, stderr = self.client.exec_command(command)
+            returnString = stdout.read().decode()
+            self.client.close()
+            print("Connection closed")
+            return(returnString)
+
+        except:
+            err = stderr.read().decode()
+            self.client.close()
+            print("Connection closed")
+            return(err)
+
+    def startPyro3(self):
+        self.connect()
+        command = "sudo pyro4-ns -n " + hostname + " -p 43329"
+        stdin, stdout, stderr = self.client.exec_command(command)
+        self.client.close()
+        return(stdout.read().decode())
+        err = stderr.read().decode()
+        if err:
+            return(err)
