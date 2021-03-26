@@ -6,6 +6,8 @@ from mpl_toolkits import mplot3d
 import CuData
 from pyro import *
 from ShellCommands import *
+from Measurements import *
+
 
 global on
 global a
@@ -45,7 +47,7 @@ def clickStartBtn():
         startBtn.config(text="Starta mätning")
         on = False
         sas.stop()
-        a = sas.mesurement
+        a = sas.mesurement  # change to createDummy() to run txt-file
         print("list done!")
         for line in a:
 
@@ -63,11 +65,6 @@ def clickStartBtn():
 
 
 def clickPmuBtn():
-
-    msg = pmuSc.setBaudrate()
-    tbOthers.insert(1.0, msg + '\n \n')
-    tbOthers.update()
-    time.sleep(0.5)
 
     msg2 = pmuSc.startStr2StrClient()
     tbOthers.insert(1.0, msg2 + '\n \n')
@@ -133,7 +130,7 @@ textColor = '#cdcdcd'
 win = Tk()
 win.title("CU-applikation för PAMP")
 
-# win.geometry('1000x1000')
+win.geometry('1200x800')
 win.configure(bg=bgColor)
 
 tbMeasure = Text(bg=frameColor, fg=textColor, width=90)
