@@ -42,7 +42,8 @@ def clickStartBtn():
     if not on:
         on = True
         startBtn.config(text="Stoppa mätning")
-        sas.start()
+        frequency = fqEnt.get()
+        sas.start(frequency)
     else:
         startBtn.config(text="Starta mätning")
         on = False
@@ -146,7 +147,7 @@ pmuBtn = Button(text="Starta PMU", width=20, height=2,
                 bg=frameColor, fg=bgColor, command=clickPmuBtn)
 
 #fqLbl = Label(text="Sätt mätrekvens", bg=bgColor, fg=textColor)
-#fqEnt = Entry(bg=frameColor, fg=textColor)
+fqEnt = Entry(bg=frameColor, fg=textColor)
 rbuBtn = Button(text="Start Rbu", width=20, height=2,
                 bg=frameColor, fg=bgColor, command=clickRbuBtn)
 
@@ -166,7 +167,7 @@ startBtn.grid(row=1, column=2)
 pmuBtn.grid(row=3, column=2)
 
 #fqLbl.grid(row=4, column=1)
-#fqEnt.grid(row=5, column=1)
+fqEnt.grid(row=5, column=1)
 rbuBtn.grid(row=5, column=2)
 
 grafBtn.grid(row=5, column=4)

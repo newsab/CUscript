@@ -18,9 +18,10 @@ class StartAndStop:
         self.mesurement = list
         print(self.thing)
 
-    def start2(self):
+    def start2(self, frequency):
+        fre = frequency
         print("Hej från tråden")
-        self.thing.starta()
+        self.thing.starta(fre)
 
     def stop(self):
         print("Hej tråden ska vi nysta?")
@@ -29,9 +30,10 @@ class StartAndStop:
         print("Progress")
         return self.mesurement
 
-    def start(self):
+    def start(self, frequency):
+        fre = frequency
         if self.t.is_alive():
             print("test")
             self.t.start()
         else:
-            self.start2()
+            self.start2(fre)
