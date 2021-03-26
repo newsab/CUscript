@@ -22,7 +22,7 @@ y = []
 z = []
 m = []
 my_cmap = plt.get_cmap('autumn')
-pmuSc = ShellCommands("81.16.170.67")
+pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
 #pmuIp = "172.16.0.3"
 #rbuIp = "172.16.0.6"
@@ -63,87 +63,49 @@ def clickStartBtn():
 
 
 def clickPmuBtn():
-    baudrate2 = 115200
-    baudrate = 128000 #brEnt.get()
-    #sc1 = ShellCommands(pmuIp)
-    # sc1.PMUBaud()
-    #tbOthers.insert(1.0, "Baud" + '\n')
-    # tbOthers.update()
-    # time.sleep(1.5)
-    #sc2 = ShellCommands(rbuIp)
-    # sc2.PMUBaud()
-    #tbOthers.insert(1.0, "Baud" + '\n')
-    # tbOthers.update()
-    # time.sleep(1.5)
 
-    msg = pmuSc.setBaudrate(4800) 
-    tbOthers.insert(1.0, msg + '\n')
+    msg = pmuSc.setBaudrate()
+    tbOthers.insert(1.0, msg + '\n \n')
     tbOthers.update()
     time.sleep(0.5)
 
-    msg2 = pmuSc.setBaudrate(115200)  
-    tbOthers.insert(1.0, msg2 + '\n')
+    msg2 = pmuSc.startStr2StrClient()
+    tbOthers.insert(1.0, msg2 + '\n \n')
     tbOthers.update()
     time.sleep(0.5)
 
-    msg3 = pmuSc.startPyro3() 
-    tbOthers.insert(1.0, msg3 + '\n')
+    msg3 = pmuSc.startPyro()
+    tbOthers.insert(1.0, msg3 + '\n \n')
     tbOthers.update()
     time.sleep(0.5)
 
-    """
-    pmuSc.PMUbaud()
-    tbOthers.insert(1.0, "Baud" + '\n')
-    tbOthers.update()
-    time.sleep(1.5)
-    pmuSc.coldRestart()
-    tbOthers.insert(1.0, "RTK reboot" + '\n')
-    tbOthers.update()
-    time.sleep(1.5)
-    pmuSc.startPyro()
-    tbOthers.insert(1.0, "Pyro name server running" + '\n')
-    tbOthers.update()
-    time.sleep(1.5)
-    pmuSc.startStr2StrClient
-    tbOthers.insert(1.0, "RTK client running" + '\n')
-    tbOthers.update()
-    time.sleep(1.5)
-    pmuSc.startPMUapp()
-    tbOthers.insert(1.0, "PMUapp.py runs" + '\n')
-    tbOthers.update()
-    time.sleep(1.5)
-
-    # try:
-    rbuSc.setStartaSystem
-    msg = "Baudrate on RBU set to " + baudrate
-    # except:
-    #msg = "Baudrate could not be set"
-    tbOthers.insert(1.0, msg + '\n')
+    msg4 = pmuSc.startPMUapp()
+    tbOthers.insert(1.0, msg4 + '\n \n')
     tbOthers.update()
     time.sleep(0.5)
 
-    msg3 = "Server online"
-    rbuSc.startStr2StrServer()
-    tbOthers.insert(1.0, msg3 + '\n')
+    tbOthers.insert(1.0, 'PMU Ready for take off! \n \n')
     tbOthers.update()
-    time.sleep(0.5)
-
-    msg4 = "client online"
-    pmuSc.startStr2StrClient()
-    tbOthers.insert(1.0, msg4 + '\n')
-    tbOthers.update()
-    time.sleep(0.5)
-
-    msg5 = pmuSc.startPyro()
-    tbOthers.insert(1.0, msg5 + '\n')
-    tbOthers.update()
-    time.sleep(0.5)
-    """
 
 
 def clickRbuBtn():
-    # kalla på funktion för att sätta frekvens
-    print('hej')
+    msg = rbuSc.coldRestart()
+    tbOthers.insert(1.0, msg + '\n \n')
+    tbOthers.update()
+    time.sleep(2.5)
+
+    msg2 = rbuSc.setBaudrate()
+    tbOthers.insert(1.0, msg2 + '\n \n')
+    tbOthers.update()
+    time.sleep(0.5)
+
+    msg3 = rbuSc.startStr2StrServer()
+    tbOthers.insert(1.0, msg3 + '\n \n')
+    tbOthers.update()
+    time.sleep(0.5)
+
+    tbOthers.insert(1.0, 'RBU Ready DO NOT MOVE!!! \n \n')
+    tbOthers.update()
 
 
 def clickGrafBtn():
@@ -170,6 +132,7 @@ textColor = '#cdcdcd'
 
 win = Tk()
 win.title("CU-applikation för PAMP")
+
 # win.geometry('1000x1000')
 win.configure(bg=bgColor)
 
