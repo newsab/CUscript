@@ -26,6 +26,7 @@ m = []
 my_cmap = plt.get_cmap('autumn')
 pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
+ptuSc = ShellCommands("172.16.0.9")
 #pmuIp = "172.16.0.3"
 #rbuIp = "172.16.0.6"
 sas = StartAndStop()
@@ -44,6 +45,7 @@ def clickStartBtn():
         startBtn.config(text="Stoppa mätning")
         frequency = fqEnt.get()
         sas.start(frequency)
+        ptuSc.setFrequency(frequency)
     else:
         startBtn.config(text="Starta mätning")
         on = False
