@@ -21,7 +21,8 @@ class StartAndStop:
     def start2(self, frequency):
         fre = frequency
         print("Hej från tråden")
-        self.thing.starta(fre)
+        line = self.thing.starta(fre)
+        print(line)
 
     def stop(self):
         print("Hej tråden ska vi nysta?")
