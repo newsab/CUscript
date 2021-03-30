@@ -17,6 +17,7 @@ class StartAndStop:
         self.thing = Pyro4.Proxy("PYRONAME:PMUApp")
         self.t = threading.Thread(target=self.start2)
         self.mesurement = list
+        self.showList = list
         print(self.thing)
 
     def start2(self):
@@ -25,9 +26,9 @@ class StartAndStop:
         time.sleep(1)
         while not self.quitflag:
             #showList = list
-            showList = self.thing.getListToSend()
-            obj = showList[-1]
-            print(obj)
+            self.showList = self.thing.getListToSend()
+            #obj = showList[-1]
+            # print(obj)
             time.sleep(0.3)
 
     def stop(self):

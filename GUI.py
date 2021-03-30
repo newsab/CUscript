@@ -43,6 +43,13 @@ def clickStartBtn():
         startBtn.config(text="Stoppa mätning")
         frequency = fqEnt.get()
         sas.start(frequency)
+        time.sleep(2)
+        while on:
+            showList = sas.showList
+            obj = showList[-1]
+            tbMeasure.insert(1.0, str(obj) + '\n')
+            tbMeasure.update()
+            time.sleep(0.5)
         # ptuSc.setFrequency(frequency)
     else:
         startBtn.config(text="Starta mätning")
