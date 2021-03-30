@@ -72,7 +72,6 @@ def clickStartBtn():
             y.append(float(la))
             z.append(float(al))
             m.append(float(me))
-
             tbMeasure.insert(1.0, str(line) + '\n')
             tbMeasure.update
             # time.sleep(3)
