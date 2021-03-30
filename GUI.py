@@ -3,11 +3,9 @@ from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits import mplot3d
-import CuData
 from pyro import *
 from ShellCommands import *
 from Measurements import *
-
 
 global on
 global a
@@ -45,11 +43,12 @@ def clickStartBtn():
         startBtn.config(text="Stoppa mätning")
         frequency = fqEnt.get()
         sas.start(frequency)
-        ptuSc.setFrequency(frequency)
+        # ptuSc.setFrequency(frequency)
     else:
         startBtn.config(text="Starta mätning")
         on = False
         sas.stop()
+
         a = sas.mesurement  # change to createDummy() to run txt-file
         print("list done!")
         for line in a:
@@ -65,6 +64,24 @@ def clickStartBtn():
 
             tbMeasure.insert(1.0, str(line) + '\n')
             tbMeasure.update()
+
+
+"""
+def updateMeasurement():
+
+    line = sas.obj
+    lo = line[1]
+    la = line[2]
+    al = line[3]
+    me = line[4]
+    x.append(float(lo))
+    y.append(float(la))
+    z.append(float(al))
+    m.append(float(me))
+
+    tbMeasure.insert(1.0, str(line) + '\n')
+    tbMeasure.update()
+"""
 
 
 def clickPmuBtn():

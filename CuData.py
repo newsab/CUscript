@@ -1,5 +1,5 @@
 import time
-from GUI import z
+
 #import Measurements
 
 global count
@@ -32,5 +32,3 @@ def getData():
     count = count + 1
     print(line, lon, lat, alt, mea)
     return line, lon, lat, alt, mea
-
-    

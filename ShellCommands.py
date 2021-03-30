@@ -83,6 +83,6 @@ class ShellCommands:
 
     def setFrequency(self, freq):
         frequency = (float(freq)*1000000.0)
-        command = "hackrf_transfer -f" + frequency + " -a1 -x47 -c127"
+        command = "hackrf_transfer -f" + str(frequency) + " -a1 -x47 -c127"
         print(command)
         return self.executeCmd(command)

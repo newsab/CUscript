@@ -12,29 +12,36 @@ class StartAndStop:
 
     def __init__(self):
         self.quitflag = False
+        self.freq = 0.0
         self.quitlock = threading.Lock()
         self.thing = Pyro4.Proxy("PYRONAME:PMUApp")
         self.t = threading.Thread(target=self.start2)
         self.mesurement = list
         print(self.thing)
 
-    def start2(self, frequency):
-        fre = frequency
+    def start2(self):
         print("Hej från tråden")
-        line = self.thing.starta(fre)
-        print(line)
+        self.thing.starta(self.freq)
+        time.sleep(1)
+        while not self.quitflag:
+            #showList = list
+            showList = self.thing.getListToSend()
+            obj = showList[-1]
+            print(obj)
+            time.sleep(0.3)
 
     def stop(self):
         print("Hej tråden ska vi nysta?")
+        self.quitflag = True
         # self.t.join()
         self.mesurement = self.thing.stopMeasure()
         print("Progress")
         return self.mesurement
 
     def start(self, frequency):
-        fre = frequency
-        if self.t.is_alive():
+        self.freq = frequency
+        if not self.t.is_alive():
             print("test")
             self.t.start()
         else:
-            self.start2(fre)
+            self.start2(self.freq)
