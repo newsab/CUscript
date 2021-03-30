@@ -2,10 +2,11 @@ import time
 from tkinter import *
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from mpl_toolkits import mplot3d
+from Measurements import *
 from pyro import *
 from ShellCommands import *
-from Measurements import *
 
 global on
 global a
@@ -15,6 +16,8 @@ global z
 global m
 global my_cmap
 global sas
+#global scttLive
+#global canvasLive
 
 on = False
 a = []
@@ -23,6 +26,8 @@ y = []
 z = []
 m = []
 sas = object
+#scttLive = object
+#canvasLive = object
 my_cmap = plt.get_cmap('autumn')
 pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
@@ -53,17 +58,30 @@ def clickStartBtn():
             obj = showList[-1]
             tbMeasure.insert(1.0, str(obj) + '\n')
             tbMeasure.update()
+
+            lo = obj[1]
+            la = obj[2]
+            al = obj[3]
+            me = obj[4]
+            x.append(float(lo))
+            y.append(float(la))
+            z.append(float(al))
+            m.append(float(me))
+            livePlot()
             time.sleep(0.5)
         # ptuSc.setFrequency(frequency)
     else:
         startBtn.config(text="Starta mätning")
         on = False
         sas.stop()
-
+        x[:] = []
+        y[:] = []
+        z[:] = []
+        m[:] = []
         a = sas.mesurement  # change to createDummy() to run txt-file
         print("list done!")
-        for line in a:
 
+        for line in a:
             lo = line[1]
             la = line[2]
             al = line[3]
@@ -176,8 +194,23 @@ textColor = '#cdcdcd'
 win = Tk()
 win.title("CU-applikation för PAMP")
 
-win.geometry('1200x800')
+win.geometry('1400x800')
 win.configure(bg=bgColor)
+
+
+def livePlot():
+    figLive = plt.figure(figsize=(5, 3))
+    scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    figLive.colorbar(scttLive, shrink=0.8, aspect=5)
+    canvasLive = FigureCanvasTkAgg(figLive, master=win)
+    canvasLive.get_tk_widget().grid(row=0, column=15)
+    canvasLive.draw_idle()
+
+
+# def updateLivePlotter():
+    #scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    # canvasLive.draw_idle()
+
 
 tbMeasure = Text(bg=frameColor, fg=textColor, width=90)
 tbOthers = Text(bg=frameColor, fg=textColor, width=60)
@@ -225,4 +258,5 @@ graf3dBtn.grid(row=5, column=5)
 posLbl.grid(row=6, column=1, columnspan=4)
 posBtn.grid(row=7, column=4)
 
+livePlot()
 win.mainloop()
