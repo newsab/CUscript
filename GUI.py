@@ -118,6 +118,19 @@ def clickPmuBtn():
     tbOthers.update()
 
 
+def clickPosBtn():
+    sas = StartAndStop()
+    startPosition = sas.getStartPosition()
+    lon = startPosition[0]
+    lat = startPosition[1]
+    alt = startPosition[2]
+    posLbl.config(text=str(lon) + str(lat) + str(alt))
+    tbOthers.insert(1.0, 'AUT position is ' +
+                    str(lon) + str(lat) + str(alt) + '\n')
+    tbOthers.update()
+    del sas
+
+
 def clickRbuBtn():
     msg = rbuSc.coldRestart()
     tbOthers.insert(1.0, msg + '\n \n')
@@ -188,6 +201,10 @@ grafBtn = Button(text="Visa Graf", width=20, height=2,
 graf3dBtn = Button(text="Visa 3D Graf", width=20, height=2,
                    bg=frameColor, fg=bgColor, command=clickGraf3dBtn)
 
+posLbl = Label(text="", bg=frameColor, fg=textColor)
+posBtn = Button(text="Ta ut AUT position", width=20, height=2,
+                bg=frameColor, fg=bgColor, command=clickPosBtn)
+
 tbOthers.grid(row=0, column=0, columnspan=3)
 tbMeasure.grid(row=0, column=3, columnspan=3)
 
@@ -205,5 +222,7 @@ rbuBtn.grid(row=5, column=2)
 grafBtn.grid(row=5, column=4)
 graf3dBtn.grid(row=5, column=5)
 
+posLbl.grid(row=6, column=1, columnspan=4)
+posBtn.grid(row=7, column=4)
 
 win.mainloop()

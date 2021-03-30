@@ -42,3 +42,7 @@ class StartAndStop:
     def start(self, frequency):
         self.freq = frequency
         self.t.start()
+
+    def getStartPosition(self):
+        startPosition = self.thing.getStartPosition()
+        return startPosition
