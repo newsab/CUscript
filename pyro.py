@@ -21,28 +21,24 @@ class StartAndStop:
         print(self.thing)
 
     def start2(self):
+        self.quitflag = False
         print("Hej från tråden")
         self.thing.starta(self.freq)
-        time.sleep(1)
+        time.sleep(2)
+        print("Jag kom forbi!!!!")
         while not self.quitflag:
-            #showList = list
             self.showList = self.thing.getListToSend()
-            #obj = showList[-1]
-            # print(obj)
+            obj = self.showList[-1]
+            print(obj)
             time.sleep(0.3)
 
     def stop(self):
         print("Hej tråden ska vi nysta?")
         self.quitflag = True
-        # self.t.join()
         self.mesurement = self.thing.stopMeasure()
-        print("Progress")
+        print("Progress when ju need sucess")
         return self.mesurement
 
     def start(self, frequency):
         self.freq = frequency
-        if not self.t.is_alive():
-            print("test")
-            self.t.start()
-        else:
-            self.start2(self.freq)
+        self.t.start()

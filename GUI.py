@@ -14,6 +14,7 @@ global y
 global z
 global m
 global my_cmap
+global sas
 
 on = False
 a = []
@@ -21,14 +22,15 @@ x = []
 y = []
 z = []
 m = []
+sas = object
 my_cmap = plt.get_cmap('autumn')
 pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
 ptuSc = ShellCommands("172.16.0.9")
 #pmuIp = "172.16.0.3"
 #rbuIp = "172.16.0.6"
-sas = StartAndStop()
-print(sas)
+
+# print(sas)
 
 
 def clickStartBtn():
@@ -38,12 +40,14 @@ def clickStartBtn():
     global y
     global z
     global m
+    global sas
     if not on:
+        sas = StartAndStop()
         on = True
         startBtn.config(text="Stoppa mätning")
         frequency = fqEnt.get()
         sas.start(frequency)
-        time.sleep(2)
+        time.sleep(3.5)
         while on:
             showList = sas.showList
             obj = showList[-1]
@@ -70,7 +74,10 @@ def clickStartBtn():
             m.append(float(me))
 
             tbMeasure.insert(1.0, str(line) + '\n')
-            tbMeasure.update()
+            tbMeasure.update
+            # time.sleep(3)
+            #tbMeasure.delete(1.0, END)
+        del sas
 
 
 """
