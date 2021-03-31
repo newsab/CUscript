@@ -16,8 +16,9 @@ global z
 global m
 global my_cmap
 global sas
-#global scttLive
-#global canvasLive
+#global figLive
+global scttLive
+global canvasLive
 
 on = False
 a = []
@@ -26,9 +27,10 @@ y = []
 z = []
 m = []
 sas = object
-#scttLive = object
-#canvasLive = object
-my_cmap = plt.get_cmap('autumn')
+#figLive = object
+scttLive = object
+canvasLive = object
+my_cmap = plt.get_cmap('rainbow')
 pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
 ptuSc = ShellCommands("172.16.0.9")
@@ -53,12 +55,12 @@ def clickStartBtn():
         frequency = fqEnt.get()
         sas.start(frequency)
         time.sleep(3.5)
+        # createLiveFig()
         while on:
             showList = sas.showList
             obj = showList[-1]
             tbMeasure.insert(1.0, str(obj) + '\n')
             tbMeasure.update()
-
             lo = obj[1]
             la = obj[2]
             al = obj[3]
@@ -80,7 +82,6 @@ def clickStartBtn():
         m[:] = []
         a = sas.mesurement  # change to createDummy() to run txt-file
         print("list done!")
-
         for line in a:
             lo = line[1]
             la = line[2]
@@ -173,18 +174,18 @@ def clickGrafBtn():
     fig = plt.figure(figsize=(10, 7))
     sctt = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     fig.colorbar(sctt, shrink=0.8, aspect=5)
-    plt.show()
+    fig.show()
 
 
 def clickGraf3dBtn():
-    fig = plt.figure(figsize=(10, 7))
+    fig = plt.figure(figsize=(15, 11))
     ax = plt.axes(projection="3d")
     sctt = ax.scatter3D(x, y, z, alpha=1, c=m, cmap=my_cmap, marker='p')
     ax.set_xlabel('Longitude', fontweight='bold')
     ax.set_ylabel('Latitude', fontweight='bold')
     ax.set_zlabel('Altitude', fontweight='bold')
     fig.colorbar(sctt, ax=ax, shrink=0.8, aspect=5)
-    plt.show()
+    fig.show()
 
 
 bgColor = 'black'
@@ -198,12 +199,20 @@ win.geometry('1400x800')
 win.configure(bg=bgColor)
 
 
-def livePlot():
+def createLiveFig():
+    global scttLive
+    global canvasLive
     figLive = plt.figure(figsize=(5, 3))
     scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     figLive.colorbar(scttLive, shrink=0.8, aspect=5)
     canvasLive = FigureCanvasTkAgg(figLive, master=win)
     canvasLive.get_tk_widget().grid(row=0, column=15)
+
+
+def livePlot():
+    global scttLive
+    global canvasLive
+    scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     canvasLive.draw_idle()
 
 
@@ -258,5 +267,5 @@ graf3dBtn.grid(row=5, column=5)
 posLbl.grid(row=6, column=1, columnspan=4)
 posBtn.grid(row=7, column=4)
 
-livePlot()
+createLiveFig()
 win.mainloop()
