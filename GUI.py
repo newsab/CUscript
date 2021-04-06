@@ -29,7 +29,7 @@ sas = object
 scttLive = object
 canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
-pmuSc = ShellCommands("172.16.0.3")
+pmuSc = ShellCommands("81.16.170.67")
 rbuSc = ShellCommands("172.16.0.6")
 ptuSc = ShellCommands("172.16.0.9")
 
@@ -95,9 +95,11 @@ def clickPosBtn():
     lon = startPosition[0]
     lat = startPosition[1]
     alt = startPosition[2]
-    posLbl.config(text=str(lon) + str(lat) + str(alt))
-    tbOthers.insert(1.0, 'AUT position is ' +
-                    str(lon) + str(lat) + str(alt) + '\n')
+    posLonLbl.config(text=str(lon))
+    posLatLbl.config(text=str(lat))
+    posAltLbl.config(text=str(alt))
+    tbOthers.insert(1.0, 'AUT position is: \n' +
+                'Longitude:\n' + str(lon) + 'Latitude:\n' + str(lat) + 'Altitude:\n' + str(alt) + '\n')
     tbOthers.update()
     del sas
 
@@ -209,13 +211,13 @@ win.title("CU-applikation för PAMP")
 win.geometry('1448x800')
 win.configure(bg=bgColor)
 
-tbMeasure = Text(bg=frameColor, fg=textColor, width=85)
+tbMeasure = Text(bg=frameColor, fg=textColor, width=87)
 
-tbOthers = Text(bg=frameColor, fg=textColor, width=50)
+tbOthers = Text(bg=frameColor, fg=textColor, width=48)
 
 startLbl = Label(text="", bg=bgColor, fg=textColor)
 
-startBtn = Button(text="Starta", width=15, height=2,
+startBtn = Button(text="Starta mätning", width=15, height=2,
                   bg=frameColor, fg=bgColor, command=clickStartBtn)
 
 pmuBtn = Button(text="Starta PMU", width=15, height=2,
@@ -223,7 +225,7 @@ pmuBtn = Button(text="Starta PMU", width=15, height=2,
 
 fqEnt = Entry(bg=frameColor, fg=textColor)
 
-rbuBtn = Button(text="Start Rbu", width=15, height=2,
+rbuBtn = Button(text="Start om RBU", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickRbuBtn)
 
 grafBtn = Button(text="Visa Graf", width=15, height=2,
@@ -231,7 +233,9 @@ grafBtn = Button(text="Visa Graf", width=15, height=2,
 graf3dBtn = Button(text="Visa 3D Graf", width=20, height=2,
                    bg=frameColor, fg=bgColor, command=clickGraf3dBtn)
 
-posLbl = Label(text="", bg=frameColor, fg=textColor)
+posLonLbl = Label(text="", bg=frameColor, fg=textColor)
+posLatLbl = Label(text="", bg=frameColor, fg=textColor)
+posAltLbl = Label(text="", bg=frameColor, fg=textColor)
 
 posBtn = Button(text="Ta ut AUT position", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickPosBtn)
@@ -239,14 +243,19 @@ posBtn = Button(text="Ta ut AUT position", width=15, height=2,
 tbOthers.grid(row=0, column=0, columnspan=3)
 tbMeasure.grid(row=0, column=3, columnspan=3)
 startLbl.grid(row=1, column=1)
-startBtn.grid(row=1, column=2)
-pmuBtn.grid(row=3, column=2)
-fqEnt.grid(row=5, column=1)
-rbuBtn.grid(row=5, column=2)
-grafBtn.grid(row=5, column=4)
-graf3dBtn.grid(row=5, column=5)
-posLbl.grid(row=6, column=1, columnspan=4)
-posBtn.grid(row=7, column=4)
+
+posLonLbl.grid(row=1, column=1)
+posLatLbl.grid(row=2, column=1)
+posAltLbl.grid(row=3, column=1)
+fqEnt.grid(row=4, column=1)
+
+posBtn.grid(row=1, column=2)
+pmuBtn.grid(row=2, column=2)
+rbuBtn.grid(row=3, column=2)
+startBtn.grid(row=4, column=2)
+
+grafBtn.grid(row=3, column=4)
+graf3dBtn.grid(row=3, column=5)
 
 createLiveFig()
 win.mainloop()
