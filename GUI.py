@@ -8,7 +8,7 @@ from Measurements import *
 from pyro import *
 from ShellCommands import *
 
-global on 
+global on
 global a
 global x
 global y
@@ -29,9 +29,10 @@ sas = object
 scttLive = object
 canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
-pmuSc = ShellCommands("81.16.170.67")
+pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
 ptuSc = ShellCommands("172.16.0.9")
+
 
 def clickStartBtn():
     """
@@ -42,6 +43,7 @@ def clickStartBtn():
     global sas
     if not on:
         startBtn.config(text="Stoppa mätning")
+        clearPlotLists()
         on = True
         sas = StartAndStop()
         frequency = fqEnt.get()
@@ -69,27 +71,20 @@ def clickStartBtn():
             tbMeasure.update
         del sas
 
+
 def clickPmuBtn():
     """
     Comment
     """
-    msg2 = pmuSc.startStr2StrClient()
-    tbOthers.insert(1.0, msg2 + '\n \n')
-    tbOthers.update()
-    time.sleep(0.5)
 
-    msg3 = pmuSc.startPyro()
+    msg3 = pmuSc.startPMUapp()
     tbOthers.insert(1.0, msg3 + '\n \n')
-    tbOthers.update()
-    time.sleep(0.5)
-
-    msg4 = pmuSc.startPMUapp()
-    tbOthers.insert(1.0, msg4 + '\n \n')
     tbOthers.update()
     time.sleep(0.5)
 
     tbOthers.insert(1.0, 'PMU Ready for take off! \n \n')
     tbOthers.update()
+
 
 def clickPosBtn():
     """
@@ -105,6 +100,7 @@ def clickPosBtn():
                     str(lon) + str(lat) + str(alt) + '\n')
     tbOthers.update()
     del sas
+
 
 def clickRbuBtn():
     """
@@ -128,6 +124,7 @@ def clickRbuBtn():
     tbOthers.insert(1.0, 'RBU Ready DO NOT MOVE!!! \n \n')
     tbOthers.update()
 
+
 def clickGrafBtn():
     """
     Comment
@@ -136,6 +133,7 @@ def clickGrafBtn():
     sctt = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     fig.colorbar(sctt, shrink=0.8, aspect=5)
     fig.show()
+
 
 def clickGraf3dBtn():
     """
@@ -150,6 +148,7 @@ def clickGraf3dBtn():
     fig.colorbar(sctt, ax=ax, shrink=0.8, aspect=5)
     fig.show()
 
+
 def createLiveFig():
     """
     Comment
@@ -162,6 +161,7 @@ def createLiveFig():
     canvasLive = FigureCanvasTkAgg(figLive, master=win)
     canvasLive.get_tk_widget().grid(row=0, column=15)
 
+
 def livePlot():
     """
     Comment
@@ -170,6 +170,7 @@ def livePlot():
     global canvasLive
     scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     canvasLive.draw_idle()
+
 
 def clearPlotLists():
     """
@@ -184,6 +185,7 @@ def clearPlotLists():
     z[:] = []
     m[:] = []
 
+
 def updatePlotList(line):
     """
     Comment
@@ -196,6 +198,7 @@ def updatePlotList(line):
     y.append(float(la))
     z.append(float(al))
     m.append(float(me))
+
 
 bgColor = 'black'
 frameColor = '#222222'

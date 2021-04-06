@@ -57,7 +57,7 @@ class ShellCommands:
         return self.executeCmd(command)
 
     def startPMUapp(self):
-        command = "/usr/bin/python /home/pi/pmuScript/PMUapp.py"
+        command = "sh /home/pi/Shellscripts/PMU.sh"
         print(command)
         return self.executeCmd2(command)
 
@@ -72,7 +72,8 @@ class ShellCommands:
         return self.executeCmd2(command)
 
     def startPyro(self):
-        command = "sudo pyro4-ns -n 172.16.0.3 -p 43329"
+        #command = "pyro4-ns -n 172.16.0.3 -p 43329"
+        command = "/usr/bin/pyro.sh"
         print(command)
         return self.executeCmd2(command)
 
