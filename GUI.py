@@ -1,9 +1,12 @@
 import time
 from tkinter import *
+
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from mpl_toolkits import mplot3d
+from plotly.graph_objects import scatter3d
+
 from Measurements import *
 from pyro import *
 from ShellCommands import *
@@ -13,6 +16,9 @@ global a
 global x
 global y
 global z
+global lon
+global lat
+global alt
 global m
 global my_cmap
 global sas
@@ -24,12 +30,15 @@ a = []
 x = []
 y = []
 z = []
+lon = []
+lat = []
+alt = []
 m = []
 sas = object
 scttLive = object
 canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
-pmuSc = ShellCommands("81.16.170.67")
+pmuSc = ShellCommands("172.16.0.3")
 rbuSc = ShellCommands("172.16.0.6")
 ptuSc = ShellCommands("172.16.0.9")
 
@@ -41,41 +50,50 @@ def clickStartBtn():
     global on
     global a
     global sas
-    if not on:
-        startBtn.config(text="Stoppa mätning")
-        clearPlotLists()
-        on = True
-        sas = StartAndStop()
-        frequency = fqEnt.get()
-        sas.start(frequency)
-        time.sleep(3.5)
-        while on:
-            showList = sas.showList
-            obj = showList[-1]
-            tbMeasure.insert(1.0, str(obj) + '\n')
-            tbMeasure.update()
-            updatePlotList(obj)
-            livePlot()
-            time.sleep(0.5)
-        # ptuSc.setFrequency(frequency)
+
+    frequency = fqEnt.get()
+    updateFixStatus()
+
+    if frequency == "":
+        tbOthers.insert(1.0, 'Enter a frequency \n')
+        tbOthers.update()
     else:
-        startBtn.config(text="Starta mätning")
-        on = False
-        sas.stop()
-        clearPlotLists()
-        a = sas.mesurementList  # change to createDummy() to run txt-file
-        print("list done!")
-        for line in a:
-            updatePlotList(line)
-            tbMeasure.insert(1.0, str(line) + '\n')
-            tbMeasure.update
-        del sas
+        if not on:
+            startBtn.config(text="Stoppa mätning")
+            clearPlotLists()
+            on = True
+            sas = StartAndStop()
+            sas.start(frequency)
+            time.sleep(5)
+
+            while on:
+                showList = sas.showList
+                obj = showList[-1]
+                tbMeasure.insert(1.0, str(obj) + '\n')
+                tbMeasure.update()
+                updatePlotList(obj)
+                livePlot()
+                time.sleep(0.5)
+            # ptuSc.setFrequency(frequency)
+        else:
+            startBtn.config(text="Starta mätning")
+            on = False
+            sas.stop()
+            clearPlotLists()
+            a = sas.mesurementList  # change to createDummy() to run txt-file
+            print("list done!")
+            for line in a:
+                updatePlotList(line)
+                tbMeasure.insert(1.0, str(line) + '\n')
+                tbMeasure.update
+            del sas
 
 
 def clickPmuBtn():
     """
     Comment
     """
+    updateFixStatus()
 
     msg3 = pmuSc.startPMUapp()
     tbOthers.insert(1.0, msg3 + '\n \n')
@@ -90,16 +108,26 @@ def clickPosBtn():
     """
     Comment
     """
+    global lon
+    global lat
+    global alt
     sas = StartAndStop()
     startPosition = sas.getStartPosition()
-    lon = startPosition[0]
-    lat = startPosition[1]
-    alt = startPosition[2]
+    updateFixStatus()
+    lon = []
+    lat = []
+    alt = []
+    lo = startPosition[0]
+    la = startPosition[1]
+    al = startPosition[2]
+    lon.append(float(lo))
+    lat.append(float(la))
+    alt.append(float(al))
     posLonLbl.config(text=str(lon))
     posLatLbl.config(text=str(lat))
     posAltLbl.config(text=str(alt))
     tbOthers.insert(1.0, 'AUT position is: \n' +
-                'Longitude:\n' + str(lon) + 'Latitude:\n' + str(lat) + 'Altitude:\n' + str(alt) + '\n')
+                    'Longitude:\n' + str(lon) + '\nLatitude:\n' + str(lat) + '\nAltitude:\n' + str(alt) + '\n')
     tbOthers.update()
     del sas
 
@@ -112,28 +140,22 @@ def clickRbuBtn():
     tbOthers.insert(1.0, msg + '\n \n')
     tbOthers.update()
     time.sleep(2.5)
-
-    msg2 = rbuSc.setBaudrate()
-    tbOthers.insert(1.0, msg2 + '\n \n')
-    tbOthers.update()
-    time.sleep(0.5)
-
-    msg3 = rbuSc.startStr2StrServer()
-    tbOthers.insert(1.0, msg3 + '\n \n')
-    tbOthers.update()
-    time.sleep(0.5)
-
     tbOthers.insert(1.0, 'RBU Ready DO NOT MOVE!!! \n \n')
     tbOthers.update()
+    updateFixStatus()
 
 
 def clickGrafBtn():
     """
     Comment
     """
+    updateFixStatus()
     fig = plt.figure(figsize=(10, 7))
-    sctt = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax1 = fig.add_subplot(111)
+    ax1.scatter(lon, lat, alpha=1, c="black", marker='X', label='AUT')
+    sctt = ax1.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     fig.colorbar(sctt, shrink=0.8, aspect=5)
+    fig.legend()
     fig.show()
 
 
@@ -141,13 +163,16 @@ def clickGraf3dBtn():
     """
     Comment
     """
+    updateFixStatus()
     fig = plt.figure(figsize=(15, 11))
-    ax = plt.axes(projection="3d")
-    sctt = ax.scatter3D(x, y, z, alpha=1, c=m, cmap=my_cmap, marker='p')
+    ax = fig.add_subplot(111, projection="3d")
+    ax.scatter(lon, lat, alt, alpha=1, c="black", marker='X', label='AUT')
+    sctt = ax.scatter(x, y, z, alpha=1, c=m, cmap=my_cmap, marker='p')
     ax.set_xlabel('Longitude', fontweight='bold')
     ax.set_ylabel('Latitude', fontweight='bold')
     ax.set_zlabel('Altitude', fontweight='bold')
     fig.colorbar(sctt, ax=ax, shrink=0.8, aspect=5)
+    fig.legend()
     fig.show()
 
 
@@ -158,7 +183,9 @@ def createLiveFig():
     global scttLive
     global canvasLive
     figLive = plt.figure(figsize=(5, 3))
-    scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax1 = figLive.add_subplot(111)
+    ax1.scatter(lat, lon, alpha=1, c="black", marker='X')
+    scttLive = ax1.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     figLive.colorbar(scttLive, shrink=0.8, aspect=5)
     canvasLive = FigureCanvasTkAgg(figLive, master=win)
     canvasLive.get_tk_widget().grid(row=0, column=15)
@@ -170,6 +197,7 @@ def livePlot():
     """
     global scttLive
     global canvasLive
+    plt.scatter(lon, lat, alpha=1, c="black", marker='X', label='AUT')
     scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
     canvasLive.draw_idle()
 
@@ -200,6 +228,13 @@ def updatePlotList(line):
     y.append(float(la))
     z.append(float(al))
     m.append(float(me))
+
+
+def updateFixStatus():
+    sas2 = StartAndStop()
+    status = sas2.getFixStatus()
+    fixStatusLbl.config(text="Fix status: " + status)
+    print(status)
 
 
 bgColor = 'black'
@@ -237,6 +272,8 @@ posLonLbl = Label(text="", bg=frameColor, fg=textColor)
 posLatLbl = Label(text="", bg=frameColor, fg=textColor)
 posAltLbl = Label(text="", bg=frameColor, fg=textColor)
 
+fixStatusLbl = Label(text="", bg=frameColor, fg=textColor)
+
 posBtn = Button(text="Ta ut AUT position", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickPosBtn)
 
@@ -254,8 +291,11 @@ pmuBtn.grid(row=2, column=2)
 rbuBtn.grid(row=3, column=2)
 startBtn.grid(row=4, column=2)
 
+fixStatusLbl.grid(row=1, column=4)
+
 grafBtn.grid(row=3, column=4)
 graf3dBtn.grid(row=3, column=5)
 
+updateFixStatus()
 createLiveFig()
 win.mainloop()

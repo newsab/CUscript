@@ -3,6 +3,8 @@ import time
 from logging import shutdown
 from os.path import commonpath, exists, lexists
 import Pyro4
+import FixTypes
+
 
 class StartAndStop:
 
@@ -11,13 +13,19 @@ class StartAndStop:
         Creates a StartAndStop object which can communicate with the PMU. 
         The object should be killed after use with "del "object name"" function.
         """
-        self.quitflag = False                                       #Creates a boolean which is used to show if the measurementloop should stop or countinue
-        self.quitlock = threading.Lock()                            #Creates a threading lock
-        self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")                   #Creates the Pyro proxy
-        self.t = threading.Thread(target=self.startPmuMeasurement)  #Creates a thread with startPmuMeasurement as target
-        self.freq = 0.0                                             #Creates a float to store the frequency in  
-        self.mesurementList = list                                  #Creates a list to store the complete measurementdata
-        self.showList = list                                        #Creates a list to store a smaller amount of measurementdata for the live plot in GUI
+        self.quitflag = False  # Creates a boolean which is used to show if the measurementloop should stop or countinue
+        self.quitlock = threading.Lock()  # Creates a threading lock
+        self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")  # Creates the Pyro proxy
+        # Creates a thread with startPmuMeasurement as target
+        self.t = threading.Thread(target=self.startPmuMeasurement)
+        # Creates a thread with setFixStatus as target
+        #self.t2 = threading.Thread(target=self.setFixStatus)
+        self.freq = 0.0  # Creates a float to store the frequency in
+        self.mesurementList = list  # Creates a list to store the complete measurementdata
+        # Creates a list to store a smaller amount of measurementdata for the live plot in GUI
+        self.showList = list
+        # Creates a string to store the fix status
+        #self.fixStatus = 0
 
     def startPmuMeasurement(self):
         """
@@ -68,3 +76,8 @@ class StartAndStop:
             return startPosition
         except:
             print('Could not run function getStartPosition from StartAndStop')
+
+    def getFixStatus(self):
+        fixStatus = self.pmu.getFixStatus()
+        status = FixTypes.rtkList[fixStatus]
+        return status

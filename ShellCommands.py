@@ -28,7 +28,7 @@ class ShellCommands:
             returnString = stdout.read().decode()
             self.client.close()
             print("Connection closed")
-            return(command + " succesfully executed")
+            return(command + " successfully executed")
 
         except:
             err = stderr.read().decode()
@@ -44,7 +44,7 @@ class ShellCommands:
             self.client.exec_command(command)
             self.client.close()
             print("Connection closed")
-            return(command + " succesfully executed")
+            return(command + " successfully executed")
 
         except:
             self.client.close()
