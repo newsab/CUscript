@@ -1,0 +1,3 @@
+([('GUI',
+   '/Users/mats/Documents/project_python/CUscript/dist/GUI',
+   'EXECUTABLE')],)

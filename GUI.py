@@ -93,7 +93,7 @@ def clickPmuBtn():
     """
     Comment
     """
-    updateFixStatus()
+    # updateFixStatus()
 
     msg3 = pmuSc.startPMUapp()
     tbOthers.insert(1.0, msg3 + '\n \n')
@@ -291,11 +291,11 @@ pmuBtn.grid(row=2, column=2)
 rbuBtn.grid(row=3, column=2)
 startBtn.grid(row=4, column=2)
 
-fixStatusLbl.grid(row=1, column=4)
+fixStatusLbl.grid(row=1, column=3, columnspan=4)
 
 grafBtn.grid(row=3, column=4)
 graf3dBtn.grid(row=3, column=5)
 
-updateFixStatus()
+# updateFixStatus()
 createLiveFig()
 win.mainloop()
