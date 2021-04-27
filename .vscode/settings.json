@@ -4,13 +4,13 @@
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
   "spellright.language": [
-    "sv",
-    "en"
+    "sv"
   ],
   "spellright.documentTypes": [
     "markdown",
     "latex",
     "plaintext",
     "python"
-  ]
+  ],
+  "python.pythonPath": "C:\\Users\\Labbmaskin\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
 }

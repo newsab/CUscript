@@ -38,8 +38,8 @@ sas = object
 scttLive = object
 canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
-pmuSc = ShellCommands("172.16.0.3")
-rbuSc = ShellCommands("172.16.0.6")
+pmuSc = ShellCommands("192.168.1.3")
+rbuSc = ShellCommands("192.168.1.6")
 ptuSc = ShellCommands("172.16.0.9")
 
 

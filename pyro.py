@@ -4,6 +4,7 @@ from logging import shutdown
 from os.path import commonpath, exists, lexists
 import Pyro4
 import FixTypes
+import socket
 
 
 class StartAndStop:
@@ -13,8 +14,12 @@ class StartAndStop:
         Creates a StartAndStop object which can communicate with the PMU. 
         The object should be killed after use with "del "object name"" function.
         """
-        self.quitflag = False  # Creates a boolean which is used to show if the measurementloop should stop or countinue
+        self.hostname = socket.gethostbyname(socket.gethostname())
+        print(self.hostname)
+        # Creates a boolean which is used to show if the measurementloop should stop or countinue
+        self.quitflag = False
         self.quitlock = threading.Lock()  # Creates a threading lock
+        self.deamon = Pyro4.Daemon(self.hostname)
         self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")  # Creates the Pyro proxy
         # Creates a thread with startPmuMeasurement as target
         self.t = threading.Thread(target=self.startPmuMeasurement)
