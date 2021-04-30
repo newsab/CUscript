@@ -11,6 +11,7 @@ from Measurements import *
 from pyro import *
 from ShellCommands import *
 from ScrollableFrame import *
+from Calculate import *
 
 global on
 global a
@@ -145,8 +146,19 @@ def clickRbuBtn():
     tbOthers.update()
     updateFixStatus()
 
-
 def clickGrafBtn():
+    """
+    Comment
+    """
+    updateFixStatus()
+    fig = plt.figure(figsize=(10, 7))
+    ax1 = fig.add_subplot(111)
+
+    sctt = ax1.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    fig.legend()
+    fig.show()
+
+def clickGraf2dBtn():
     """
     Comment
     """
@@ -270,6 +282,8 @@ rbuBtn = Button(frame.scrollable_frame, text="Start om RBU", width=15, height=2,
 
 grafBtn = Button(frame.scrollable_frame, text="Visa Graf", width=15, height=2,
                 bg=frameColor, fg=textColor, command=clickGrafBtn)
+graf2dBtn = Button(frame.scrollable_frame, text="Visa Graf", width=15, height=2,
+                bg=frameColor, fg=textColor, command=clickGrafBtn)
 graf3dBtn = Button(frame.scrollable_frame, text="Visa 3D Graf", width=20, height=2,
                 bg=frameColor, fg=textColor, command=clickGraf3dBtn)
 
@@ -299,7 +313,8 @@ startBtn.grid(row=4, column=2)
 fixStatusLbl.grid(row=1, column=3, columnspan=4)
 
 grafBtn.grid(row=3, column=4)
-graf3dBtn.grid(row=3, column=5)
+graf2dBtn.grid(row=3, column=5)
+graf3dBtn.grid(row=3, column=6)
 
 # updateFixStatus()
 # createLiveFig()

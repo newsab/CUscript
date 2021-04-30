@@ -10,6 +10,7 @@ from plotly.graph_objects import scatter3d
 from Measurements import *
 from pyro import *
 from ShellCommands import *
+from Calculate import *
 
 global on
 global a
@@ -69,7 +70,10 @@ def clickStartBtn():
             while on:
                 showList = sas.showList
                 obj = showList[-1]
-                tbMeasure.insert(1.0, str(obj) + '\n')
+                tim = str(obj[0])
+                alti = str(obj[3])
+                db = str(obj[4])
+                tbMeasure.insert(1.0, tim + ", " + alti + ", " + db + '\n')
                 tbMeasure.update()
                 updatePlotList(obj)
                 livePlot()
@@ -84,7 +88,10 @@ def clickStartBtn():
             print("list done!")
             for line in a:
                 updatePlotList(line)
-                tbMeasure.insert(1.0, str(line) + '\n')
+                tim = str(line[0])
+                alti = str(line[3])
+                db = str(line[4])
+                tbMeasure.insert(1.0, tim + ", " + alti + ", " + db + '\n')
                 tbMeasure.update
             del sas
 
@@ -149,25 +156,47 @@ def clickGrafBtn():
     """
     Comment
     """
+    plt.close()
+    autlon = float(lon[0])
+    autlat = float(lat[0])
+    cal = Calculator(autlon, autlat)
+    cal.fillLists()
+    ang = cal.angleList
+    db = cal.dbList
+    fig = plt
+    fig.plot(ang, db)
+    fig.ylim(-100, 10)
+    fig.xlim(-180, 180)
+    fig.grid(True)
+    fig.show()
+
+
+def clickGraf2dBtn():
+    """
+    Comment
+    """
     updateFixStatus()
     fig = plt.figure(figsize=(10, 7))
-    ax1 = fig.add_subplot(111)
-    ax1.scatter(lon, lat, alpha=1, c="black", marker='X', label='AUT')
-    sctt = ax1.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax = fig.add_subplot(111)
+    ax.scatter(lon, lat, alpha=1, c="black", marker='X', label='AUT')
+    sctt = ax.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
     fig.colorbar(sctt, shrink=0.8, aspect=5)
     fig.legend()
     fig.show()
-
 
 def clickGraf3dBtn():
     """
     Comment
     """
     updateFixStatus()
-    fig = plt.figure(figsize=(15, 11))
+    fig = plt.figure(figsize=(10, 7))
     ax = fig.add_subplot(111, projection="3d")
     ax.scatter(lon, lat, alt, alpha=1, c="black", marker='X', label='AUT')
     sctt = ax.scatter(x, y, z, alpha=1, c=m, cmap=my_cmap, marker='p')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
     ax.set_xlabel('Longitude', fontweight='bold')
     ax.set_ylabel('Latitude', fontweight='bold')
     ax.set_zlabel('Altitude', fontweight='bold')
@@ -183,9 +212,11 @@ def createLiveFig():
     global scttLive
     global canvasLive
     figLive = plt.figure(figsize=(5, 3))
-    ax1 = figLive.add_subplot(111)
-    ax1.scatter(lat, lon, alpha=1, c="black", marker='X')
-    scttLive = ax1.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax = figLive.add_subplot(111)
+    ax.scatter(lat, lon, alpha=1, c="black", marker='X')
+    scttLive = ax.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
     figLive.colorbar(scttLive, shrink=0.8, aspect=5)
     canvasLive = FigureCanvasTkAgg(figLive, master=win)
     canvasLive.get_tk_widget().grid(row=0, column=15)
@@ -243,12 +274,12 @@ textColor = '#cdcdcd'
 
 win = Tk()
 win.title("CU-applikation för PAMP")
-win.geometry('1448x800')
+win.geometry('1360x768')
 win.configure(bg=bgColor)
 
-tbMeasure = Text(bg=frameColor, fg=textColor, width=87)
+tbMeasure = Text(bg=frameColor, fg=textColor, width=60)
 
-tbOthers = Text(bg=frameColor, fg=textColor, width=48)
+tbOthers = Text(bg=frameColor, fg=textColor, width=60)
 
 startLbl = Label(text="", bg=bgColor, fg=textColor)
 
@@ -265,7 +296,9 @@ rbuBtn = Button(text="Start om RBU", width=15, height=2,
 
 grafBtn = Button(text="Visa Graf", width=15, height=2,
                  bg=frameColor, fg=bgColor, command=clickGrafBtn)
-graf3dBtn = Button(text="Visa 3D Graf", width=20, height=2,
+graf2dBtn = Button(text="Visa 2D Graf", width=15, height=2,
+                 bg=frameColor, fg=bgColor, command=clickGraf2dBtn)
+graf3dBtn = Button(text="Visa 3D Graf", width=15, height=2,
                    bg=frameColor, fg=bgColor, command=clickGraf3dBtn)
 
 posLonLbl = Label(text="", bg=frameColor, fg=textColor)
@@ -293,8 +326,9 @@ startBtn.grid(row=4, column=2)
 
 fixStatusLbl.grid(row=1, column=3, columnspan=4)
 
-grafBtn.grid(row=3, column=4)
-graf3dBtn.grid(row=3, column=5)
+grafBtn.grid(row=2, column=4)
+graf2dBtn.grid(row=3, column=4)
+graf3dBtn.grid(row=4, column=4)
 
 # updateFixStatus()
 createLiveFig()
