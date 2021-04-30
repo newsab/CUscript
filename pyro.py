@@ -8,12 +8,8 @@ import socket
 
 
 class StartAndStop:
-
+    """
     def __init__(self):
-        """
-        Creates a StartAndStop object which can communicate with the PMU. 
-        The object should be killed after use with "del "object name"" function.
-        """
         self.hostname = socket.gethostbyname(socket.gethostname())
         print(self.hostname)
         # Creates a boolean which is used to show if the measurementloop should stop or countinue
@@ -31,12 +27,8 @@ class StartAndStop:
         self.showList = list
         # Creates a string to store the fix status
         #self.fixStatus = 0
-
+    
     def startPmuMeasurement(self):
-        """
-        Calling the PMU function that starts the measurment and runs the 
-        loop to update the showList as long the quitflag is set to False. 
-        """
         try:
             self.quitflag = False
             self.pmu.starta(self.freq)
@@ -48,11 +40,6 @@ class StartAndStop:
             print('Could not run function startPmuMeasurement from StartAndStop')
 
     def stop(self):
-        """
-        Calling the PMU function that stops the measurement and returns 
-        the measurementList which includes all measurements made by the PMU. 
-        Also sets the quitflag to True to stop the update of the showList.
-        """
         try:
             self.quitflag = True
             self.mesurementList = self.pmu.stopMeasure()
@@ -61,10 +48,6 @@ class StartAndStop:
             print('Could not run function stop from StartAndStop')
 
     def start(self, frequency):
-        """
-        Takes a frequency as parameter and starts the theard 
-        which is calling the startPmuMeasurement.
-        """
         try:
             self.freq = frequency
             self.t.start()
@@ -72,10 +55,6 @@ class StartAndStop:
             print('Could not run function start from StartAndStop')
 
     def getStartPosition(self):
-        """
-        Asks PMU for singelposition and returns object including longitude, 
-        latitude and altitude witch is used to get the AUTs position.
-        """
         try:
             startPosition = self.pmu.getStartPosition()
             return startPosition
@@ -86,3 +65,57 @@ class StartAndStop:
         fixStatus = self.pmu.getFixStatus()
         status = FixTypes.rtkList[fixStatus]
         return status
+    """
+
+    def __init__(self):
+        self.freq = 0.0
+        self.mesurementList = []
+        self.showList = []
+
+    def start(self, frequency):
+        try:
+            self.freq = frequency
+            print("1")
+            self.setDummyData()
+            print("7")
+        except:
+            print('Could not run function start from StartAndStop')
+
+    def stop(self):
+        try:
+            return self.mesurementList
+        except:
+            print('Could not run function stop from StartAndStop')
+
+    def getStartPosition(self):
+        try:
+            startPosition = '15.9181962', '59.3885022', 5.5
+            return startPosition
+        except:
+            print('Could not run function getStartPosition from StartAndStop')
+
+    def getFixStatus(self):
+        fixStatus = 4
+        status = FixTypes.rtkList[fixStatus]
+        return status
+
+    def setDummyData(self):
+        print("2")
+        lines = list(open('./Measurements/test24-3medFrekvens.txt'))
+        print("3")
+        for line in lines:
+            time = line[2:27]
+            lo = line[32:44]
+            la = line[48:60]
+            al = line[63:66]
+            mea = line[68:78]         
+            obj = time, lo, la, al, mea
+            print(time)
+            print(lo)
+            print(la)
+            print(al)
+            print(mea)
+            self.mesurementList.append(obj)
+            print("6")
+            self.showList.append(obj)
+            print("5")
