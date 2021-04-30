@@ -10,7 +10,7 @@ class Calculator:
                 self.lat2 = 0.0
                 self.lon3 = 0.0
                 self.lat3 = 0.0
-                self.degree = 0.0
+                self.degree = -180.0
                 sas = StartAndStop()
                 sas.setDummyData()
                 self.listToCheck = sas.mesurementList
@@ -24,8 +24,23 @@ class Calculator:
                                 self.lon2 = line[1]
                                 self.lat2 = line[2]
                                 dbValue = line[4]
-                                self.angleList.append(0.0)
-                                self.dbList.append(dbValue)
+                                self.angleList.append(-180.0)
+                                self.dbList.append(float(dbValue))
+                        elif(self.degree > 180.0):
+                                """
+                                self.degree = -180.0
+                                self.lon3 = line[1]
+                                self.lat3 = line[2]
+                                angle = self.degree + self.getAngle()
+                                self.degree = angle
+                                dbValue = line[4]
+                                print(str(self.lon1) + ", " + str(self.lat1) + ", " + str(self.lon2) + ", " + str(self.lat2) + ", " + str(self.lon3) + ", " + str(self.lat3) + ", " + str(angle) + ", " + str(dbValue))
+                                self.angleList.append(angle)
+                                self.dbList.append(float(dbValue))
+                                self.lon2 = self.lon3
+                                self.lat2 = self.lat3
+                                """
+                                break
                         else: 
                                 self.lon3 = line[1]
                                 self.lat3 = line[2]
@@ -34,7 +49,7 @@ class Calculator:
                                 dbValue = line[4]
                                 print(str(self.lon1) + ", " + str(self.lat1) + ", " + str(self.lon2) + ", " + str(self.lat2) + ", " + str(self.lon3) + ", " + str(self.lat3) + ", " + str(angle) + ", " + str(dbValue))
                                 self.angleList.append(angle)
-                                self.dbList.append(dbValue)
+                                self.dbList.append(float(dbValue))
                                 self.lon2 = self.lon3
                                 self.lat2 = self.lat3
                                 
@@ -49,7 +64,7 @@ class Calculator:
 
         def getDistance(self, lon1, lat1, lon2, lat2):
                 # approximate radius of earth in km
-                R = 6373.0
+                R = 6373.0                                       
 
                 lat1r = radians(float(lat1))
                 lon1r = radians(float(lon1))
@@ -62,7 +77,7 @@ class Calculator:
                 a = sin(dlat / 2)**2 + cos(lat1r) * cos(lat2r) * sin(dlon / 2)**2
                 c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-                distance = (R * c)*100
+                distance = (R * c)*1000
 
                 print("Result:", distance, " m")
                 

@@ -8,7 +8,7 @@ import socket
 
 
 class StartAndStop:
-    """
+      
     def __init__(self):
         self.hostname = socket.gethostbyname(socket.gethostname())
         print(self.hostname)
@@ -65,12 +65,12 @@ class StartAndStop:
         fixStatus = self.pmu.getFixStatus()
         status = FixTypes.rtkList[fixStatus]
         return status
+ 
     """
-
     def __init__(self):
-        self.freq = 0.0
-        self.mesurementList = []
-        self.showList = []
+            self.freq = 0.0
+            self.mesurementList = []
+            self.showList = []
 
     def start(self, frequency):
         try:
@@ -119,3 +119,4 @@ class StartAndStop:
             print("6")
             self.showList.append(obj)
             print("5")
+    """ 
