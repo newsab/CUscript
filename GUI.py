@@ -33,7 +33,6 @@ def clickStartBtn():
     global on
     frequency = fqEnt.get()
     updateFixStatus()
-
     if frequency == "":
         tbOthers.insert(1.0, 'Enter a frequency \n')
         tbOthers.update()
@@ -42,8 +41,8 @@ def clickStartBtn():
             startBtn.config(text="Stoppa mätning")
             on = True
             DC.startMeasurment(frequency)
+            # ptuSc.setFrequency(frequency)
             time.sleep(5)
-
             while on:
                 DC.setShowList()
                 tim = str(DC.measurementData.time[-1])
@@ -53,7 +52,6 @@ def clickStartBtn():
                 tbMeasure.update()
                 livePlot()
                 time.sleep(0.5)
-            # ptuSc.setFrequency(frequency)
         else:
             startBtn.config(text="Starta mätning")
             on = False
@@ -61,8 +59,7 @@ def clickStartBtn():
             DC.setMeasurementData()
             print("list done!")
             length = len(DC.measurementData.longitude)
-            count = 0
-            
+            count = 0           
             while count < length:
                 tim = str(DC.measurementData.time[count])
                 alt = str(DC.measurementData.altitude[count])
@@ -116,7 +113,7 @@ def clickGrafBtn():
     plt.close()
     autlon = DC.measurement.longitude
     autlat = DC.measurement.latitude
-    cal = Calculator(autlon, autlat)
+    cal = Calculator(autlon, autlat, DC.measurementData)
     cal.fillLists()
     ang = cal.angleList
     db = cal.dbList
