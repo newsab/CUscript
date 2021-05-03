@@ -6,9 +6,8 @@ import Pyro4
 import FixTypes
 import socket
 
-
 class StartAndStop:
-      
+    """      
     def __init__(self):
         self.hostname = socket.gethostbyname(socket.gethostname())
         print(self.hostname)
@@ -43,7 +42,6 @@ class StartAndStop:
         try:
             self.quitflag = True
             self.mesurementList = self.pmu.stopMeasure()
-            return self.mesurementList
         except:
             print('Could not run function stop from StartAndStop')
 
@@ -83,7 +81,7 @@ class StartAndStop:
 
     def stop(self):
         try:
-            return self.mesurementList
+            print("Nu blev det stop")
         except:
             print('Could not run function stop from StartAndStop')
 
@@ -119,4 +117,4 @@ class StartAndStop:
             print("6")
             self.showList.append(obj)
             print("5")
-    """ 
+   

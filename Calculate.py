@@ -17,6 +17,7 @@ class Calculator:
                 self.angleList = []
                 self.dbList = []
 
+
         def fillLists(self):
                 for line in self.listToCheck:
                         if(self.lon2 == 0.0):
