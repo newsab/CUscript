@@ -1,29 +1,24 @@
+import datetime
+
 class Measurements:
 
-    def __init__(self, time, lon, lat, alt, measure):
-        self.time = time
-        self.lon = lon
-        self.lat = lat
-        self.alt = alt
-        self.measure = measure
-
-
-def createDummy():
-    lines = list(open('./Measurements/test24-3medFrekvens.txt'))
-    objects = []
-
-    for line in lines:
-        time = line[2:28]
-        lo = line[34:44]
-        la = line[48:58]
-        al = line[62:66]
-        mea = line[69:80]
-        # print(time)
-        # print(lo)
-        # print(la)
-        # print(al)
-        #print(mea + "\n")
-        obj = time, lo, la, al, mea
-        objects.append(obj)
-
-    return objects
+    def __init__(self):
+        self.id = 0
+        self.time = datetime.datetime.now()
+        self.frequency = 0.0
+        self.longitude = 0.0
+        self.latitude = 0.0
+        self.altitude = 0.0
+        self.info = "" 
+        self.antennaId = 0
+"""
+    def __init__(self, id, freq, lon, lat, alt, info, antennaId):
+        self.id = id
+        self.time = datetime.now()
+        self.frequency = freq
+        self.longitude = lon
+        self.latitude = lat
+        self.altitude = alt
+        self.info = info 
+        self.antennaId = antennaId
+"""
