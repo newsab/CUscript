@@ -33,17 +33,16 @@ def clickStartBtn():
     global on
     frequency = fqEnt.get()
     updateFixStatus()
-
     if frequency == "":
-        tbOthers.insert(1.0, 'Enter a frequency \n')
+        tbOthers.insert(1.0, 'Enter a frequency \n \n')
         tbOthers.update()
     else:
         if not on:
             startBtn.config(text="Stoppa mätning")
             on = True
             DC.startMeasurment(frequency)
+            # ptuSc.setFrequency(frequency)
             time.sleep(5)
-
             while on:
                 DC.setShowList()
                 tim = str(DC.measurementData.time[-1])
@@ -53,7 +52,6 @@ def clickStartBtn():
                 tbMeasure.update()
                 livePlot()
                 time.sleep(0.5)
-            # ptuSc.setFrequency(frequency)
         else:
             startBtn.config(text="Starta mätning")
             on = False
@@ -61,8 +59,7 @@ def clickStartBtn():
             DC.setMeasurementData()
             print("list done!")
             length = len(DC.measurementData.longitude)
-            count = 0
-            
+            count = 0           
             while count < length:
                 tim = str(DC.measurementData.time[count])
                 alt = str(DC.measurementData.altitude[count])
@@ -95,7 +92,7 @@ def clickPosBtn():
     posLatLbl.config(text=str(lat))
     posAltLbl.config(text=str(alt))
     tbOthers.insert(1.0, 'AUT position is: \n' +
-                    'Longitude:\n' + str(lon) + '\nLatitude:\n' + str(lat) + '\nAltitude:\n' + str(alt) + '\n')
+                    'Longitude:\n' + str(lon) + '\nLatitude:\n' + str(lat) + '\nAltitude:\n' + str(alt) + '\n \n')
     tbOthers.update()
 
 def clickRbuBtn():
@@ -116,7 +113,7 @@ def clickGrafBtn():
     plt.close()
     autlon = DC.measurement.longitude
     autlat = DC.measurement.latitude
-    cal = Calculator(autlon, autlat)
+    cal = Calculator(autlon, autlat, DC.measurementData)
     cal.fillLists()
     ang = cal.angleList
     db = cal.dbList
@@ -169,6 +166,23 @@ def clickGraf3dBtn():
     fig.colorbar(sctt, ax=ax, shrink=0.8, aspect=5)
     fig.legend()
     fig.show()
+
+def clickNewMeasurementBtn():
+    global DC
+    del DC
+    DC = DataController()
+    tbOthers.insert(1.0, 'New measurement \n \n')
+    tbOthers.update()
+
+def clickSaveMeasurementBtn():
+    org = orgEnt.get() 
+    obj = objectEnt.get()
+    ant = antennaEnt.get()
+    #inf = infoEnt.get()
+
+    DC.insertMeasurementToDb()
+    tbOthers.insert(1.0, 'Measurement has been saved \n \n')
+    tbOthers.update()
 
 def createLiveFig():
     """
@@ -224,7 +238,6 @@ startLbl = Label(text="", bg=bgColor, fg=textColor)
 
 startBtn = Button(text="Starta mätning", width=15, height=2,
                   bg=frameColor, fg=bgColor, command=clickStartBtn)
-
 pmuBtn = Button(text="Starta PMU", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickPmuBtn)
 
@@ -232,13 +245,17 @@ fqEnt = Entry(bg=frameColor, fg=textColor)
 
 rbuBtn = Button(text="Start om RBU", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickRbuBtn)
-
 grafBtn = Button(text="Visa Graf", width=15, height=2,
                  bg=frameColor, fg=bgColor, command=clickGrafBtn)
 graf2dBtn = Button(text="Visa 2D Graf", width=15, height=2,
                  bg=frameColor, fg=bgColor, command=clickGraf2dBtn)
 graf3dBtn = Button(text="Visa 3D Graf", width=15, height=2,
                    bg=frameColor, fg=bgColor, command=clickGraf3dBtn)
+
+newMeasurementBtn = Button(text="Initsiera ny mätning", width=15, height=2,
+                   bg=frameColor, fg=bgColor, command=clickNewMeasurementBtn)
+saveMeasurementBtn = Button(text="Spara mätning", width=15, height=2,
+                   bg=frameColor, fg=bgColor, command=clickSaveMeasurementBtn)
 
 posLonLbl = Label(text="", bg=frameColor, fg=textColor)
 posLatLbl = Label(text="", bg=frameColor, fg=textColor)
@@ -288,6 +305,9 @@ fixStatusLbl.grid(row=1, column=3, columnspan=4)
 grafBtn.grid(row=2, column=4)
 graf2dBtn.grid(row=3, column=4)
 graf3dBtn.grid(row=4, column=4)
+
+newMeasurementBtn.grid(row=7, column=2)
+saveMeasurementBtn.grid(row=6, column=2)
 
 # updateFixStatus()
 createLiveFig()

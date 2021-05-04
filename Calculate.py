@@ -3,7 +3,7 @@ from pyro import *
 
 class Calculator:
     	
-        def __init__(self, autLon, autLat):
+        def __init__(self, autLon, autLat, measurementData):
                 self.lon1 = autLon
                 self.lat1 = autLat
                 self.lon2 = 0.0
@@ -11,20 +11,19 @@ class Calculator:
                 self.lon3 = 0.0
                 self.lat3 = 0.0
                 self.degree = -180.0
-                sas = StartAndStop()
-                sas.setDummyData()
-                self.listToCheck = sas.mesurementList
+                self.measurementObject = measurementData
                 self.angleList = []
                 self.dbList = []
 
 
         def fillLists(self):
-                for line in self.listToCheck:
+                length = len(self.measurementObject.longitude)
+                count = 0          
+                while count < length:
                         if(self.lon2 == 0.0):
-                                print(line)
-                                self.lon2 = line[1]
-                                self.lat2 = line[2]
-                                dbValue = line[4]
+                                self.lon2 = self.measurementObject.longitude[count]
+                                self.lat2 = self.measurementObject.latitude[count]
+                                dbValue = self.measurementObject.dbValue[count]
                                 self.angleList.append(-180.0)
                                 self.dbList.append(float(dbValue))
                         elif(self.degree > 180.0):
@@ -43,17 +42,17 @@ class Calculator:
                                 """
                                 break
                         else: 
-                                self.lon3 = line[1]
-                                self.lat3 = line[2]
+                                self.lon3 = self.measurementObject.longitude[count]
+                                self.lat3 = self.measurementObject.latitude[count]
                                 angle = self.degree + self.getAngle()
                                 self.degree = angle
-                                dbValue = line[4]
+                                dbValue = self.measurementObject.dbValue[count]
                                 print(str(self.lon1) + ", " + str(self.lat1) + ", " + str(self.lon2) + ", " + str(self.lat2) + ", " + str(self.lon3) + ", " + str(self.lat3) + ", " + str(angle) + ", " + str(dbValue))
                                 self.angleList.append(angle)
                                 self.dbList.append(float(dbValue))
                                 self.lon2 = self.lon3
                                 self.lat2 = self.lat3
-                                
+                        count = count + 1
 
         def getAngle(self):
                 A = self.getDistance(self.lon1, self.lat1, self.lon2, self.lat2)
