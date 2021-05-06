@@ -17,6 +17,15 @@ class DataController:
         self.pyro = StartAndStop()
         self.on = True
 
+    def __init__(self, lon, lat, alt, antennaid, antenna, measuringObject, Organisation):
+        self.organisation = Organisations()
+        self.measuringObject = MeasuringObjects()
+        self.antenna = Antennas()
+        self.measurement = Measurements(lon, lat, alt, antennaid)
+        self.measurementData = MeasurementData()
+        self.pyro = StartAndStop()
+        self.on = True
+
     def getFixStatus(self):
         fixStatus = self.pyro.getFixStatus()
         return fixStatus
@@ -38,7 +47,7 @@ class DataController:
         self.pyro.start(freq)
 
     def stopMeasurement(self):
-        self.pyro.stop
+        self.pyro.stop()
 
     def setShowList(self):
         showList = self.pyro.showList
@@ -81,8 +90,8 @@ class DataController:
         dbContext.insertData(table, column, input)
     
 
-    def insertMeasureingObjectToDb(self):    
-        table = 'MeasureingObject'
+    def insertMeasuringObjectToDb(self):    
+        table = 'MeasuringObject'
         column = 'name, organisationId'
         input = self.antenna.name + "', '" + self.organisation.id
         dbContext.insertData(table, column, input)
@@ -90,14 +99,15 @@ class DataController:
 
     def insertAntennaToDb(self):
         table = 'Antenna'
-        column = 'name, measureingObjectId'
+        column = 'name, measuringObjectId'
         input = self.antenna.name + "', '" + self.measuringObject.id
         dbContext.insertData(table, column, input)
 
 
-    def insertMeasurementToDb(self):
+    def insertMeasurementToDb(self, info):
         table = 'Measurement'
         column = 'time, frequency, longitude, latitude, altitude, info, antennaId'
+        self.measurement.info = info
         input = str(self.measurement.time) + "', '" + str(self.measurement.frequency) + "', '" + str(self.measurement.longitude) + "', '" + str(self.measurement.latitude) + "', '" + str(self.measurement.altitude) + "', '" + self.measurement.info + "', '" + str(self.antenna.id)
         dbContext.insertData(table, column, input)
         id = self.getLatestId()
@@ -114,9 +124,70 @@ class DataController:
                 dbContext.insertData(table, column, input)
                 count = count + 1
 
-
     def getLatestId(self):
         id = dbContext.getLatestId('Measurement')
         return id
 
-    
+    def checkOrganisation(self, name):
+        if name == "":
+            name="Oidentifierad"
+        exists = dbContext.checkIfOrganisationExists('Organisation', name)
+        id = exists[0]
+        name = exists[1]
+        self.organisation.id = id
+        self.organisation.name = name
+
+    def checkMeasuringObject(self, name):
+        if name == "":
+            name="Oidentifierad"
+        exists = dbContext.checkIfMeasuringObjectExists('MeasuringObject', name, self.organisation.id)
+        id = exists[0]
+        name = exists[1]
+        fk = exists[2]
+        self.measuringObject.id = id
+        self.measuringObject.name = name
+        self.measuringObject.organisationId = fk
+
+    def checkAntenna(self, name):
+        if name == "":
+            name="Oidentifierad"
+        exists = dbContext.checkIfAntennaExists('Antenna', name, self.measuringObject.id)
+        id = exists[0]
+        name = exists[1]
+        fk = exists[2]
+        self.antenna.id = id
+        self.antenna.name = name
+        self.antenna.organisationId = fk
+
+    def getAllOrganisation(self):
+        listOfNames = []
+        names = dbContext.getAllName("Organisation")
+        for name in names:
+            listOfNames.append(str(name[0]))
+        return listOfNames
+
+    def getAllMeasuringObject(self):
+        listOfNames = []
+        names = dbContext.getAllName("MeasuringObject")
+        for name in names:
+            listOfNames.append(str(name[0]))
+        return listOfNames
+
+    def getAllAntenna(self):
+        listOfNames = []
+        names = dbContext.getAllName("Antenna")
+        for name in names:
+            listOfNames.append(str(name[0]))
+        return listOfNames
+
+    def newMeasurement(self, lon, lat, alt, antennaid):
+        _lon = lon
+        _lat = lat
+        _alt = alt
+        _antennaid = antennaid
+        del self.measurementData
+        del self.measurement
+        del self.pyro
+        self.measurementData = MeasurementData()
+        self.measurement = Measurements(lon, lat, alt, antennaid)
+        self.pyro = StartAndStop()
