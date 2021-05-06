@@ -6,15 +6,14 @@ import Pyro4
 import FixTypes
 import socket
 
+
 class StartAndStop:
-    """
+
     def __init__(self):
-        self.hostname = socket.gethostbyname(socket.gethostname())
-        print(self.hostname)
+
         # Creates a boolean which is used to show if the measurementloop should stop or countinue
         self.quitflag = False
-        self.quitlock = threading.Lock()  # Creates a threading lock
-        self.deamon = Pyro4.Daemon(self.hostname)
+
         self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")  # Creates the Pyro proxy
         # Creates a thread with startPmuMeasurement as target
         self.t = threading.Thread(target=self.startPmuMeasurement)
@@ -26,7 +25,7 @@ class StartAndStop:
         self.showList = list
         # Creates a string to store the fix status
         #self.fixStatus = 0
-    
+
     def startPmuMeasurement(self):
         try:
             self.quitflag = False
@@ -63,7 +62,7 @@ class StartAndStop:
         fixStatus = self.pmu.getFixStatus()
         status = FixTypes.rtkList[fixStatus]
         return status
- 
+
     """
     def __init__(self):
             self.freq = 0.0
@@ -117,4 +116,4 @@ class StartAndStop:
             print("6")
             self.showList.append(obj)
             print("5")
-    
+    """

@@ -6,6 +6,7 @@ from MeasurementData import *
 from pyro import *
 import DbController as dbContext
 
+
 class DataController:
 
     def __init__(self):
@@ -17,19 +18,10 @@ class DataController:
         self.pyro = StartAndStop()
         self.on = True
 
-    def __init__(self, lon, lat, alt, antennaid, antenna, measuringObject, Organisation):
-        self.organisation = Organisations()
-        self.measuringObject = MeasuringObjects()
-        self.antenna = Antennas()
-        self.measurement = Measurements(lon, lat, alt, antennaid)
-        self.measurementData = MeasurementData()
-        self.pyro = StartAndStop()
-        self.on = True
-
     def getFixStatus(self):
         fixStatus = self.pyro.getFixStatus()
         return fixStatus
-    
+
     def setStartPosition(self):
         startPosition = self.pyro.getStartPosition()
         lon = startPosition[0]
@@ -40,7 +32,7 @@ class DataController:
         self.measurement.altitude = float(alt)
 
     def setFrequency(self, freq):
-        self.measurement.frequency = freq 
+        self.measurement.frequency = freq
 
     def startMeasurment(self, freq):
         self.setFrequency(freq)
@@ -82,20 +74,17 @@ class DataController:
             self.measurementData.altitude.append(alt)
             self.measurementData.dbValue.append(db)
 
-
     def insertOrganisationToDb(self):
         table = 'Organisation'
         column = 'name'
         input = self.antenna.name
         dbContext.insertData(table, column, input)
-    
 
-    def insertMeasuringObjectToDb(self):    
+    def insertMeasuringObjectToDb(self):
         table = 'MeasuringObject'
         column = 'name, organisationId'
         input = self.antenna.name + "', '" + self.organisation.id
         dbContext.insertData(table, column, input)
-
 
     def insertAntennaToDb(self):
         table = 'Antenna'
@@ -103,26 +92,27 @@ class DataController:
         input = self.antenna.name + "', '" + self.measuringObject.id
         dbContext.insertData(table, column, input)
 
-
     def insertMeasurementToDb(self, info):
         table = 'Measurement'
         column = 'time, frequency, longitude, latitude, altitude, info, antennaId'
         self.measurement.info = info
-        input = str(self.measurement.time) + "', '" + str(self.measurement.frequency) + "', '" + str(self.measurement.longitude) + "', '" + str(self.measurement.latitude) + "', '" + str(self.measurement.altitude) + "', '" + self.measurement.info + "', '" + str(self.antenna.id)
+        input = str(self.measurement.time) + "', '" + str(self.measurement.frequency) + "', '" + str(self.measurement.longitude) + "', '" + \
+            str(self.measurement.latitude) + "', '" + str(self.measurement.altitude) + \
+            "', '" + self.measurement.info + "', '" + str(self.antenna.id)
         dbContext.insertData(table, column, input)
         id = self.getLatestId()
         self.insertMeasurementDataToDb(id)
 
-
     def insertMeasurementDataToDb(self, fk):
-            length = len(self.measurementData.longitude)
-            count = 0   
-            table = 'MeasurementData'
-            column = 'time, longitude, latitude, altitude, dbValue, measurementId'        
-            while count < length:
-                input = str(self.measurementData.time[count]) + "', '" + str(self.measurementData.longitude[count]) + "', '" + str(self.measurementData.latitude[count]) + "', '" + str(self.measurementData.altitude[count]) + "', '" + str(self.measurementData.dbValue[count]) + "', '" + str(fk)
-                dbContext.insertData(table, column, input)
-                count = count + 1
+        length = len(self.measurementData.longitude)
+        count = 0
+        table = 'MeasurementData'
+        column = 'time, longitude, latitude, altitude, dbValue, measurementId'
+        while count < length:
+            input = str(self.measurementData.time[count]) + "', '" + str(self.measurementData.longitude[count]) + "', '" + str(
+                self.measurementData.latitude[count]) + "', '" + str(self.measurementData.altitude[count]) + "', '" + str(self.measurementData.dbValue[count]) + "', '" + str(fk)
+            dbContext.insertData(table, column, input)
+            count = count + 1
 
     def getLatestId(self):
         id = dbContext.getLatestId('Measurement')
@@ -130,7 +120,7 @@ class DataController:
 
     def checkOrganisation(self, name):
         if name == "":
-            name="Oidentifierad"
+            name = "Oidentifierad"
         exists = dbContext.checkIfOrganisationExists('Organisation', name)
         id = exists[0]
         name = exists[1]
@@ -139,8 +129,9 @@ class DataController:
 
     def checkMeasuringObject(self, name):
         if name == "":
-            name="Oidentifierad"
-        exists = dbContext.checkIfMeasuringObjectExists('MeasuringObject', name, self.organisation.id)
+            name = "Oidentifierad"
+        exists = dbContext.checkIfMeasuringObjectExists(
+            'MeasuringObject', name, self.organisation.id)
         id = exists[0]
         name = exists[1]
         fk = exists[2]
@@ -150,8 +141,9 @@ class DataController:
 
     def checkAntenna(self, name):
         if name == "":
-            name="Oidentifierad"
-        exists = dbContext.checkIfAntennaExists('Antenna', name, self.measuringObject.id)
+            name = "Oidentifierad"
+        exists = dbContext.checkIfAntennaExists(
+            'Antenna', name, self.measuringObject.id)
         id = exists[0]
         name = exists[1]
         fk = exists[2]

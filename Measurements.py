@@ -1,5 +1,6 @@
 import datetime
 
+
 class Measurements:
 
     def __init__(self):
@@ -9,15 +10,5 @@ class Measurements:
         self.longitude = 0.0
         self.latitude = 0.0
         self.altitude = 0.0
-        self.info = "" 
+        self.info = ""
         self.antennaId = 0
-
-    def __init__(self, lon, lat, alt, antennaId):
-        self.id = 0
-        self.time = datetime.datetime.now()
-        self.frequency = 0
-        self.longitude = lon
-        self.latitude = lat
-        self.altitude = alt
-        self.info = 0 
-        self.antennaId = antennaId
