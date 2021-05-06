@@ -17,15 +17,6 @@ class DataController:
         self.pyro = StartAndStop()
         self.on = True
 
-    def __init__(self, lon, lat, alt, antennaid, antenna, measuringObject, Organisation):
-        self.organisation = Organisations()
-        self.measuringObject = MeasuringObjects()
-        self.antenna = Antennas()
-        self.measurement = Measurements(lon, lat, alt, antennaid)
-        self.measurementData = MeasurementData()
-        self.pyro = StartAndStop()
-        self.on = True
-
     def getFixStatus(self):
         fixStatus = self.pyro.getFixStatus()
         return fixStatus
@@ -189,5 +180,9 @@ class DataController:
         del self.measurement
         del self.pyro
         self.measurementData = MeasurementData()
-        self.measurement = Measurements(lon, lat, alt, antennaid)
+        self.measurement = Measurements()
+        self.measurement.longitude = _lon
+        self.measurement.latitude = _lat
+        self.measurement.altitude = _alt
+        self.measurement.antennaId = _antennaid
         self.pyro = StartAndStop()

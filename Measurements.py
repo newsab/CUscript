@@ -11,13 +11,3 @@ class Measurements:
         self.altitude = 0.0
         self.info = "" 
         self.antennaId = 0
-
-    def __init__(self, lon, lat, alt, antennaId):
-        self.id = 0
-        self.time = datetime.datetime.now()
-        self.frequency = 0
-        self.longitude = lon
-        self.latitude = lat
-        self.altitude = alt
-        self.info = 0 
-        self.antennaId = antennaId
