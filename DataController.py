@@ -181,5 +181,9 @@ class DataController:
         del self.measurement
         del self.pyro
         self.measurementData = MeasurementData()
-        self.measurement = Measurements(lon, lat, alt, antennaid)
+        self.measurement = Measurements()
+        self.measurement.longitude = _lon
+        self.measurement.latitude = _lat
+        self.measurement.altitude = _alt
+        self.measurement.antennaId = _antennaid
         self.pyro = StartAndStop()
