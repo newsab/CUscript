@@ -1,5 +1,6 @@
 import time
 from tkinter import *
+from tkinter import ttk
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,12 +17,18 @@ global on
 global my_cmap
 global scttLive
 global canvasLive
+global organisationList
+global measuringObjectList
+global antennaList
 
 DC = DataController()
 on = False
 scttLive = object
 canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
+organisationList = DC.getAllOrganisation()
+measuringObjectList = DC.getAllMeasuringObject()
+antennaList = DC.getAllAntenna()
 pmuSc = ShellCommands("192.168.1.3")
 rbuSc = ShellCommands("192.168.1.6")
 ptuSc = ShellCommands("172.16.0.9")
@@ -32,7 +39,6 @@ def clickStartBtn():
     """
     global on
     frequency = fqEnt.get()
-    updateFixStatus()
     if frequency == "":
         tbOthers.insert(1.0, 'Enter a frequency \n \n')
         tbOthers.update()
@@ -168,9 +174,7 @@ def clickGraf3dBtn():
     fig.show()
 
 def clickNewMeasurementBtn():
-    global DC
-    del DC
-    DC = DataController()
+    DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
     tbOthers.insert(1.0, 'New measurement \n \n')
     tbOthers.update()
 
@@ -178,9 +182,11 @@ def clickSaveMeasurementBtn():
     org = orgEnt.get() 
     obj = objectEnt.get()
     ant = antennaEnt.get()
-    #inf = infoEnt.get()
-
-    DC.insertMeasurementToDb()
+    inf = infoEnt.get("1.0", END)
+    DC.checkOrganisation(org)
+    DC.checkMeasuringObject(obj)
+    DC.checkAntenna(ant)
+    DC.insertMeasurementToDb(inf)
     tbOthers.insert(1.0, 'Measurement has been saved \n \n')
     tbOthers.update()
 
@@ -221,6 +227,60 @@ def updateFixStatus():
     status = DC.getFixStatus()
     fixStatusLbl.config(text="Fix status: " + status)
 
+def updateOrganisationCombobox(e):
+    typed = orgEnt.get()
+    if typed == "":
+        data = DC.getAllOrganisation()
+    else:  
+        data = []   
+        for item in DC.getAllOrganisation():
+            if typed.lower() in item.lower():
+                data.append(item)
+    updateOrganisationList(data)
+
+def updateOrganisationList(data):
+    global organisationList
+    organisationList.clear()
+    for item in data:
+        organisationList.append(item)       
+    orgEnt['values'] = organisationList
+
+def updateMeasuringObjectCombobox(e):
+    typed = objectEnt.get()
+    if typed == "":
+        data = DC.getAllMeasuringObject()
+    else:  
+        data = []   
+        for item in DC.getAllMeasuringObject():
+            if typed.lower() in item.lower():
+                data.append(item)
+    updateMeasuringObjectList(data)
+
+def updateMeasuringObjectList(data):
+    global measuringObjectList
+    measuringObjectList.clear()
+    for item in data:
+        measuringObjectList.append(item)       
+    objectEnt['values'] = measuringObjectList
+
+def updateAntennaCombobox(e):
+    typed = antennaEnt.get()
+    if typed == "":
+        data = DC.getAllAntenna()
+    else:  
+        data = []   
+        for item in DC.getAllAntenna():
+            if typed.lower() in item.lower():
+                data.append(item)
+    updateAntennaList(data)
+
+def updateAntennaList(data):
+    global antennaList
+    antennaList.clear()
+    for item in data:
+        antennaList.append(item)       
+    antennaEnt['values'] = antennaList
+
 bgColor = 'black'
 frameColor = '#222222'
 textColor = '#cdcdcd'
@@ -229,6 +289,8 @@ win = Tk()
 win.title("CU-applikation för PAMP")
 win.geometry('1360x768')
 win.configure(bg=bgColor)
+
+
 
 tbMeasure = Text(bg=frameColor, fg=textColor, width=60)
 
@@ -266,9 +328,16 @@ objectLbl = Label(text="Mätobjekt", bg=frameColor, fg=textColor)
 antennaLbl = Label(text="Antenn", bg=frameColor, fg=textColor)
 infoLbl = Label(text="Info", bg=frameColor, fg=textColor)
 
-orgEnt = Entry(bg=frameColor, fg=textColor)
-objectEnt = Entry(bg=frameColor, fg=textColor)
-antennaEnt = Entry(bg=frameColor, fg=textColor)
+orgEnt = ttk.Combobox(win, values=organisationList)
+orgEnt.bind('<KeyRelease>', updateOrganisationCombobox)
+
+
+objectEnt = ttk.Combobox(win, values=measuringObjectList)
+objectEnt.bind('<KeyRelease>', updateMeasuringObjectCombobox)
+
+antennaEnt = ttk.Combobox(win, values=antennaList)
+antennaEnt.bind('<KeyRelease>', updateAntennaCombobox)
+
 infoEnt = Text(bg=frameColor, fg=textColor, height=10, width=27)
 
 fixStatusLbl = Label(text="", bg=frameColor, fg=textColor)
@@ -298,6 +367,8 @@ infoLbl.grid(row=4, column=15)
 orgEnt.grid(row=1, column=16)
 objectEnt.grid(row=2, column=16)
 antennaEnt.grid(row=3, column=16)
+
+
 infoEnt.grid(row=4, column=16, rowspan=6)
 
 fixStatusLbl.grid(row=1, column=3, columnspan=4)
