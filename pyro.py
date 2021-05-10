@@ -8,7 +8,7 @@ import socket
 
 
 class StartAndStop:
-
+    """
     def __init__(self):
 
         # Creates a boolean which is used to show if the measurementloop should stop or countinue
@@ -98,7 +98,7 @@ class StartAndStop:
 
     def setDummyData(self):
         print("2")
-        lines = list(open('./Measurements/test24-3medFrekvens2.txt'))
+        lines = list(open('./Measurements/test24-3medFrekvens.txt'))
         print("3")
         for line in lines:
             time = line[2:27]
@@ -116,4 +116,3 @@ class StartAndStop:
             print("6")
             self.showList.append(obj)
             print("5")
-    """

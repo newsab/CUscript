@@ -10,7 +10,8 @@ from plotly.graph_objects import scatter3d
 
 from DataController import *
 from ShellCommands import *
-from Calculate import *
+from FileWriter import *
+from Plotter import *
 
 global DC
 global on
@@ -20,6 +21,8 @@ global canvasLive
 global organisationList
 global measuringObjectList
 global antennaList
+global DC
+global plotter
 
 DC = DataController()
 on = False
@@ -117,61 +120,27 @@ def clickGrafBtn():
     Comment
     """
     plt.close()
-    autlon = DC.measurement.longitude
-    autlat = DC.measurement.latitude
-    cal = Calculator(autlon, autlat, DC.measurementData)
-    cal.fillLists()
-    ang = cal.angleList
-    db = cal.dbList
-    fig = plt
-    fig.plot(ang, db)
-    fig.ylim(-100, 10)
-    fig.xlim(-180, 180)
-    fig.grid(True)
+    plotter.setGrafPlot()
+    fig = plotter.grafPlot
     fig.show()
 
 def clickGraf2dBtn():
     """
     Comment
     """
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111)
-    autlon = DC.measurement.longitude
-    autlat = DC.measurement.latitude
-    x = DC.measurementData.longitude
-    y = DC.measurementData.latitude
-    m = DC.measurementData.dbValue
-    ax.scatter(autlon, autlat, alpha=1, c="black", marker='X', label='AUT')
-    sctt = ax.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
-    ax.set_xticklabels([])
-    ax.set_yticklabels([])
-    fig.colorbar(sctt, shrink=0.8, aspect=5)
-    fig.legend()
-    fig.show()
+    plt.close()
+    plotter.setTwoDPlot()
+    fig2d = plotter.twoDPlot
+    fig2d.show()
 
 def clickGraf3dBtn():
     """
     Comment
     """
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111, projection="3d")
-    autlon = DC.measurement.longitude
-    autlat = DC.measurement.latitude
-    autalt = DC.measurement.altitude
-    x = DC.measurementData.longitude
-    y = DC.measurementData.latitude
-    z = DC.measurementData.altitude
-    m = DC.measurementData.dbValue
-    ax.scatter(autlon, autlat, autalt, alpha=1, c="black", marker='X', label='AUT')
-    sctt = ax.scatter(x, y, z, alpha=1, c=m, cmap=my_cmap, marker='p')
-    ax.set_xticklabels([])
-    ax.set_yticklabels([])
-    ax.set_xlabel('Longitude', fontweight='bold')
-    ax.set_ylabel('Latitude', fontweight='bold')
-    ax.set_zlabel('Altitude', fontweight='bold')
-    fig.colorbar(sctt, ax=ax, shrink=0.8, aspect=5)
-    fig.legend()
-    fig.show()
+    plt.close()
+    plotter.setThreeDPlot()
+    fig3d = plotter.threeDPlot
+    fig3d.show()
 
 def clickNewMeasurementBtn():
     DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
@@ -187,6 +156,8 @@ def clickSaveMeasurementBtn():
     DC.checkMeasuringObject(obj)
     DC.checkAntenna(ant)
     DC.insertMeasurementToDb(inf)
+    fileWriter = FileWriter(DC)
+    fileWriter.createFile()
     tbOthers.insert(1.0, 'Measurement has been saved \n \n')
     tbOthers.update()
 
@@ -381,5 +352,6 @@ newMeasurementBtn.grid(row=7, column=2)
 saveMeasurementBtn.grid(row=6, column=2)
 
 # updateFixStatus()
+plotter = Plotter(DC)
 createLiveFig()
 win.mainloop()
