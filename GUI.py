@@ -25,6 +25,9 @@ global antennaList
 global measurementList
 global DC
 global plotter
+global orgEnt
+global objectEnt
+global antennaEnt
 
 DC = DataController()
 on = False
@@ -155,24 +158,52 @@ def clickSaveMeasurementBtn():
     tbOthers.update()
 
 def clickOpenOldMeasurementBtn():
-    print("hej")
+    global organisationList
+    global measuringObjectList
+    global antennaList
+    global measurementList
+    global orgEnt
+    global objectEnt
+    global antennaEnt
+
+    def clickLoadBtn():
+        DC.setAllData(orgEnt.get(), objectEnt.get(), antennaEnt.get(), measurementEnt.get())
+        updateGui()
+        newWindowOpen = False
+        newWindow.destroy()
+
+    tbMeasure.delete('1.0', END)
+    orgEnt.set("")
+    objectEnt.set("")
+    antennaEnt.set("")
+    updateOrganisationCombobox()
+    updateMeasuringObjectCombobox()
+    updateAntennaCombobox()
     newWindow = Toplevel(win)
     newWindow.title("Öppna tidigare mätning")
     newWindow.geometry("400x400")
     Label(newWindow, 
           text ="Välj en tidigare mätning").grid(row=1, column=1)
-    orgEnt2 = ttk.Combobox(newWindow, values=organisationList)
-    orgEnt2.bind('<KeyRelease>', updateOrganisationCombobox)
-    orgEnt2.grid(row=2, column=1)
-    objectEnt2 = ttk.Combobox(newWindow, values=measuringObjectList)
-    objectEnt2.bind('<KeyRelease>', updateMeasuringObjectCombobox)
-    objectEnt2.grid(row=3, column=1)
-    antennaEnt2 = ttk.Combobox(newWindow, values=antennaList)
-    antennaEnt2.bind('<KeyRelease>', updateAntennaCombobox)
-    antennaEnt2.grid(row=4, column=1)
-    measurementEnt2 = ttk.Combobox(newWindow, values=measurementList)
-    measurementEnt2.bind('<KeyRelease>', updateMeasurementCombobox)
-    measurementEnt2.grid(row=5, column=1)
+    orgEnt = ttk.Combobox(newWindow, values=organisationList)
+    orgEnt.bind('<KeyRelease>', updateAllComboboxes)
+    orgEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
+    orgEnt.grid(row=2, column=1)
+    objectEnt = ttk.Combobox(newWindow, values=measuringObjectList)
+    objectEnt.bind('<KeyRelease>', updateAllComboboxes)
+    objectEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
+    objectEnt.grid(row=3, column=1)
+    antennaEnt = ttk.Combobox(newWindow, values=antennaList)
+    antennaEnt.bind('<KeyRelease>', updateAllComboboxes)
+    antennaEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
+    antennaEnt.grid(row=4, column=1)
+    measurementEnt = ttk.Combobox(newWindow, values=measurementList)
+    measurementEnt.bind('<KeyRelease>', updateAllComboboxes)
+    measurementEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
+    measurementEnt.grid(row=5, column=1)
+
+    loadBtn = Button(newWindow, text="Ladda upp mätning", width=15, height=2,
+                 bg=frameColor, fg=bgColor, command=clickLoadBtn)
+    loadBtn.grid(row=6, column=1) 
 
 def createLiveFig():
     """
@@ -266,7 +297,7 @@ def updateAntennaList(data):
     antennaEnt['values'] = antennaList
 
 def updateMeasurementCombobox():
-    typed = measurementEnt2.get()
+    typed = measurementEnt.get()
     if typed == "":
         data = DC.getAllMeasurement(antennaEnt.get())
     else:  
@@ -277,17 +308,37 @@ def updateMeasurementCombobox():
     updateMeasurementList(data)
 
 def updateMeasurementList(data):
-    global antennaList
-    antennaList.clear()
+    global measurementList
+    measurementList.clear()
     for item in data:
-        antennaList.append(item)       
-    antennaEnt['values'] = antennaList
+        measurementList.append(item)       
+    measurementEnt['values'] = measurementList
 
 def updateAllComboboxes(e):
     updateOrganisationCombobox()
     updateMeasuringObjectCombobox()
     updateAntennaCombobox()
+    updateMeasurementCombobox()
 
+def updateComboxesAndEntrys(e):
+    orgEnt.set("")
+    objectEnt.set("")
+    antennaEnt.set("")
+
+def updateGui():
+    tbOthers.insert(1.0, 'Visar gammal mätning utförd på ' + DC.organisation.name + '\n \n')
+    tbOthers.update()
+
+    length = len(DC.measurementData.longitude)
+    count = 0           
+    while count < length:
+        tim = str(DC.measurementData.time[count])
+        alt = str(DC.measurementData.altitude[count])
+        db = str(DC.measurementData.dbValue[count])
+        count = count + 1
+        tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
+        tbMeasure.update
+    
 def saveFile():
     path = filedialog.askdirectory(initialdir="./Measurements/")
     return(str(path))
@@ -301,9 +352,9 @@ win.title("CU-applikation för PAMP")
 win.geometry('1360x768')
 win.configure(bg=bgColor)
 
-tbMeasure = Text(bg=frameColor, fg=textColor, width=60)
-tbOthers = Text(bg=frameColor, fg=textColor, width=60)
 
+tbOthers = Text(bg=frameColor, fg=textColor, width=60)
+tbMeasure = Text(bg=frameColor, fg=textColor, width=60)
 
 posLonLbl = Label(text="", bg=frameColor, fg=textColor)
 posLatLbl = Label(text="", bg=frameColor, fg=textColor)
@@ -353,6 +404,7 @@ antennaEnt = ttk.Combobox(win, values=antennaList)
 antennaEnt.bind('<KeyRelease>', updateAllComboboxes)
 antennaEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
 infoEnt = Text(bg=frameColor, fg=textColor, height=10, width=27)
+measurementEnt = ttk.Combobox(win, values=measurementList)
 
 
 tbOthers.grid(row=0, column=0, columnspan=3)

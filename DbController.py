@@ -113,6 +113,8 @@ def getAllWhereNameIs(table, name):
 	con.commit()
 	con.close()
 
+	
+
 """
 CREATE TABLE "Organisation" (
 	"organisationId"	INTEGER PRIMARY KEY AUTOINCREMENT,

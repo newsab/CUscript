@@ -184,7 +184,7 @@ class DataController:
                 listOfNames.append(str(name[1]))
             return listOfNames
         else:
-            ant = dbContext.getAllWhereNameIs('MeasuringObject', objectName)
+            obj = dbContext.getAllWhereNameIs('MeasuringObject', objectName)
             names = dbContext.getAllName("Antenna")
             if not obj:
                 listOfNames.append("")
@@ -211,6 +211,45 @@ class DataController:
                     if name[7]==ant[0]:
                         listOfNames.append(str(name[1]))              
             return listOfNames
+
+    def setAllData(self, orgName, objectName, antennaName, measurementTime):
+        orgs = dbContext.getAllName("Organisation")
+        objects = dbContext.getAllName("MeasuringObject")
+        antennas = dbContext.getAllName("Antenna")
+        measurements = dbContext.getAllName("Measurement")
+        measurementData = dbContext.getAllName("MeasurementData")
+        for org in orgs:
+            if org[1] == orgName:
+                self.organisation.id = org[0]
+                self.organisation.name = org[1]
+        for obje in objects:
+            if obje[1] == objectName and obje[2] == self.organisation.id:
+                self.measuringObject.id = obje[0]
+                self.measuringObject.name = obje[1]
+                self.measuringObject.organisationId = obje[2]
+        for antenna in antennas:
+            if antenna[1] == antennaName and antenna[2] == self.measuringObject.id:
+                self.antenna.id = antenna[0]
+                self.antenna.name = antenna[1]
+                self.antenna.measuringObjectId = antenna[2]
+        for measurement in measurements:
+            if measurement[1] == measurementTime and measurement[7] == self.antenna.id:
+                self.measurement.id = measurement[0]
+                self.measurement.time = measurement[1]
+                self.measurement.frequency = measurement[2]
+                self.measurement.longitude = measurement[3]
+                self.measurement.latitude = measurement[4]
+                self.measurement.altitude = measurement[5]
+                self.measurement.info = measurement[6]
+                self.measurement.antennaId = measurement[7]
+        for line in measurementData:
+            if line[6] == self.measurement.id:
+                self.measurementData.time.append(line[1])
+                self.measurementData.longitude.append(line[2])
+                self.measurementData.latitude.append(line[3])
+                self.measurementData.altitude.append(line[4])
+                self.measurementData.dbValue.append(line[5])
+                self.measurementData.measurementId = line[6]
 
     def newMeasurement(self, lon, lat, alt, antennaid):
         _lon = lon
