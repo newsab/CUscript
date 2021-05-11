@@ -9,11 +9,12 @@ from Plotter import *
 
 class FileWriter:
 
-    def __init__(self, dataController):
+    def __init__(self, dataController, path):
         self.DC = dataController
         self.name = name = self.DC.organisation.name + "_" + str(self.DC.measurement.time)
         self.fileName = self.name + ".txt"
-        self.path = "./Measurements/"
+        self.path = path + "/"
+        self.tempPath = "./Measurements/"
         self.fullPath = os.path.join(self.path, self.fileName)
 
         
@@ -39,7 +40,7 @@ class FileWriter:
     def createPDF(self):
         pdf = FPDF()
         pdf.add_page()
-        pdf.image("./Measurements/logo.png", w=70, h=35,)
+        pdf.image(self.tempPath + "logo.png", w=70, h=35,)
         pdf.set_font("Arial", size = 15)
         pdf.cell(200, 20, txt = "", ln = 1)
         pdf.cell(200, 8, txt = "Drönarmätning utförd " + str(self.DC.measurement.time), ln = 1)
@@ -53,22 +54,22 @@ class FileWriter:
         plotter = Plotter(self.DC)
         plotter.setGrafPlot()    
         plot3 = plotter.grafPlot
-        plt.savefig("./Measurements/" + self.name + "GrafPlot.png")
-        pdf.image("./Measurements/" + self.name + "GrafPlot.png", w=190, h=133)
+        plt.savefig(self.tempPath + self.name + "GrafPlot.png")
+        pdf.image(self.tempPath + self.name + "GrafPlot.png", w=190, h=133)
 
         plotter.setTwoDPlot()    
         plot1 = plotter.twoDPlot
-        plt.savefig("./Measurements/" + self.name + "2dPlot.png")
-        pdf.image("./Measurements/" + self.name + "2dPlot.png", w=190, h=133)
+        plt.savefig(self.tempPath + self.name + "2dPlot.png")
+        pdf.image(self.tempPath + self.name + "2dPlot.png", w=190, h=133)
 
         plotter.setThreeDPlot()    
         plot2 = plotter.threeDPlot
-        plt.savefig("./Measurements/" + self.name + "3dPlot.png")
-        pdf.image("./Measurements/" + self.name + "3dPlot.png", w=190, h=133)
+        plt.savefig(self.tempPath + self.name + "3dPlot.png")
+        pdf.image(self.tempPath + self.name + "3dPlot.png", w=190, h=133)
 
-        os.remove("./Measurements/" + self.name + "GrafPlot.png")
-        os.remove("./Measurements/" + self.name + "2dPlot.png")
-        os.remove("./Measurements/" + self.name + "3dPlot.png")
+        os.remove(self.tempPath + self.name + "GrafPlot.png")
+        os.remove(self.tempPath + self.name + "2dPlot.png")
+        os.remove(self.tempPath + self.name + "3dPlot.png")
 
         count = 0
         length = len(self.DC.measurementData.longitude)
@@ -78,4 +79,5 @@ class FileWriter:
             pdf.cell(200, 5, txt = str(self.DC.measurementData.time[count]) + ", " + str(self.DC.measurementData.longitude[count]) + ", " + str(self.DC.measurementData.latitude[count]) + ", " + str(self.DC.measurementData.altitude[count]) + ", " + str(self.DC.measurementData.dbValue[count]),ln = 1)
             count = count + 1
 
-        pdf.output("./Measurements/" + self.name + ".pdf")  
+        pdf.output(self.path + self.name + ".pdf")  
+    

@@ -1,6 +1,7 @@
 import time
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -148,6 +149,7 @@ def clickNewMeasurementBtn():
     tbOthers.update()
 
 def clickSaveMeasurementBtn():
+    path = saveFile()
     org = orgEnt.get() 
     obj = objectEnt.get()
     ant = antennaEnt.get()
@@ -156,7 +158,7 @@ def clickSaveMeasurementBtn():
     DC.checkMeasuringObject(obj)
     DC.checkAntenna(ant)
     DC.insertMeasurementToDb(inf)
-    fileWriter = FileWriter(DC)
+    fileWriter = FileWriter(DC, path)
     fileWriter.createFile()
     tbOthers.insert(1.0, 'Measurement has been saved \n \n')
     tbOthers.update()
@@ -251,6 +253,10 @@ def updateAntennaList(data):
     for item in data:
         antennaList.append(item)       
     antennaEnt['values'] = antennaList
+
+def saveFile():
+    path = filedialog.askdirectory(initialdir="./Measurements/")
+    return(str(path))
 
 bgColor = 'black'
 frameColor = '#222222'
