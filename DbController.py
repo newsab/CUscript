@@ -94,12 +94,24 @@ def checkIfAntennaExists(table, name, fk):
 def getAllName(table):
 	con = sqlite3.connect('PampDb.db')
 	cur = con.cursor()
-	cur.execute("SELECT name FROM " + table)
+	cur.execute("SELECT * FROM " + table)
 	names = cur.fetchall()
 	con.commit()
 	con.close()
 	return names
 
+def getAllWhereNameIs(table, name):
+	con = sqlite3.connect('PampDb.db')
+	cur = con.cursor()
+	cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%'")
+	ob = cur.fetchall()
+	if not ob:
+		return ""
+	else:
+		obje = ob[0]
+		return obje
+	con.commit()
+	con.close()
 
 """
 CREATE TABLE "Organisation" (

@@ -22,6 +22,7 @@ global canvasLive
 global organisationList
 global measuringObjectList
 global antennaList
+global measurementList
 global DC
 global plotter
 
@@ -31,8 +32,9 @@ scttLive = object
 canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
 organisationList = DC.getAllOrganisation()
-measuringObjectList = DC.getAllMeasuringObject()
-antennaList = DC.getAllAntenna()
+measuringObjectList = DC.getAllMeasuringObject("")
+antennaList = DC.getAllAntenna("")
+measurementList = DC.getAllMeasurement("")
 pmuSc = ShellCommands("192.168.1.3")
 rbuSc = ShellCommands("192.168.1.6")
 ptuSc = ShellCommands("172.16.0.9")
@@ -77,17 +79,6 @@ def clickStartBtn():
                 count = count + 1
                 tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
                 tbMeasure.update
-
-def clickPmuBtn():
-    """
-    Comment
-    """
-    msg3 = pmuSc.startPMUapp()
-    tbOthers.insert(1.0, msg3 + '\n \n')
-    tbOthers.update()
-    time.sleep(0.5)
-    tbOthers.insert(1.0, 'PMU Ready for take off! \n \n')
-    tbOthers.update()
 
 def clickPosBtn():
     """
@@ -163,6 +154,26 @@ def clickSaveMeasurementBtn():
     tbOthers.insert(1.0, 'Measurement has been saved \n \n')
     tbOthers.update()
 
+def clickOpenOldMeasurementBtn():
+    print("hej")
+    newWindow = Toplevel(win)
+    newWindow.title("Öppna tidigare mätning")
+    newWindow.geometry("400x400")
+    Label(newWindow, 
+          text ="Välj en tidigare mätning").grid(row=1, column=1)
+    orgEnt2 = ttk.Combobox(newWindow, values=organisationList)
+    orgEnt2.bind('<KeyRelease>', updateOrganisationCombobox)
+    orgEnt2.grid(row=2, column=1)
+    objectEnt2 = ttk.Combobox(newWindow, values=measuringObjectList)
+    objectEnt2.bind('<KeyRelease>', updateMeasuringObjectCombobox)
+    objectEnt2.grid(row=3, column=1)
+    antennaEnt2 = ttk.Combobox(newWindow, values=antennaList)
+    antennaEnt2.bind('<KeyRelease>', updateAntennaCombobox)
+    antennaEnt2.grid(row=4, column=1)
+    measurementEnt2 = ttk.Combobox(newWindow, values=measurementList)
+    measurementEnt2.bind('<KeyRelease>', updateMeasurementCombobox)
+    measurementEnt2.grid(row=5, column=1)
+
 def createLiveFig():
     """
     Comment
@@ -200,7 +211,7 @@ def updateFixStatus():
     status = DC.getFixStatus()
     fixStatusLbl.config(text="Fix status: " + status)
 
-def updateOrganisationCombobox(e):
+def updateOrganisationCombobox():
     typed = orgEnt.get()
     if typed == "":
         data = DC.getAllOrganisation()
@@ -218,13 +229,13 @@ def updateOrganisationList(data):
         organisationList.append(item)       
     orgEnt['values'] = organisationList
 
-def updateMeasuringObjectCombobox(e):
+def updateMeasuringObjectCombobox():
     typed = objectEnt.get()
     if typed == "":
-        data = DC.getAllMeasuringObject()
+        data = DC.getAllMeasuringObject(orgEnt.get())
     else:  
         data = []   
-        for item in DC.getAllMeasuringObject():
+        for item in DC.getAllMeasuringObject(orgEnt.get()):
             if typed.lower() in item.lower():
                 data.append(item)
     updateMeasuringObjectList(data)
@@ -236,13 +247,13 @@ def updateMeasuringObjectList(data):
         measuringObjectList.append(item)       
     objectEnt['values'] = measuringObjectList
 
-def updateAntennaCombobox(e):
+def updateAntennaCombobox():
     typed = antennaEnt.get()
     if typed == "":
-        data = DC.getAllAntenna()
+        data = DC.getAllAntenna(objectEnt.get())
     else:  
         data = []   
-        for item in DC.getAllAntenna():
+        for item in DC.getAllAntenna(objectEnt.get()):
             if typed.lower() in item.lower():
                 data.append(item)
     updateAntennaList(data)
@@ -253,6 +264,29 @@ def updateAntennaList(data):
     for item in data:
         antennaList.append(item)       
     antennaEnt['values'] = antennaList
+
+def updateMeasurementCombobox():
+    typed = measurementEnt2.get()
+    if typed == "":
+        data = DC.getAllMeasurement(antennaEnt.get())
+    else:  
+        data = []   
+        for item in DC.getAllMeasurement(antennaEnt.get()):
+            if typed.lower() in item.lower():
+                data.append(item)
+    updateMeasurementList(data)
+
+def updateMeasurementList(data):
+    global antennaList
+    antennaList.clear()
+    for item in data:
+        antennaList.append(item)       
+    antennaEnt['values'] = antennaList
+
+def updateAllComboboxes(e):
+    updateOrganisationCombobox()
+    updateMeasuringObjectCombobox()
+    updateAntennaCombobox()
 
 def saveFile():
     path = filedialog.askdirectory(initialdir="./Measurements/")
@@ -267,23 +301,34 @@ win.title("CU-applikation för PAMP")
 win.geometry('1360x768')
 win.configure(bg=bgColor)
 
-
-
 tbMeasure = Text(bg=frameColor, fg=textColor, width=60)
-
 tbOthers = Text(bg=frameColor, fg=textColor, width=60)
 
-startLbl = Label(text="", bg=bgColor, fg=textColor)
 
-startBtn = Button(text="Starta mätning", width=15, height=2,
-                  bg=frameColor, fg=bgColor, command=clickStartBtn)
-pmuBtn = Button(text="Starta PMU", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickPmuBtn)
-
+posLonLbl = Label(text="", bg=frameColor, fg=textColor)
+posLatLbl = Label(text="", bg=frameColor, fg=textColor)
+posAltLbl = Label(text="", bg=frameColor, fg=textColor)
 fqEnt = Entry(bg=frameColor, fg=textColor)
 
+
+posBtn = Button(text="Ta ut AUT position", width=15, height=2,
+                bg=frameColor, fg=bgColor, command=clickPosBtn)
 rbuBtn = Button(text="Start om RBU", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickRbuBtn)
+startBtn = Button(text="Starta mätning", width=15, height=2,
+                  bg=frameColor, fg=bgColor, command=clickStartBtn)
+
+
+
+saveMeasurementBtn = Button(text="Spara mätning", width=15, height=2,
+                   bg=frameColor, fg=bgColor, command=clickSaveMeasurementBtn)
+newMeasurementBtn = Button(text="Initsiera ny mätning", width=15, height=2,
+                   bg=frameColor, fg=bgColor, command=clickNewMeasurementBtn)
+openOldMeasurementBtn = Button(text="Öppna mätning", width=15, height=2,
+                bg=frameColor, fg=bgColor, command=clickOpenOldMeasurementBtn)
+
+
+fixStatusLbl = Label(text="", bg=frameColor, fg=textColor)
 grafBtn = Button(text="Visa Graf", width=15, height=2,
                  bg=frameColor, fg=bgColor, command=clickGrafBtn)
 graf2dBtn = Button(text="Visa 2D Graf", width=15, height=2,
@@ -291,71 +336,62 @@ graf2dBtn = Button(text="Visa 2D Graf", width=15, height=2,
 graf3dBtn = Button(text="Visa 3D Graf", width=15, height=2,
                    bg=frameColor, fg=bgColor, command=clickGraf3dBtn)
 
-newMeasurementBtn = Button(text="Initsiera ny mätning", width=15, height=2,
-                   bg=frameColor, fg=bgColor, command=clickNewMeasurementBtn)
-saveMeasurementBtn = Button(text="Spara mätning", width=15, height=2,
-                   bg=frameColor, fg=bgColor, command=clickSaveMeasurementBtn)
-
-posLonLbl = Label(text="", bg=frameColor, fg=textColor)
-posLatLbl = Label(text="", bg=frameColor, fg=textColor)
-posAltLbl = Label(text="", bg=frameColor, fg=textColor)
 
 orgLbl = Label(text="Organisation", bg=frameColor, fg=textColor)
 objectLbl = Label(text="Mätobjekt", bg=frameColor, fg=textColor)
 antennaLbl = Label(text="Antenn", bg=frameColor, fg=textColor)
 infoLbl = Label(text="Info", bg=frameColor, fg=textColor)
 
+
 orgEnt = ttk.Combobox(win, values=organisationList)
-orgEnt.bind('<KeyRelease>', updateOrganisationCombobox)
-
-
+orgEnt.bind('<KeyRelease>', updateAllComboboxes)
+orgEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
 objectEnt = ttk.Combobox(win, values=measuringObjectList)
-objectEnt.bind('<KeyRelease>', updateMeasuringObjectCombobox)
-
+objectEnt.bind('<KeyRelease>', updateAllComboboxes)
+objectEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
 antennaEnt = ttk.Combobox(win, values=antennaList)
-antennaEnt.bind('<KeyRelease>', updateAntennaCombobox)
-
+antennaEnt.bind('<KeyRelease>', updateAllComboboxes)
+antennaEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
 infoEnt = Text(bg=frameColor, fg=textColor, height=10, width=27)
 
-fixStatusLbl = Label(text="", bg=frameColor, fg=textColor)
-
-posBtn = Button(text="Ta ut AUT position", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickPosBtn)
 
 tbOthers.grid(row=0, column=0, columnspan=3)
 tbMeasure.grid(row=0, column=3, columnspan=3)
-startLbl.grid(row=1, column=1)
+
 
 posLonLbl.grid(row=1, column=1)
 posLatLbl.grid(row=2, column=1)
 posAltLbl.grid(row=3, column=1)
 fqEnt.grid(row=4, column=1)
 
+
 posBtn.grid(row=1, column=2)
-pmuBtn.grid(row=2, column=2)
 rbuBtn.grid(row=3, column=2)
 startBtn.grid(row=4, column=2)
+
+
+saveMeasurementBtn.grid(row=5, column=2)
+newMeasurementBtn.grid(row=6, column=2)
+openOldMeasurementBtn.grid(row=7, column=2)
+
+
+fixStatusLbl.grid(row=1, column=3, columnspan=4)
+grafBtn.grid(row=2, column=4)
+graf2dBtn.grid(row=3, column=4)
+graf3dBtn.grid(row=4, column=4)
+
 
 orgLbl.grid(row=1, column=15)
 objectLbl.grid(row=2, column=15)
 antennaLbl.grid(row=3, column=15)
 infoLbl.grid(row=4, column=15)
 
+
 orgEnt.grid(row=1, column=16)
 objectEnt.grid(row=2, column=16)
 antennaEnt.grid(row=3, column=16)
-
-
 infoEnt.grid(row=4, column=16, rowspan=6)
 
-fixStatusLbl.grid(row=1, column=3, columnspan=4)
-
-grafBtn.grid(row=2, column=4)
-graf2dBtn.grid(row=3, column=4)
-graf3dBtn.grid(row=4, column=4)
-
-newMeasurementBtn.grid(row=7, column=2)
-saveMeasurementBtn.grid(row=6, column=2)
 
 # updateFixStatus()
 plotter = Plotter(DC)

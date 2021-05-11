@@ -155,22 +155,62 @@ class DataController:
         listOfNames = []
         names = dbContext.getAllName("Organisation")
         for name in names:
-            listOfNames.append(str(name[0]))
+            listOfNames.append(str(name[1]))
         return listOfNames
 
-    def getAllMeasuringObject(self):
+    def getAllMeasuringObject(self, orgName):
         listOfNames = []
-        names = dbContext.getAllName("MeasuringObject")
-        for name in names:
-            listOfNames.append(str(name[0]))
-        return listOfNames
+        if orgName == "":
+            names = dbContext.getAllName("MeasuringObject")
+            for name in names:
+                listOfNames.append(str(name[1]))
+            return listOfNames
+        else:
+            org = dbContext.getAllWhereNameIs('Organisation', orgName)
+            names = dbContext.getAllName("MeasuringObject")
+            if not org:
+                listOfNames.append("")
+            else:
+                for name in names:
+                    if name[2]==org[0]:
+                        listOfNames.append(str(name[1]))              
+            return listOfNames
 
-    def getAllAntenna(self):
+    def getAllAntenna(self, objectName):
         listOfNames = []
-        names = dbContext.getAllName("Antenna")
-        for name in names:
-            listOfNames.append(str(name[0]))
-        return listOfNames
+        if objectName == "":
+            names = dbContext.getAllName("Antenna")
+            for name in names:
+                listOfNames.append(str(name[1]))
+            return listOfNames
+        else:
+            ant = dbContext.getAllWhereNameIs('MeasuringObject', objectName)
+            names = dbContext.getAllName("Antenna")
+            if not obj:
+                listOfNames.append("")
+            else:
+                for name in names:
+                    if name[2]==obj[0]:
+                        listOfNames.append(str(name[1]))              
+            return listOfNames
+
+    def getAllMeasurement(self, antennaName):
+        listOfNames = []
+        if antennaName == "":
+            names = dbContext.getAllName("Measurement")
+            for name in names:
+                listOfNames.append(str(name[1]))
+            return listOfNames
+        else:
+            ant = dbContext.getAllWhereNameIs('Antenna', antennaName)
+            names = dbContext.getAllName("Measurement")
+            if not ant:
+                listOfNames.append("")
+            else:
+                for name in names:
+                    if name[7]==ant[0]:
+                        listOfNames.append(str(name[1]))              
+            return listOfNames
 
     def newMeasurement(self, lon, lat, alt, antennaid):
         _lon = lon
