@@ -462,6 +462,7 @@ newMeasurementBtn = ttk.Button(text="Initsiera ny mätning", command=clickNewMea
 openOldMeasurementBtn = ttk.Button(text="Öppna mätning", command=clickOpenOldMeasurementBtn)
 saveAsPdfBtn = ttk.Button(text="Skapa PDF", command=clickSaveAsPdfBtn)
 
+
 fixStatusLbl = ttk.Label(text="")
 grafBtn = ttk.Button(text="Visa Graf", command=clickGrafBtn)
 graf2dBtn = ttk.Button(text="Visa 2D Graf", command=clickGraf2dBtn)

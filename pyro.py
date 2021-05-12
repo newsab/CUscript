@@ -8,13 +8,13 @@ import socket
 
 
 class StartAndStop:
-    """
+    
     def __init__(self):
 
         # Creates a boolean which is used to show if the measurementloop should stop or countinue
         self.quitflag = False
-
-        self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")  # Creates the Pyro proxy
+        # Creates the Pyro proxy
+        self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")
         # Creates a thread with startPmuMeasurement as target
         self.t = threading.Thread(target=self.startPmuMeasurement)
         # Creates a thread with setFixStatus as target
@@ -59,9 +59,12 @@ class StartAndStop:
             print('Could not run function getStartPosition from StartAndStop')
 
     def getFixStatus(self):
-        fixStatus = self.pmu.getFixStatus()
-        status = FixTypes.rtkList[fixStatus]
-        return status
+        try:
+            fixStatus = self.pmu.getFixStatus()
+            status = FixTypes.rtkList[fixStatus]
+            return status
+        except:
+            return "Kunde inte få kontakt med PMU"
 
     """
     def __init__(self):
@@ -72,9 +75,7 @@ class StartAndStop:
     def start(self, frequency):
         try:
             self.freq = frequency
-            print("1")
             self.setDummyData()
-            print("7")
         except:
             print('Could not run function start from StartAndStop')
 
@@ -97,9 +98,7 @@ class StartAndStop:
         return status
 
     def setDummyData(self):
-        print("2")
         lines = list(open('./Measurements/test24-3medFrekvens.txt'))
-        print("3")
         for line in lines:
             time = line[2:27]
             lo = line[32:44]
@@ -107,12 +106,6 @@ class StartAndStop:
             al = line[63:66]
             mea = line[68:78]         
             obj = time, lo, la, al, mea
-            print(time)
-            print(lo)
-            print(la)
-            print(al)
-            print(mea)
             self.mesurementList.append(obj)
-            print("6")
             self.showList.append(obj)
-            print("5")
+    """
