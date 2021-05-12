@@ -18,7 +18,7 @@ class FileWriter:
         self.fullPath = os.path.join(self.path, self.fileName)
 
         
-    def createFile(self):
+    def createTxtFile(self):
         f = open(self.fullPath, "wt")
         f.write("Drönarmätning utförd " + str(self.DC.measurement.time) + '\n')
         f.write("Företag: " + self.DC.organisation.name + "\n")
@@ -35,9 +35,8 @@ class FileWriter:
             f.write(str(self.DC.measurementData.time[count]) + ", " + str(self.DC.measurementData.longitude[count]) + ", " + str(self.DC.measurementData.latitude[count]) + ", " + str(self.DC.measurementData.altitude[count]) + ", " + str(self.DC.measurementData.dbValue[count]) + "\n")
             f.close()
             count = count + 1
-        self.createPDF()
 
-    def createPDF(self):
+    def createPdfFile(self):
         pdf = FPDF()
         pdf.add_page()
         pdf.image(self.tempPath + "logo.png", w=70, h=35,)

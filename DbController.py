@@ -113,6 +113,32 @@ def getAllWhereNameIs(table, name):
 	con.commit()
 	con.close()
 
+def getAllWhereNameIs2(table, name, orgName):
+	con = sqlite3.connect('PampDb.db')
+	cur = con.cursor()
+	cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%' and organisationId like (SELECT organisationId FROM Organisation WHERE name like '" + orgName + "' )")
+	ob = cur.fetchall()
+	if not ob:
+		return ""
+	else:
+		obje = ob[0]
+		return obje
+	con.commit()
+	con.close()
+
+def getAllWhereNameIs3(table, name, objectName, orgName):
+	con = sqlite3.connect('PampDb.db')
+	cur = con.cursor()
+	cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%' and measuringObjectId like (SELECT measureingObjectId FROM MeasuringObject WHERE name like'" + objectName + "' and organisationId like (SELECT organisationId FROM Organisation WHERE name like '" + orgName + "' ))")
+	ob = cur.fetchall()
+	if not ob:
+		return "Den fanns inte"
+	else:
+		obje = ob[0]
+		return obje
+	con.commit()
+	con.close()
+
 	
 
 """

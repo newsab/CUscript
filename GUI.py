@@ -36,8 +36,8 @@ canvasLive = object
 my_cmap = plt.get_cmap('rainbow')
 organisationList = DC.getAllOrganisation()
 measuringObjectList = DC.getAllMeasuringObject("")
-antennaList = DC.getAllAntenna("")
-measurementList = DC.getAllMeasurement("")
+antennaList = DC.getAllAntenna("", "")
+measurementList = DC.getAllMeasurement("", "", "")
 pmuSc = ShellCommands("192.168.1.3")
 rbuSc = ShellCommands("192.168.1.6")
 ptuSc = ShellCommands("172.16.0.9")
@@ -142,68 +142,32 @@ def clickNewMeasurementBtn():
     tbOthers.insert(1.0, 'New measurement \n \n')
     tbOthers.update()
 
-def clickSaveMeasurementBtn():
-    path = saveFile()
+def setDcToSave():
     org = orgEnt.get() 
     obj = objectEnt.get()
     ant = antennaEnt.get()
-    inf = infoEnt.get("1.0", END)
+    DC.measurement.info = infoEnt.get("1.0", END)
     DC.checkOrganisation(org)
     DC.checkMeasuringObject(obj)
     DC.checkAntenna(ant)
-    DC.insertMeasurementToDb(inf)
+    return DC
+
+def clickSaveMeasurementBtn():
+    path = getSavePath()
+    setDcToSave()
+    DC.insertMeasurementToDb()
     fileWriter = FileWriter(DC, path)
-    fileWriter.createFile()
-    tbOthers.insert(1.0, 'Measurement has been saved \n \n')
+    fileWriter.createTxtFile()
+    tbOthers.insert(1.0, 'Mätningen har sparats till databasen \nMätningen har sparats som en .txt-fil\n' + path + '\n \n')
     tbOthers.update()
 
-def clickOpenOldMeasurementBtn():
-    global organisationList
-    global measuringObjectList
-    global antennaList
-    global measurementList
-    global orgEnt
-    global objectEnt
-    global antennaEnt
-
-    def clickLoadBtn():
-        DC.setAllData(orgEnt.get(), objectEnt.get(), antennaEnt.get(), measurementEnt.get())
-        updateGui()
-        newWindowOpen = False
-        newWindow.destroy()
-
-    tbMeasure.delete('1.0', END)
-    orgEnt.set("")
-    objectEnt.set("")
-    antennaEnt.set("")
-    updateOrganisationCombobox()
-    updateMeasuringObjectCombobox()
-    updateAntennaCombobox()
-    newWindow = Toplevel(win)
-    newWindow.title("Öppna tidigare mätning")
-    newWindow.geometry("400x400")
-    Label(newWindow, 
-          text ="Välj en tidigare mätning").grid(row=1, column=1)
-    orgEnt = ttk.Combobox(newWindow, values=organisationList)
-    orgEnt.bind('<KeyRelease>', updateAllComboboxes)
-    orgEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
-    orgEnt.grid(row=2, column=1)
-    objectEnt = ttk.Combobox(newWindow, values=measuringObjectList)
-    objectEnt.bind('<KeyRelease>', updateAllComboboxes)
-    objectEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
-    objectEnt.grid(row=3, column=1)
-    antennaEnt = ttk.Combobox(newWindow, values=antennaList)
-    antennaEnt.bind('<KeyRelease>', updateAllComboboxes)
-    antennaEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
-    antennaEnt.grid(row=4, column=1)
-    measurementEnt = ttk.Combobox(newWindow, values=measurementList)
-    measurementEnt.bind('<KeyRelease>', updateAllComboboxes)
-    measurementEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
-    measurementEnt.grid(row=5, column=1)
-
-    loadBtn = Button(newWindow, text="Ladda upp mätning", width=15, height=2,
-                 bg=frameColor, fg=bgColor, command=clickLoadBtn)
-    loadBtn.grid(row=6, column=1) 
+def clickSaveAsPdfBtn():
+    path = getSavePath()
+    setDcToSave()
+    fileWriter = FileWriter(DC, path)
+    fileWriter.createPdfFile()
+    tbOthers.insert(1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
+    tbOthers.update()
 
 def createLiveFig():
     """
@@ -281,10 +245,10 @@ def updateMeasuringObjectList(data):
 def updateAntennaCombobox():
     typed = antennaEnt.get()
     if typed == "":
-        data = DC.getAllAntenna(objectEnt.get())
+        data = DC.getAllAntenna(objectEnt.get(), orgEnt.get())
     else:  
         data = []   
-        for item in DC.getAllAntenna(objectEnt.get()):
+        for item in DC.getAllAntenna(objectEnt.get(), orgEnt.get()):
             if typed.lower() in item.lower():
                 data.append(item)
     updateAntennaList(data)
@@ -296,52 +260,156 @@ def updateAntennaList(data):
         antennaList.append(item)       
     antennaEnt['values'] = antennaList
 
-def updateMeasurementCombobox():
-    typed = measurementEnt.get()
-    if typed == "":
-        data = DC.getAllMeasurement(antennaEnt.get())
-    else:  
-        data = []   
-        for item in DC.getAllMeasurement(antennaEnt.get()):
-            if typed.lower() in item.lower():
-                data.append(item)
-    updateMeasurementList(data)
-
-def updateMeasurementList(data):
-    global measurementList
-    measurementList.clear()
-    for item in data:
-        measurementList.append(item)       
-    measurementEnt['values'] = measurementList
-
 def updateAllComboboxes(e):
     updateOrganisationCombobox()
     updateMeasuringObjectCombobox()
     updateAntennaCombobox()
-    updateMeasurementCombobox()
+    
+def getSavePath():
+    path = filedialog.askdirectory(initialdir="./Measurements/")
+    return(str(path))
 
-def updateComboxesAndEntrys(e):
+def clickOpenOldMeasurementBtn():
+    global organisationList
+    global measuringObjectList
+    global antennaList
+    global measurementList
+    global orgEnt
+    global objectEnt
+    global antennaEnt
+
+    def clickLoadBtn():
+        DC.setAllData(orgEntNW.get(), objectEntNW.get(), antennaEntNW.get(), measurementEntNW.get())
+        updateGui()
+        newWindowOpen = False
+        newWindow.destroy()
+    
+    def updateOrganisationComboboxNW():
+        typed = orgEntNW.get()
+        if typed == "":
+            data = DC.getAllOrganisation()
+        else:  
+            data = []   
+            for item in DC.getAllOrganisation():
+                if typed.lower() in item.lower():
+                    data.append(item)
+        updateOrganisationListNW(data)
+
+    def updateOrganisationListNW(data):
+        global organisationList
+        organisationList.clear()
+        for item in data:
+            organisationList.append(item)       
+        orgEntNW['values'] = organisationList
+
+    def updateMeasuringObjectComboboxNW():
+        typed = objectEntNW.get()
+        if typed == "":
+            data = DC.getAllMeasuringObject(orgEntNW.get())
+        else:  
+            data = []   
+            for item in DC.getAllMeasuringObject(orgEntNW.get()):
+                if typed.lower() in item.lower():
+                    data.append(item)
+        updateMeasuringObjectListNW(data)
+
+    def updateMeasuringObjectListNW(data):
+        global measuringObjectList
+        measuringObjectList.clear()
+        for item in data:
+            measuringObjectList.append(item)       
+        objectEntNW['values'] = measuringObjectList
+
+    def updateAntennaComboboxNW():
+        typed = antennaEntNW.get()
+        if typed == "":
+            data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
+        else:  
+            data = []   
+            for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
+                if typed.lower() in item.lower():
+                    data.append(item)
+        updateAntennaListNW(data)
+
+    def updateAntennaListNW(data):
+        global antennaList
+        antennaList.clear()
+        for item in data:
+            antennaList.append(item)       
+        antennaEntNW['values'] = antennaList
+
+    def updateMeasurementComboboxNW():
+        typed = measurementEntNW.get()
+        if typed == "":
+            data = DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
+        else:  
+            data = []   
+            for item in DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get()):
+                if typed.lower() in item.lower():
+                    data.append(item)
+        updateMeasurementListNW(data)
+
+    def updateMeasurementListNW(data):
+        global measurementList
+        measurementList.clear()
+        for item in data:
+            measurementList.append(item)       
+        measurementEntNW['values'] = measurementList
+
+    def updateAllComboboxesNW(e):
+        updateOrganisationComboboxNW()
+        updateMeasuringObjectComboboxNW()
+        updateAntennaComboboxNW()
+        updateMeasurementComboboxNW()
+
+    def updateGui():
+        tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' + DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency)  + '\nInfo: ' + DC.measurement.info + '\n\n')
+        tbOthers.update()
+
+        length = len(DC.measurementData.longitude)
+        count = 0           
+        while count < length:
+            tim = str(DC.measurementData.time[count])
+            alt = str(DC.measurementData.altitude[count])
+            db = str(DC.measurementData.dbValue[count])
+            count = count + 1
+            tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
+            tbMeasure.update
+        livePlot()
+
+    tbMeasure.delete('1.0', END)
     orgEnt.set("")
     objectEnt.set("")
     antennaEnt.set("")
+    updateOrganisationCombobox()
+    updateMeasuringObjectCombobox()
+    updateAntennaCombobox()
+    newWindow = Toplevel(win)
+    newWindow.title("Öppna tidigare mätning")
+    newWindow.geometry("400x400")
+    Label(newWindow, 
+        text ="Välj en tidigare mätning").grid(row=1, column=1)
+    orgEntNW = ttk.Combobox(newWindow, values=organisationList)
+    orgEntNW.bind('<KeyRelease>', updateAllComboboxesNW)
+    orgEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
+    orgEntNW.grid(row=2, column=1)
+    objectEntNW = ttk.Combobox(newWindow, values=measuringObjectList)
+    objectEntNW.bind('<KeyRelease>', updateAllComboboxesNW)
+    objectEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
+    objectEntNW.grid(row=3, column=1)
+    antennaEntNW = ttk.Combobox(newWindow, values=antennaList)
+    antennaEntNW.bind('<KeyRelease>', updateAllComboboxesNW)
+    antennaEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
+    antennaEntNW.grid(row=4, column=1)
+    measurementEntNW = ttk.Combobox(newWindow, values=measurementList)
+    measurementEntNW.bind('<KeyRelease>', updateAllComboboxesNW)
+    measurementEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
+    measurementEntNW.grid(row=5, column=1)
 
-def updateGui():
-    tbOthers.insert(1.0, 'Visar gammal mätning utförd på ' + DC.organisation.name + '\n \n')
-    tbOthers.update()
+    loadBtn = Button(newWindow, text="Ladda upp mätning", width=15, height=2,
+                bg=frameColor, fg=bgColor, command=clickLoadBtn)
+    loadBtn.grid(row=6, column=1) 
 
-    length = len(DC.measurementData.longitude)
-    count = 0           
-    while count < length:
-        tim = str(DC.measurementData.time[count])
-        alt = str(DC.measurementData.altitude[count])
-        db = str(DC.measurementData.dbValue[count])
-        count = count + 1
-        tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
-        tbMeasure.update
-    
-def saveFile():
-    path = filedialog.askdirectory(initialdir="./Measurements/")
-    return(str(path))
 
 bgColor = 'black'
 frameColor = '#222222'
@@ -377,7 +445,8 @@ newMeasurementBtn = Button(text="Initsiera ny mätning", width=15, height=2,
                    bg=frameColor, fg=bgColor, command=clickNewMeasurementBtn)
 openOldMeasurementBtn = Button(text="Öppna mätning", width=15, height=2,
                 bg=frameColor, fg=bgColor, command=clickOpenOldMeasurementBtn)
-
+saveAsPdfBtn = Button(text="Skapa PDF", width=15, height=2,
+                bg=frameColor, fg=bgColor, command=clickSaveAsPdfBtn)
 
 fixStatusLbl = Label(text="", bg=frameColor, fg=textColor)
 grafBtn = Button(text="Visa Graf", width=15, height=2,
@@ -425,6 +494,7 @@ startBtn.grid(row=4, column=2)
 saveMeasurementBtn.grid(row=5, column=2)
 newMeasurementBtn.grid(row=6, column=2)
 openOldMeasurementBtn.grid(row=7, column=2)
+saveAsPdfBtn.grid(row=8, column=2)
 
 
 fixStatusLbl.grid(row=1, column=3, columnspan=4)

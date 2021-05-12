@@ -92,10 +92,9 @@ class DataController:
         input = self.antenna.name + "', '" + self.measuringObject.id
         dbContext.insertData(table, column, input)
 
-    def insertMeasurementToDb(self, info):
+    def insertMeasurementToDb(self):
         table = 'Measurement'
         column = 'time, frequency, longitude, latitude, altitude, info, antennaId'
-        self.measurement.info = info
         input = str(self.measurement.time) + "', '" + str(self.measurement.frequency) + "', '" + str(self.measurement.longitude) + "', '" + \
             str(self.measurement.latitude) + "', '" + str(self.measurement.altitude) + \
             "', '" + self.measurement.info + "', '" + str(self.antenna.id)
@@ -149,7 +148,7 @@ class DataController:
         fk = exists[2]
         self.antenna.id = id
         self.antenna.name = name
-        self.antenna.organisationId = fk
+        self.antenna.measuringObjectId = fk
 
     def getAllOrganisation(self):
         listOfNames = []
@@ -176,7 +175,7 @@ class DataController:
                         listOfNames.append(str(name[1]))              
             return listOfNames
 
-    def getAllAntenna(self, objectName):
+    def getAllAntenna(self, objectName, OrgName):
         listOfNames = []
         if objectName == "":
             names = dbContext.getAllName("Antenna")
@@ -184,7 +183,8 @@ class DataController:
                 listOfNames.append(str(name[1]))
             return listOfNames
         else:
-            obj = dbContext.getAllWhereNameIs('MeasuringObject', objectName)
+            obj = dbContext.getAllWhereNameIs2('MeasuringObject', objectName, OrgName)
+            print(obj)
             names = dbContext.getAllName("Antenna")
             if not obj:
                 listOfNames.append("")
@@ -194,7 +194,7 @@ class DataController:
                         listOfNames.append(str(name[1]))              
             return listOfNames
 
-    def getAllMeasurement(self, antennaName):
+    def getAllMeasurement(self, antennaName, objectName, OrgName):
         listOfNames = []
         if antennaName == "":
             names = dbContext.getAllName("Measurement")
@@ -202,7 +202,7 @@ class DataController:
                 listOfNames.append(str(name[1]))
             return listOfNames
         else:
-            ant = dbContext.getAllWhereNameIs('Antenna', antennaName)
+            ant = dbContext.getAllWhereNameIs3('Antenna', antennaName, objectName, OrgName)
             names = dbContext.getAllName("Measurement")
             if not ant:
                 listOfNames.append("")

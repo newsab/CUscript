@@ -27,19 +27,6 @@ class Calculator:
                                 self.angleList.append(-180.0)
                                 self.dbList.append(float(dbValue))
                         elif(self.degree > 180.0):
-                                """
-                                self.degree = -180.0
-                                self.lon3 = line[1]
-                                self.lat3 = line[2]
-                                angle = self.degree + self.getAngle()
-                                self.degree = angle
-                                dbValue = line[4]
-                                print(str(self.lon1) + ", " + str(self.lat1) + ", " + str(self.lon2) + ", " + str(self.lat2) + ", " + str(self.lon3) + ", " + str(self.lat3) + ", " + str(angle) + ", " + str(dbValue))
-                                self.angleList.append(angle)
-                                self.dbList.append(float(dbValue))
-                                self.lon2 = self.lon3
-                                self.lat2 = self.lat3
-                                """
                                 break
                         else: 
                                 self.lon3 = self.measurementObject.longitude[count]
