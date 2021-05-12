@@ -1,6 +1,6 @@
 import time
-from tkinter import *
 from tkinter import ttk
+import tkinter
 from tkinter import filedialog
 
 import matplotlib.pyplot as plt
@@ -19,7 +19,7 @@ global on
 global my_cmap
 global scttLive
 global canvasLive
-global figLive
+global ax
 global organisationList
 global measuringObjectList
 global antennaList
@@ -35,6 +35,7 @@ on = False
 scttLive = object
 canvasLive = object
 figLive = object
+ax = object
 my_cmap = plt.get_cmap('rainbow')
 organisationList = DC.getAllOrganisation()
 measuringObjectList = []#DC.getAllMeasuringObject("")
@@ -143,7 +144,7 @@ def clickNewMeasurementBtn():
     DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
     tbOthers.insert(1.0, 'New measurement \n \n')
     tbOthers.update()
-    tbMeasure.delete('1.0', END)
+    tbMeasure.delete('1.0', tkinter.END)
     tbMeasure.update()
     livePlot()
 
@@ -184,9 +185,9 @@ def createLiveFig():
     """
     global scttLive
     global canvasLive
-    global figLive
+    global ax
     figLive = plt.figure(figsize=(5, 3), )
-    figLive.patch.set_facecolor(bgColor)
+    figLive.patch.set_facecolor('#ececec')
     ax = figLive.add_subplot(111)
     x = DC.measurementData.longitude
     y = DC.measurementData.latitude
@@ -204,7 +205,7 @@ def livePlot():
     """
     global scttLive 
     global canvasLive
-    global figLive
+    global ax
     plt.cla()
     autlon = DC.measurement.longitude
     autlat = DC.measurement.latitude
@@ -213,6 +214,8 @@ def livePlot():
     m = DC.measurementData.dbValue
     plt.scatter(autlon, autlat, alpha=1, c="black", marker='X', label='AUT')
     scttLive = plt.scatter(x, y, alpha=1, c=m, cmap=my_cmap, marker='o')
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
     canvasLive.draw_idle()
 
 def updateFixStatus():
@@ -398,19 +401,19 @@ def clickOpenOldMeasurementBtn():
             tbMeasure.update
         livePlot()
 
-    tbMeasure.delete('1.0', END)
+    tbMeasure.delete('1.0', tkinter.END)
     orgEnt.set("")
     objectEnt.set("")
     antennaEnt.set("")
-    infoEnt.delete('1.0', END)
+    infoEnt.delete('1.0', tkinter.END)
     organisationList = DC.getAllOrganisation()
     measuringObjectList = []
     antennaList = []
     measurementList = []
-    newWindow = Toplevel(win)
+    newWindow = tkinter.Toplevel(win, bg="#ececec")
     newWindow.title("Öppna tidigare mätning")
-    newWindow.geometry("400x400")
-    Label(newWindow, 
+    newWindow.geometry("300x300")
+    ttk.Label(newWindow, 
         text ="Välj en tidigare mätning").grid(row=1, column=1)
     orgEntNW = ttk.Combobox(newWindow, values=organisationList)
     orgEntNW.bind('<KeyRelease>', updateAllComboboxesNW)
@@ -429,62 +432,46 @@ def clickOpenOldMeasurementBtn():
     measurementEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
     measurementEntNW.grid(row=5, column=1)
 
-    loadBtn = Button(newWindow, text="Ladda upp mätning", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickLoadBtn)
+    loadBtn = ttk.Button(newWindow, text="Ladda upp mätning", command=clickLoadBtn)
     loadBtn.grid(row=6, column=1) 
 
-
-bgColor = 'white'
-frameColor = 'white'
-textColor = 'black'
-
-win = Tk()
+win = tkinter.Tk()
 #win.option_add("*TCombobox*Background", 'green')
 win.title("CU-applikation för PAMP")
 win.geometry('1360x768')
-win.configure(bg=bgColor)
+win.configure(bg="#ececec")
 
 
-tbOthers = Text(bg=bgColor, fg=textColor, width=60)
-tbMeasure = Text(bg=bgColor, fg=textColor, width=60)
-
-posLonLbl = Label(text="", bg=bgColor, fg=textColor)
-posLatLbl = Label(text="", bg=bgColor, fg=textColor)
-posAltLbl = Label(text="", bg=bgColor, fg=textColor)
-fqEnt = Entry(bg=frameColor, fg=textColor)
-distanceLbl = Label(text="", bg=bgColor, fg=textColor)
-distanceBtn = Button(text="Distans till AUT", width=15, height=2,
-                  bg=bgColor, fg=bgColor, command=clickDisatnceBtn)
+tbOthers = tkinter.Text(width=60, bg="#ececec")
+tbMeasure = tkinter.Text(width=60, bg="#ececec")
 
 
-posBtn = Button(text="Ta ut AUT position", width=15, height=2,
-                bg=bgColor, fg=bgColor, command=clickPosBtn)
-rbuBtn = Button(text="Start om RBU", width=15, height=2,
-                bg=bgColor, fg=bgColor, command=clickRbuBtn)
-startBtn = Button(text="Starta mätning", width=15, height=2,
-                  bg=frameColor, fg=bgColor, command=clickStartBtn)
-saveMeasurementBtn = Button(text="Spara mätning", width=15, height=2,
-                   bg=frameColor, fg=bgColor, command=clickSaveMeasurementBtn)
-newMeasurementBtn = Button(text="Initsiera ny mätning", width=15, height=2,
-                   bg=frameColor, fg=bgColor, command=clickNewMeasurementBtn)
-openOldMeasurementBtn = Button(text="Öppna mätning", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickOpenOldMeasurementBtn)
-saveAsPdfBtn = Button(text="Skapa PDF", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickSaveAsPdfBtn)
-
-fixStatusLbl = Label(text="", bg=frameColor, fg=textColor)
-grafBtn = Button(text="Visa Graf", width=15, height=2,
-                 bg=frameColor, fg=bgColor, command=clickGrafBtn)
-graf2dBtn = Button(text="Visa 2D Graf", width=15, height=2,
-                 bg=frameColor, fg=bgColor, command=clickGraf2dBtn)
-graf3dBtn = Button(text="Visa 3D Graf", width=15, height=2,
-                   bg=frameColor, fg=bgColor, command=clickGraf3dBtn)
+posLonLbl = ttk.Label(text="")
+posLatLbl = ttk.Label(text="")
+posAltLbl = ttk.Label(text="")
+fqEnt = ttk.Entry()
+distanceLbl = ttk.Label(text="")
+distanceBtn = ttk.Button(text="Distans till AUT", command=clickDisatnceBtn)
 
 
-orgLbl = Label(text="Organisation", bg=frameColor, fg=textColor)
-objectLbl = Label(text="Mätobjekt", bg=frameColor, fg=textColor)
-antennaLbl = Label(text="Antenn", bg=frameColor, fg=textColor)
-infoLbl = Label(text="Info", bg=frameColor, fg=textColor)
+posBtn = ttk.Button(text="Ta ut AUT position", command=clickPosBtn)
+rbuBtn = ttk.Button(text="Start om RBU", command=clickRbuBtn)
+startBtn = ttk.Button(text="Starta mätning", command=clickStartBtn)
+saveMeasurementBtn = ttk.Button(text="Spara mätning", command=clickSaveMeasurementBtn)
+newMeasurementBtn = ttk.Button(text="Initsiera ny mätning", command=clickNewMeasurementBtn)
+openOldMeasurementBtn = ttk.Button(text="Öppna mätning", command=clickOpenOldMeasurementBtn)
+saveAsPdfBtn = ttk.Button(text="Skapa PDF", command=clickSaveAsPdfBtn)
+
+fixStatusLbl = ttk.Label(text="")
+grafBtn = ttk.Button(text="Visa Graf", command=clickGrafBtn)
+graf2dBtn = ttk.Button(text="Visa 2D Graf", command=clickGraf2dBtn)
+graf3dBtn = ttk.Button(text="Visa 3D Graf", command=clickGraf3dBtn)
+
+
+orgLbl = ttk.Label(text="Organisation")
+objectLbl = ttk.Label(text="Mätobjekt")
+antennaLbl = ttk.Label(text="Antenn")
+infoLbl = ttk.Label(text="Info")
 
 
 orgEnt = ttk.Combobox(win, values=organisationList)
@@ -496,7 +483,7 @@ objectEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
 antennaEnt = ttk.Combobox(win, values=antennaList)
 antennaEnt.bind('<KeyRelease>', updateAllComboboxes)
 antennaEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
-infoEnt = Text(bg=frameColor, fg=textColor, height=10, width=27)
+infoEnt = tkinter.Text(height=10, width=27)
 measurementEnt = ttk.Combobox(win, values=measurementList)
 
 
