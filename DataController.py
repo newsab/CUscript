@@ -4,6 +4,7 @@ from Antennas import *
 from Measurements import *
 from MeasurementData import *
 from pyro import *
+from Calculate import *
 import DbController as dbContext
 
 
@@ -184,7 +185,6 @@ class DataController:
             return listOfNames
         else:
             obj = dbContext.getAllWhereNameIs2('MeasuringObject', objectName, OrgName)
-            print(obj)
             names = dbContext.getAllName("Antenna")
             if not obj:
                 listOfNames.append("")
@@ -242,6 +242,8 @@ class DataController:
                 self.measurement.altitude = measurement[5]
                 self.measurement.info = measurement[6]
                 self.measurement.antennaId = measurement[7]
+        del self.measurementData
+        self.measurementData = MeasurementData()
         for line in measurementData:
             if line[6] == self.measurement.id:
                 self.measurementData.time.append(line[1])
@@ -266,3 +268,9 @@ class DataController:
         self.measurement.altitude = _alt
         self.measurement.antennaId = _antennaid
         self.pyro = StartAndStop()
+
+    def getDistanceFromAUT(self):
+        position = self.pyro.getStartPosition()
+        cal = Calculator(self.measurement.longitude, self.measurement.latitude, self.measurementData.dbValue)
+        distance = cal.getDistance(position[0], position[1], self.measurement.longitude, self.measurement.latitude)
+        return distance

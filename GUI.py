@@ -19,6 +19,7 @@ global on
 global my_cmap
 global scttLive
 global canvasLive
+global figLive
 global organisationList
 global measuringObjectList
 global antennaList
@@ -33,11 +34,12 @@ DC = DataController()
 on = False
 scttLive = object
 canvasLive = object
+figLive = object
 my_cmap = plt.get_cmap('rainbow')
 organisationList = DC.getAllOrganisation()
-measuringObjectList = DC.getAllMeasuringObject("")
-antennaList = DC.getAllAntenna("", "")
-measurementList = DC.getAllMeasurement("", "", "")
+measuringObjectList = []#DC.getAllMeasuringObject("")
+antennaList = []#DC.getAllAntenna("", "")
+measurementList = []#DC.getAllMeasurement("", "", "")
 pmuSc = ShellCommands("192.168.1.3")
 rbuSc = ShellCommands("192.168.1.6")
 ptuSc = ShellCommands("172.16.0.9")
@@ -141,6 +143,9 @@ def clickNewMeasurementBtn():
     DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
     tbOthers.insert(1.0, 'New measurement \n \n')
     tbOthers.update()
+    tbMeasure.delete('1.0', END)
+    tbMeasure.update()
+    livePlot()
 
 def setDcToSave():
     org = orgEnt.get() 
@@ -169,13 +174,19 @@ def clickSaveAsPdfBtn():
     tbOthers.insert(1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
     tbOthers.update()
 
+def clickDisatnceBtn():
+    distance = DC.getDistanceFromAUT()
+    distanceLbl.config(text=str(distance) + "m")
+
 def createLiveFig():
     """
     Comment
     """
     global scttLive
     global canvasLive
-    figLive = plt.figure(figsize=(5, 3))
+    global figLive
+    figLive = plt.figure(figsize=(5, 3), )
+    figLive.patch.set_facecolor(bgColor)
     ax = figLive.add_subplot(111)
     x = DC.measurementData.longitude
     y = DC.measurementData.latitude
@@ -193,6 +204,8 @@ def livePlot():
     """
     global scttLive 
     global canvasLive
+    global figLive
+    plt.cla()
     autlon = DC.measurement.longitude
     autlat = DC.measurement.latitude
     x = DC.measurementData.longitude
@@ -281,7 +294,6 @@ def clickOpenOldMeasurementBtn():
     def clickLoadBtn():
         DC.setAllData(orgEntNW.get(), objectEntNW.get(), antennaEntNW.get(), measurementEntNW.get())
         updateGui()
-        newWindowOpen = False
         newWindow.destroy()
     
     def updateOrganisationComboboxNW():
@@ -303,14 +315,15 @@ def clickOpenOldMeasurementBtn():
         orgEntNW['values'] = organisationList
 
     def updateMeasuringObjectComboboxNW():
-        typed = objectEntNW.get()
+        typed = objectEntNW.get()    
         if typed == "":
             data = DC.getAllMeasuringObject(orgEntNW.get())
+
         else:  
             data = []   
             for item in DC.getAllMeasuringObject(orgEntNW.get()):
                 if typed.lower() in item.lower():
-                    data.append(item)
+                    data.append(item) 
         updateMeasuringObjectListNW(data)
 
     def updateMeasuringObjectListNW(data):
@@ -322,13 +335,17 @@ def clickOpenOldMeasurementBtn():
 
     def updateAntennaComboboxNW():
         typed = antennaEntNW.get()
-        if typed == "":
-            data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
-        else:  
-            data = []   
-            for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
-                if typed.lower() in item.lower():
-                    data.append(item)
+        typed2 = objectEntNW.get()
+        if typed2 == "":
+            data = []
+        else:
+            if typed == "":
+                data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
+            else:  
+                data = []   
+                for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
+                    if typed.lower() in item.lower():
+                        data.append(item)
         updateAntennaListNW(data)
 
     def updateAntennaListNW(data):
@@ -340,13 +357,17 @@ def clickOpenOldMeasurementBtn():
 
     def updateMeasurementComboboxNW():
         typed = measurementEntNW.get()
-        if typed == "":
-            data = DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
-        else:  
-            data = []   
-            for item in DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get()):
-                if typed.lower() in item.lower():
-                    data.append(item)
+        typed2 = antennaEntNW.get()
+        if typed2 == "":
+            data = []
+        else:
+            if typed == "":
+                data = DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
+            else:  
+                data = []   
+                for item in DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get()):
+                    if typed.lower() in item.lower():
+                        data.append(item)
         updateMeasurementListNW(data)
 
     def updateMeasurementListNW(data):
@@ -381,9 +402,11 @@ def clickOpenOldMeasurementBtn():
     orgEnt.set("")
     objectEnt.set("")
     antennaEnt.set("")
-    updateOrganisationCombobox()
-    updateMeasuringObjectCombobox()
-    updateAntennaCombobox()
+    infoEnt.delete('1.0', END)
+    organisationList = DC.getAllOrganisation()
+    measuringObjectList = []
+    antennaList = []
+    measurementList = []
     newWindow = Toplevel(win)
     newWindow.title("Öppna tidigare mätning")
     newWindow.geometry("400x400")
@@ -411,34 +434,35 @@ def clickOpenOldMeasurementBtn():
     loadBtn.grid(row=6, column=1) 
 
 
-bgColor = 'black'
-frameColor = '#222222'
-textColor = '#cdcdcd'
+bgColor = 'white'
+frameColor = 'white'
+textColor = 'black'
 
 win = Tk()
+#win.option_add("*TCombobox*Background", 'green')
 win.title("CU-applikation för PAMP")
 win.geometry('1360x768')
 win.configure(bg=bgColor)
 
 
-tbOthers = Text(bg=frameColor, fg=textColor, width=60)
-tbMeasure = Text(bg=frameColor, fg=textColor, width=60)
+tbOthers = Text(bg=bgColor, fg=textColor, width=60)
+tbMeasure = Text(bg=bgColor, fg=textColor, width=60)
 
-posLonLbl = Label(text="", bg=frameColor, fg=textColor)
-posLatLbl = Label(text="", bg=frameColor, fg=textColor)
-posAltLbl = Label(text="", bg=frameColor, fg=textColor)
+posLonLbl = Label(text="", bg=bgColor, fg=textColor)
+posLatLbl = Label(text="", bg=bgColor, fg=textColor)
+posAltLbl = Label(text="", bg=bgColor, fg=textColor)
 fqEnt = Entry(bg=frameColor, fg=textColor)
+distanceLbl = Label(text="", bg=bgColor, fg=textColor)
+distanceBtn = Button(text="Distans till AUT", width=15, height=2,
+                  bg=bgColor, fg=bgColor, command=clickDisatnceBtn)
 
 
 posBtn = Button(text="Ta ut AUT position", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickPosBtn)
+                bg=bgColor, fg=bgColor, command=clickPosBtn)
 rbuBtn = Button(text="Start om RBU", width=15, height=2,
-                bg=frameColor, fg=bgColor, command=clickRbuBtn)
+                bg=bgColor, fg=bgColor, command=clickRbuBtn)
 startBtn = Button(text="Starta mätning", width=15, height=2,
                   bg=frameColor, fg=bgColor, command=clickStartBtn)
-
-
-
 saveMeasurementBtn = Button(text="Spara mätning", width=15, height=2,
                    bg=frameColor, fg=bgColor, command=clickSaveMeasurementBtn)
 newMeasurementBtn = Button(text="Initsiera ny mätning", width=15, height=2,
@@ -484,13 +508,13 @@ posLonLbl.grid(row=1, column=1)
 posLatLbl.grid(row=2, column=1)
 posAltLbl.grid(row=3, column=1)
 fqEnt.grid(row=4, column=1)
+distanceLbl.grid(row=5, column=1)
+distanceBtn.grid(row=6, column=1)
 
 
 posBtn.grid(row=1, column=2)
 rbuBtn.grid(row=3, column=2)
 startBtn.grid(row=4, column=2)
-
-
 saveMeasurementBtn.grid(row=5, column=2)
 newMeasurementBtn.grid(row=6, column=2)
 openOldMeasurementBtn.grid(row=7, column=2)
