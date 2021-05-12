@@ -8,7 +8,7 @@ import socket
 
 
 class StartAndStop:
-    
+    """
     def __init__(self):
 
         # Creates a boolean which is used to show if the measurementloop should stop or countinue
@@ -108,4 +108,4 @@ class StartAndStop:
             obj = time, lo, la, al, mea
             self.mesurementList.append(obj)
             self.showList.append(obj)
-    """
+    

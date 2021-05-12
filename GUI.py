@@ -149,10 +149,10 @@ def clickNewMeasurementBtn():
     livePlot()
 
 def setDcToSave():
-    org = orgEnt.get() 
-    obj = objectEnt.get()
-    ant = antennaEnt.get()
-    DC.measurement.info = infoEnt.get("1.0", END)
+    org = orgEnt.get().lower() 
+    obj = objectEnt.get().lower()
+    ant = antennaEnt.get().lower()
+    DC.measurement.info = infoEnt.get("1.0", tkinter.END).lower()
     DC.checkOrganisation(org)
     DC.checkMeasuringObject(obj)
     DC.checkAntenna(ant)
@@ -438,12 +438,12 @@ def clickOpenOldMeasurementBtn():
 win = tkinter.Tk()
 #win.option_add("*TCombobox*Background", 'green')
 win.title("CU-applikation för PAMP")
-win.geometry('1360x768')
+win.geometry('1200x600')
 win.configure(bg="#ececec")
 
 
-tbOthers = tkinter.Text(width=60, bg="#ececec")
-tbMeasure = tkinter.Text(width=60, bg="#ececec")
+tbOthers = tkinter.Text(width=50, bg="#ececec")
+tbMeasure = tkinter.Text(width=50, bg="#ececec")
 
 
 posLonLbl = ttk.Label(text="")
