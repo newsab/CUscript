@@ -24,7 +24,6 @@ global organisationList
 global measuringObjectList
 global antennaList
 global measurementList
-global DC
 global plotter
 global orgEnt
 global objectEnt
