@@ -1,9 +1,11 @@
 import datetime
 
-
 class Measurements:
 
     def __init__(self):
+        """
+        Comment
+        """
         self.id = 0
         self.time = datetime.datetime.now()
         self.frequency = 0.0

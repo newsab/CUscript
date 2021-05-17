@@ -8,7 +8,9 @@ from Calculate import *
 class Plotter:
 
     def __init__(self, dataController):
-
+        """
+        Comment
+        """
         self.DC = dataController
         self.twoDPlot = plt.figure(figsize=(10, 7))
         self.threeDPlot = plt.figure(figsize=(10, 7))
@@ -16,6 +18,9 @@ class Plotter:
         self.my_cmap = plt.get_cmap('rainbow')
 
     def setTwoDPlot(self):
+        """
+        Comment
+        """
         self.twoDPlot = plt.figure(figsize=(10, 7))
         ax = self.twoDPlot.add_subplot(111)
         autlon = self.DC.measurement.longitude
@@ -31,6 +36,9 @@ class Plotter:
         self.twoDPlot.legend()
 
     def setThreeDPlot(self):
+        """
+        Comment
+        """
         self.threeDPlot = plt.figure(figsize=(10, 7))
         ax = self.threeDPlot.add_subplot(111, projection="3d")
         autlon = self.DC.measurement.longitude
@@ -51,6 +59,9 @@ class Plotter:
         self.threeDPlot.legend()
     
     def setGrafPlot(self):
+        """
+        Comment
+        """
         self.grafPlot = plt
         autlon = self.DC.measurement.longitude
         autlat = self.DC.measurement.latitude

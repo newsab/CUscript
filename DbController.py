@@ -1,143 +1,197 @@
 import sqlite3
 
 def insertData(table, column, input):
-    con = sqlite3.connect('PampDb.db')
-    cur = con.cursor()
-    cur.execute("INSERT INTO '" + table + "' (" + column + ") VALUES ('" + input + "')")
-    con.commit()
-    con.close()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
+		cur.execute("INSERT INTO '" + table + "' (" + column + ") VALUES ('" + input + "')")
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function insertData from DbController')
 
 def getLatestId(table):
-    con = sqlite3.connect('PampDb.db')
-    cur = con.cursor()
-    cur.execute("SELECT max( measurementId ) FROM Measurement")
-    id = cur.fetchone()
-    con.commit()
-    con.close()
-    return id[0]
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
+		cur.execute("SELECT max( measurementId ) FROM Measurement")
+		id = cur.fetchone()
+		con.commit()
+		con.close()
+		return id[0]
+	except:
+		print('Could not run function getLatestId from DbController')
 
 def checkIfOrganisationExists(table, name):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
-	ob = cur.fetchall()
-
-	if not ob:
-		cur.execute("INSERT INTO '" + table + "' (name) VALUES ('" + name + "')")
-		con.commit()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
 		cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
-		obj = cur.fetchall()
-		corObj = obj[0]
-		return corObj
-	else:
-		obje = ob[0]
-		return obje
-	con.commit()
-	con.close()
+		ob = cur.fetchall()
+
+		if not ob:
+			cur.execute("INSERT INTO '" + table + "' (name) VALUES ('" + name + "')")
+			con.commit()
+			cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
+			obj = cur.fetchall()
+			corObj = obj[0]
+			return corObj
+		else:
+			obje = ob[0]
+			return obje
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function checkIfOrganisationExists from DbController')
 
 def checkIfMeasuringObjectExists(table, name, fk):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
-	ob = cur.fetchall()
-	bo = False
-	if not ob:
-		cur.execute("INSERT INTO '" + table + "' (name, organisationId) VALUES ('" + name + "', '" + str(fk) + "')")
-		con.commit()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
 		cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
-		obj = cur.fetchall()
-		corObj = obj[0]
-		return corObj
-	else:
-		for row in ob:
-			if row[2] == fk:
-				bo = True
-				return row
-		if not bo:
+		ob = cur.fetchall()
+		bo = False
+		if not ob:
 			cur.execute("INSERT INTO '" + table + "' (name, organisationId) VALUES ('" + name + "', '" + str(fk) + "')")
 			con.commit()
-			cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "' AND organisationId='" + str(fk) + "'")
+			cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
 			obj = cur.fetchall()
 			corObj = obj[0]
 			return corObj
-	con.commit()
-	con.close()
+		else:
+			for row in ob:
+				if row[2] == fk:
+					bo = True
+					return row
+			if not bo:
+				cur.execute("INSERT INTO '" + table + "' (name, organisationId) VALUES ('" + name + "', '" + str(fk) + "')")
+				con.commit()
+				cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "' AND organisationId='" + str(fk) + "'")
+				obj = cur.fetchall()
+				corObj = obj[0]
+				return corObj
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function checkIfMeasuringObjectExists from DbController')
 
 def checkIfAntennaExists(table, name, fk):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
-	ob = cur.fetchall()
-	bo = False
-	if not ob:
-		cur.execute("INSERT INTO '" + table + "' (name, measuringObjectId) VALUES ('" + name + "', '" + str(fk) + "')")
-		con.commit()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
 		cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
-		obj = cur.fetchall()
-		corObj = obj[0]
-		return corObj
-	else:
-		for row in ob:
-			if row[2] == fk:
-				bo = True
-				return row
-		if not bo:
+		ob = cur.fetchall()
+		bo = False
+		if not ob:
 			cur.execute("INSERT INTO '" + table + "' (name, measuringObjectId) VALUES ('" + name + "', '" + str(fk) + "')")
 			con.commit()
-			cur.execute("SELECT * FROM " + table + " WHERE name='" + name  + "' AND measuringObjectId='" + str(fk) + "'")
+			cur.execute("SELECT * FROM " + table + " WHERE name='" + name + "'")
 			obj = cur.fetchall()
 			corObj = obj[0]
 			return corObj
-	con.commit()
-	con.close()
+		else:
+			for row in ob:
+				if row[2] == fk:
+					bo = True
+					return row
+			if not bo:
+				cur.execute("INSERT INTO '" + table + "' (name, measuringObjectId) VALUES ('" + name + "', '" + str(fk) + "')")
+				con.commit()
+				cur.execute("SELECT * FROM " + table + " WHERE name='" + name  + "' AND measuringObjectId='" + str(fk) + "'")
+				obj = cur.fetchall()
+				corObj = obj[0]
+				return corObj
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function checkIfAntennaExists from DbController')
 
 def getAllName(table):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table)
-	names = cur.fetchall()
-	con.commit()
-	con.close()
-	return names
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
+		cur.execute("SELECT * FROM " + table)
+		names = cur.fetchall()
+		con.commit()
+		con.close()
+		return names
+	except:
+		print('Could not run function getAllName from DbController')
 
 def getAllWhereNameIs(table, name):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%'")
-	ob = cur.fetchall()
-	if not ob:
-		return ""
-	else:
-		obje = ob[0]
-		return obje
-	con.commit()
-	con.close()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
+		cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%'")
+		ob = cur.fetchall()
+		if not ob:
+			return ""
+		else:
+			obje = ob[0]
+			return obje
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function getAllWhereNameIs from DbController')
 
 def getAllWhereNameIs2(table, name, orgName):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%' and organisationId like (SELECT organisationId FROM Organisation WHERE name like '" + orgName + "' )")
-	ob = cur.fetchall()
-	if not ob:
-		return ""
-	else:
-		obje = ob[0]
-		return obje
-	con.commit()
-	con.close()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
+		cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%' and organisationId like (SELECT organisationId FROM Organisation WHERE name like '" + orgName + "' )")
+		ob = cur.fetchall()
+		if not ob:
+			return ""
+		else:
+			obje = ob[0]
+			return obje
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function getAllWhereNameIs2 from DbController')
 
 def getAllWhereNameIs3(table, name, objectName, orgName):
-	con = sqlite3.connect('PampDb.db')
-	cur = con.cursor()
-	cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%' and measuringObjectId like (SELECT measureingObjectId FROM MeasuringObject WHERE name like'" + objectName + "' and organisationId like (SELECT organisationId FROM Organisation WHERE name like '" + orgName + "' ))")
-	ob = cur.fetchall()
-	if not ob:
-		return "Den fanns inte"
-	else:
-		obje = ob[0]
-		return obje
-	con.commit()
-	con.close()
+	"""
+	Comment
+	"""
+	try:
+		con = sqlite3.connect('PampDb.db')
+		cur = con.cursor()
+		cur.execute("SELECT * FROM " + table + " WHERE name like'" + name + "%' and measuringObjectId like (SELECT measureingObjectId FROM MeasuringObject WHERE name like'" + objectName + "' and organisationId like (SELECT organisationId FROM Organisation WHERE name like '" + orgName + "' ))")
+		ob = cur.fetchall()
+		if not ob:
+			return "Den fanns inte"
+		else:
+			obje = ob[0]
+			return obje
+		con.commit()
+		con.close()
+	except:
+		print('Could not run function getAllWhereNameIs3 from DbController')
 
 	
 

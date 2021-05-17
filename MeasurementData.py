@@ -1,6 +1,9 @@
 class MeasurementData:
 
     def __init__(self):
+        """
+        Comment
+        """
         self.time = []
         self.longitude = []
         self.latitude = []

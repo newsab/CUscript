@@ -6,31 +6,26 @@ import Pyro4
 import FixTypes
 import socket
 
-
 class StartAndStop:
     """
     def __init__(self):
-
         # Creates a boolean which is used to show if the measurementloop should stop or countinue
         self.quitflag = False
         # Creates the Pyro proxy
         self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")
         # Creates a thread with startPmuMeasurement as target
         self.t = threading.Thread(target=self.startPmuMeasurement)
-        # Creates a thread with setFixStatus as target
-        #self.t2 = threading.Thread(target=self.setFixStatus)
-        self.freq = 0.0  # Creates a float to store the frequency in
-        self.mesurementList = list  # Creates a list to store the complete measurementdata
+        # Creates a float to store the frequency in
+        self.freq = 0.0  
+        # Creates a list to store the complete measurementdata
+        self.mesurementList = list  
         # Creates a list to store a smaller amount of measurementdata for the live plot in GUI
         self.showList = list
-        # Creates a string to store the fix status
-        #self.fixStatus = 0
 
     def startPmuMeasurement(self):
         try:
             self.quitflag = False
             self.pmu.starta(self.freq)
-            time.sleep(2)
             while not self.quitflag:
                 self.showList = self.pmu.getListToSend()
                 time.sleep(0.3)
@@ -73,24 +68,15 @@ class StartAndStop:
             self.showList = []
 
     def start(self, frequency):
-        try:
             self.freq = frequency
             self.setDummyData()
-        except:
-            print('Could not run function start from StartAndStop')
 
     def stop(self):
-        try:
             print("Nu blev det stop")
-        except:
-            print('Could not run function stop from StartAndStop')
 
     def getStartPosition(self):
-        try:
             startPosition = '15.9181962', '59.3885022', 5.5
             return startPosition
-        except:
-            print('Could not run function getStartPosition from StartAndStop')
 
     def getFixStatus(self):
         fixStatus = 4
