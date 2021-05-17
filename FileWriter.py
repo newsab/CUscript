@@ -12,7 +12,7 @@ class FileWriter:
 
     def __init__(self, dataController, path):
         self.DC = dataController
-        self.name = self.DC.organisation.name + "_" + self.DC.measuringObject.name + "_" + self.DC.antenna.name + "_" + self.DC.measurement.frequency
+        self.name = self.DC.organisation.name + "_" + self.DC.measuringObject.name + "_" + self.DC.antenna.name + "_" + str(self.DC.measurement.frequency)
         self.fileName = self.name + ".txt"
         self.path = path + "/"
         self.tempPath = sys.path[0] + "/Measurements/"

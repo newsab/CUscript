@@ -51,7 +51,7 @@ def clickStartBtn():
     global on
     frequency = fqEnt.get()
     if frequency == "":
-        tbOthers.insert(1.0, 'Enter a frequency \n \n')
+        tbOthers.insert(1.0, 'Ange frekvens \n \n')
         tbOthers.update()
     else:
         if not on:
@@ -74,7 +74,6 @@ def clickStartBtn():
             on = False
             DC.stopMeasurement()
             DC.setMeasurementData()
-            print("list done!")
             length = len(DC.measurementData.longitude)
             count = 0           
             while count < length:
@@ -97,8 +96,8 @@ def clickPosBtn():
     posLonLbl.config(text=str(lon))
     posLatLbl.config(text=str(lat))
     posAltLbl.config(text=str(alt))
-    tbOthers.insert(1.0, 'AUT position is: \n' +
-                    'Longitude:\n' + str(lon) + '\nLatitude:\n' + str(lat) + '\nAltitude:\n' + str(alt) + '\n \n')
+    tbOthers.insert(1.0, 'Position på AUT: \n' +
+                    'Longitud:\n' + str(lon) + '\nLatitud:\n' + str(lat) + '\nAltitud:\n' + str(alt) + '\n \n')
     tbOthers.update()
 
 def clickRbuBtn():
@@ -109,7 +108,7 @@ def clickRbuBtn():
     tbOthers.insert(1.0, msg + '\n \n')
     tbOthers.update()
     time.sleep(2.5)
-    tbOthers.insert(1.0, 'RBU Ready DO NOT MOVE!!! \n \n')
+    tbOthers.insert(1.0, 'RBU omstartad \n \n')
     tbOthers.update()
 
 def clickGrafBtn():
@@ -141,7 +140,7 @@ def clickGraf3dBtn():
 
 def clickNewMeasurementBtn():
     DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
-    tbOthers.insert(1.0, 'New measurement \n \n')
+    tbOthers.insert(1.0, 'Ny mätning startad \n \n')
     tbOthers.update()
     tbMeasure.delete('1.0', tkinter.END)
     tbMeasure.update()
@@ -176,7 +175,7 @@ def clickSaveAsPdfBtn():
 
 def clickDisatnceBtn():
     distance = DC.getDistanceFromAUT()
-    distanceLbl.config(text=str(distance) + "m")
+    distanceLbl.config(text=str(distance) + " meter från AUT")
 
 def createLiveFig():
     """

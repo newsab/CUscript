@@ -34,7 +34,6 @@ class Calculator:
                                 angle = self.degree + self.getAngle()
                                 self.degree = angle
                                 dbValue = self.measurementObject.dbValue[count]
-                                print(str(self.lon1) + ", " + str(self.lat1) + ", " + str(self.lon2) + ", " + str(self.lat2) + ", " + str(self.lon3) + ", " + str(self.lat3) + ", " + str(angle) + ", " + str(dbValue))
                                 self.angleList.append(angle)
                                 self.dbList.append(float(dbValue))
                                 self.lon2 = self.lon3
@@ -60,12 +59,8 @@ class Calculator:
 
                 dlon = lon2r - lon1r
                 dlat = lat2r - lat1r
-
                 a = sin(dlat / 2)**2 + cos(lat1r) * cos(lat2r) * sin(dlon / 2)**2
                 c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
                 distance = (R * c)*1000
-
-                print("Result:", distance, " m")
                 
                 return distance
