@@ -2,7 +2,7 @@ class MeasurementData:
 
     def __init__(self):
         """
-        Comment
+        Class that stores information about the data of the current measurement.
         """
         self.time = []
         self.longitude = []
