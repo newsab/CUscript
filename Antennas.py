@@ -2,7 +2,7 @@ class Antennas:
 
     def __init__(self):
         """
-        Comment
+        Class that stores information about the current antenna.
         """
         self.id = None
         self.name = ""

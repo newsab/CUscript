@@ -4,7 +4,7 @@ class Measurements:
 
     def __init__(self):
         """
-        Comment
+        Class that stores information about the current measurement and the position of the antenna under test.
         """
         self.id = 0
         self.time = datetime.datetime.now()

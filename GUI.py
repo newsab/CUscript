@@ -612,7 +612,7 @@ def clickOpenOldMeasurementBtn():
 
 win = tkinter.Tk()
 win.title("CU-applikation för PAMP")
-win.geometry('1200x600')
+win.geometry('1200x700')
 win.configure(bg="#ececec")
 
 
