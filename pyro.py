@@ -6,8 +6,9 @@ import Pyro4
 import FixTypes
 import socket
 
+
 class StartAndStop:
-    
+
     def __init__(self):
         # Creates a boolean which is used to show if the measurementloop should stop or continue
         self.quitflag = False
@@ -16,9 +17,9 @@ class StartAndStop:
         # Creates a thread with startPmuMeasurement as target
         self.t = threading.Thread(target=self.startPmuMeasurement)
         # Creates a float to store the frequency in
-        self.freq = 0.0  
+        self.freq = 0.0
         # Creates a list to store the complete measurement data
-        self.mesurementList = list  
+        self.mesurementList = list
         # Creates a list to store a smaller amount of measurement data for the live plot in GUI
         self.showList = list
 
@@ -80,10 +81,6 @@ class StartAndStop:
             return status
         except:
             return "Kunde inte få kontakt med PMU"
-
-
-
-
 
     """
     def __init__(self):
