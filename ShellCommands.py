@@ -27,63 +27,26 @@ class ShellCommands:
             stdin, stdout, stderr = self.client.exec_command(command)
             returnString = stdout.read().decode()
             self.client.close()
-            print("Connection closed")
-            return(returnString + " successfully executed")
+            return(returnString)
 
         except:
             err = stderr.read().decode()
             self.client.close()
-            print("Connection closed")
             return(err)
 
-    def executeCmd2(self, cmd):
-
-        self.connect()
-        command = cmd
-        try:
-            self.client.exec_command(command)
-            self.client.close()
-            print("Connection closed")
-            return(command + " successfully executed")
-
-        except:
-            self.client.close()
-            print("Connection closed")
-            return("Could not connect to Str2STr Server")
-
-    def setBaudrate(self):
+    def getPmuscriptStatus(self):
         command = "sudo systemctl status pmuscript | grep Active"
-        print(command)
         return self.executeCmd(command)
 
-    def startPMUapp(self):
-        command = "sh /home/pi/Shellscripts/PMU.sh"
-        print(command)
-        return self.executeCmd2(command)
-
-    def startStr2StrServer(self):
-        command = "sudo /./rtkscript/./str2str.sh"
-        print(command)
-        return self.executeCmd2(command)
-
-    def startStr2StrClient(self):
-        command = "sudo kill -9 $(sudo lsof -t -i:2101); str2str -in tcpcli://:@172.16.0.6:2101 -out serial://ttyAMA0:115200:8:n:1:off"
-        print(command)
-        return self.executeCmd2(command)
-
-    def startPyro(self):
-        #command = "pyro4-ns -n 172.16.0.3 -p 43329"
-        command = "/usr/bin/pyro.sh"
-        print(command)
-        return self.executeCmd2(command)
+    def rebootRaspi(self):
+        command = "sudo reboot"
+        return self.executeCmd(command)
 
     def coldRestart(self):
         command = "sudo ubxcmd -v cfg-rst 0xffffC"
-        print(command)
         return self.executeCmd(command)
 
     def setFrequency(self, freq):
         frequency = (float(freq)*1000000.0)
         command = "hackrf_transfer -f" + str(frequency) + " -a1 -x47 -c127"
-        print(command)
         return self.executeCmd(command)
