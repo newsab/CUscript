@@ -12,7 +12,8 @@ class DataController:
 
     def __init__(self):
         """
-        Comment
+        Class with the purpose of processing data. 
+        Contains a instance of each database class and a Pyro.
         """
         self.organisation = Organisations()
         self.measuringObject = MeasuringObjects()
@@ -20,18 +21,18 @@ class DataController:
         self.measurement = Measurements()
         self.measurementData = MeasurementData()
         self.pyro = StartAndStop()
-        self.on = True
 
     def getFixStatus(self):
         """
-        Comment
+        Ask the instantiated pyro for the fix status.
+        Returns fix status as a string.
         """
         fixStatus = self.pyro.getFixStatus()
         return fixStatus
 
     def setStartPosition(self):
         """
-        Comment
+        Ask the instantiated pyro for the start position of the antenna under test and sets the longitude, latitude and altitude of the instantiated measurement.
         """
         startPosition = self.pyro.getStartPosition()
         lon = startPosition[0]
@@ -41,28 +42,24 @@ class DataController:
         self.measurement.latitude = float(lat)
         self.measurement.altitude = float(alt)
 
-    def setFrequency(self, freq):
-        """
-        Comment
-        """
-        self.measurement.frequency = freq
-
     def startMeasurment(self, freq):
         """
-        Comment
+        Take a frequency as a parameter.
+        Sets the frequency of the instantiated measurement to the given frequency and asks the instantiated pyro to start a measurement with the given frequency.
         """
-        self.setFrequency(freq)
+        self.measurement.frequency = freq
         self.pyro.start(freq)
 
     def stopMeasurement(self):
         """
-        Comment
+        Asks the instantiated pyro to stop the measurement.
         """
         self.pyro.stop()
 
     def setShowList(self):
         """
-        Comment
+        Asks the instantiated pyro for the showList and take the last stored line. 
+        Then picks out the data and append it to the instantiated measurementDatas lists.
         """
         try:
             showList = self.pyro.showList
@@ -82,7 +79,8 @@ class DataController:
 
     def setMeasurementData(self):
         """
-        Comment
+        Asks the instantiated pyro for the measurementList.
+        Then clear the instantiated measurmentData lists and replace it by appending each line in the measuringList.
         """
         measurementList = self.pyro.mesurementList
         self.measurementData.time.clear()
@@ -102,36 +100,11 @@ class DataController:
             self.measurementData.altitude.append(alt)
             self.measurementData.dbValue.append(db)
 
-    def insertOrganisationToDb(self):
-        """
-        Comment
-        """
-        table = 'Organisation'
-        column = 'name'
-        input = self.antenna.name
-        dbContext.insertData(table, column, input)
-
-    def insertMeasuringObjectToDb(self):
-        """
-        Comment
-        """
-        table = 'MeasuringObject'
-        column = 'name, organisationId'
-        input = self.antenna.name + "', '" + self.organisation.id
-        dbContext.insertData(table, column, input)
-
-    def insertAntennaToDb(self):
-        """
-        Comment
-        """
-        table = 'Antenna'
-        column = 'name, measuringObjectId'
-        input = self.antenna.name + "', '" + self.measuringObject.id
-        dbContext.insertData(table, column, input)
-
     def insertMeasurementToDb(self):
         """
-        Comment
+        Asks the DbController to insert the instantiated measurements data into the database table called Measurement adding the instantiated antennas id as foreign key.
+        Will then ask the DbController to return the last inputed id in database table Measurement which will be the id of the recently inputed measurement.
+        At last it will call the method insertMeasurementData() in the same DataController sending the id as a foreign key.
         """
         table = 'Measurement'
         column = 'time, frequency, longitude, latitude, altitude, info, antennaId'
@@ -144,7 +117,10 @@ class DataController:
 
     def insertMeasurementDataToDb(self, fk):
         """
-        Comment
+        Takes a foreign key to a measurement as a parameter.
+        Then takes the amount of measurement data stored in the instantiated measurementData. 
+        For each line in the instantiated measurementData lists the DbController is asked to insert the data stored in each list at a given index and connect it to a specific measurement by the given foreign key in the database table called MeasurementData. 
+        After this the counter will increase by 1 and therefore pick the line in each list and stop doing so when there is no lines left.
         """
         length = len(self.measurementData.longitude)
         count = 0
@@ -158,14 +134,15 @@ class DataController:
 
     def getLatestId(self):
         """
-        Comment
+        Ask the DbController for the latest Id in database table Measurement and returns it.
         """
         id = dbContext.getLatestId('Measurement')
         return id
 
     def checkOrganisation(self, name):
         """
-        Comment
+        Takes a name of a organization as a parameter. If the parameter is a empty string the name will be set to "oidentifierad".
+        Then asks the DbController to to check if 
         """
         if name == "":
             name = "Oidentifierad"
