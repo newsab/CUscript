@@ -28,7 +28,7 @@ class ShellCommands:
             returnString = stdout.read().decode()
             self.client.close()
             print("Connection closed")
-            return(command + " successfully executed")
+            return(returnString + " successfully executed")
 
         except:
             err = stderr.read().decode()
@@ -52,7 +52,7 @@ class ShellCommands:
             return("Could not connect to Str2STr Server")
 
     def setBaudrate(self):
-        command = "sudo stty -F /dev/ttyAMA0 115200 raw; stty -F /dev/ttyAMA0"
+        command = "sudo systemctl status pmuscript | grep Active"
         print(command)
         return self.executeCmd(command)
 
