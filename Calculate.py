@@ -4,6 +4,9 @@ from pyro import *
 class Calculator:
     	
         def __init__(self, autLon, autLat, measurementData):
+                """
+                Comment
+                """
                 self.lon1 = autLon
                 self.lat1 = autLat
                 self.lon2 = 0.0
@@ -17,6 +20,9 @@ class Calculator:
 
 
         def fillLists(self):
+                """
+                Comment
+                """        
                 length = len(self.measurementObject.longitude)
                 count = 0          
                 while count < length:
@@ -41,6 +47,9 @@ class Calculator:
                         count = count + 1
 
         def getAngle(self):
+                """
+                Comment
+                """
                 A = self.getDistance(self.lon1, self.lat1, self.lon2, self.lat2)
                 B = self.getDistance(self.lon1, self.lat1, self.lon3, self.lat3)
                 C = self.getDistance(self.lon2, self.lat2, self.lon3, self.lat3)
@@ -49,6 +58,9 @@ class Calculator:
                 return degree
 
         def getDistance(self, lon1, lat1, lon2, lat2):
+                """
+                Comment
+                """
                 # approximate radius of earth in km
                 R = 6373.0                                       
 

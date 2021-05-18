@@ -11,15 +11,21 @@ from Plotter import *
 class FileWriter:
 
     def __init__(self, dataController, path):
+        """
+        Comment      
+        """
         self.DC = dataController
-        self.name = self.DC.organisation.name + "_" + self.DC.measuringObject.name + "_" + self.DC.antenna.name + "_" + str(self.DC.measurement.frequency)
+        time = self.DC.measurement.time
+        self.name = self.DC.organisation.name + "_" + self.DC.measuringObject.name + "_" + self.DC.antenna.name + "_" + str(self.DC.measurement.frequency)+ "_" + time.strftime("%Y_%b_%d_%H%M%S")
         self.fileName = self.name + ".txt"
         self.path = path + "/"
         self.tempPath = sys.path[0] + "/Measurements/"
         self.fullPath = os.path.join(self.path, self.fileName)
 
-        
     def createTxtFile(self):
+        """
+        Comment      
+        """
         f = open(self.fullPath, "wt")
         f.write("Drönarmätning utförd " + str(self.DC.measurement.time) + '\n')
         f.write("Företag: " + self.DC.organisation.name + "\n")
@@ -38,6 +44,9 @@ class FileWriter:
             count = count + 1
 
     def createPdfFile(self):
+        """
+        Comment      
+        """
         pdf = FPDF()
         pdf.add_page()
         pdf.image(self.tempPath + "logo.png", w=70, h=35,)
@@ -50,7 +59,7 @@ class FileWriter:
         pdf.cell(200, 8, txt = "Placering: lon:" + str(self.DC.measurement.longitude) + " lat:" + str(self.DC.measurement.latitude) + " alt:" + str(self.DC.measurement.altitude), ln = 1)
         pdf.cell(200, 8, txt = "Frekvens: " + str(self.DC.measurement.frequency), ln = 1)
         pdf.multi_cell(190, 8, txt = "Info: " + self.DC.measurement.info)
-        
+
         plotter = Plotter(self.DC)
         plotter.setGrafPlot()    
         plot3 = plotter.grafPlot

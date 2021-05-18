@@ -1,3 +1,7 @@
+"""
+Comment
+"""
+
 rtkList = [
     "Invalid, no position available.",
     "Autonomous GPS fix, no correction data used.",

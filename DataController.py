@@ -11,6 +11,9 @@ import DbController as dbContext
 class DataController:
 
     def __init__(self):
+        """
+        Comment
+        """
         self.organisation = Organisations()
         self.measuringObject = MeasuringObjects()
         self.antenna = Antennas()
@@ -20,10 +23,16 @@ class DataController:
         self.on = True
 
     def getFixStatus(self):
+        """
+        Comment
+        """
         fixStatus = self.pyro.getFixStatus()
         return fixStatus
 
     def setStartPosition(self):
+        """
+        Comment
+        """
         startPosition = self.pyro.getStartPosition()
         lon = startPosition[0]
         lat = startPosition[1]
@@ -33,30 +42,48 @@ class DataController:
         self.measurement.altitude = float(alt)
 
     def setFrequency(self, freq):
+        """
+        Comment
+        """
         self.measurement.frequency = freq
 
     def startMeasurment(self, freq):
+        """
+        Comment
+        """
         self.setFrequency(freq)
         self.pyro.start(freq)
 
     def stopMeasurement(self):
+        """
+        Comment
+        """
         self.pyro.stop()
 
     def setShowList(self):
-        showList = self.pyro.showList
-        line = showList[-1]
-        tim = line[0]
-        lon = float(line[1])
-        lat = float(line[2])
-        alt = float(line[3])
-        db = float(line[4])
-        self.measurementData.time.append(tim)
-        self.measurementData.longitude.append(lon)
-        self.measurementData.latitude.append(lat)
-        self.measurementData.altitude.append(alt)
-        self.measurementData.dbValue.append(db)
+        """
+        Comment
+        """
+        try:
+            showList = self.pyro.showList
+            line = showList[-1]
+            tim = line[0]
+            lon = float(line[1])
+            lat = float(line[2])
+            alt = float(line[3])
+            db = float(line[4])
+            self.measurementData.time.append(tim)
+            self.measurementData.longitude.append(lon)
+            self.measurementData.latitude.append(lat)
+            self.measurementData.altitude.append(alt)
+            self.measurementData.dbValue.append(db)
+        except:
+            pass
 
     def setMeasurementData(self):
+        """
+        Comment
+        """
         measurementList = self.pyro.mesurementList
         self.measurementData.time.clear()
         self.measurementData.longitude.clear()
@@ -76,24 +103,36 @@ class DataController:
             self.measurementData.dbValue.append(db)
 
     def insertOrganisationToDb(self):
+        """
+        Comment
+        """
         table = 'Organisation'
         column = 'name'
         input = self.antenna.name
         dbContext.insertData(table, column, input)
 
     def insertMeasuringObjectToDb(self):
+        """
+        Comment
+        """
         table = 'MeasuringObject'
         column = 'name, organisationId'
         input = self.antenna.name + "', '" + self.organisation.id
         dbContext.insertData(table, column, input)
 
     def insertAntennaToDb(self):
+        """
+        Comment
+        """
         table = 'Antenna'
         column = 'name, measuringObjectId'
         input = self.antenna.name + "', '" + self.measuringObject.id
         dbContext.insertData(table, column, input)
 
     def insertMeasurementToDb(self):
+        """
+        Comment
+        """
         table = 'Measurement'
         column = 'time, frequency, longitude, latitude, altitude, info, antennaId'
         input = str(self.measurement.time) + "', '" + str(self.measurement.frequency) + "', '" + str(self.measurement.longitude) + "', '" + \
@@ -104,6 +143,9 @@ class DataController:
         self.insertMeasurementDataToDb(id)
 
     def insertMeasurementDataToDb(self, fk):
+        """
+        Comment
+        """
         length = len(self.measurementData.longitude)
         count = 0
         table = 'MeasurementData'
@@ -115,10 +157,16 @@ class DataController:
             count = count + 1
 
     def getLatestId(self):
+        """
+        Comment
+        """
         id = dbContext.getLatestId('Measurement')
         return id
 
     def checkOrganisation(self, name):
+        """
+        Comment
+        """
         if name == "":
             name = "Oidentifierad"
         exists = dbContext.checkIfOrganisationExists('Organisation', name)
@@ -128,6 +176,9 @@ class DataController:
         self.organisation.name = name
 
     def checkMeasuringObject(self, name):
+        """
+        Comment
+        """
         if name == "":
             name = "Oidentifierad"
         exists = dbContext.checkIfMeasuringObjectExists(
@@ -140,6 +191,9 @@ class DataController:
         self.measuringObject.organisationId = fk
 
     def checkAntenna(self, name):
+        """
+        Comment
+        """
         if name == "":
             name = "Oidentifierad"
         exists = dbContext.checkIfAntennaExists(
@@ -152,6 +206,9 @@ class DataController:
         self.antenna.measuringObjectId = fk
 
     def getAllOrganisation(self):
+        """
+        Comment
+        """
         listOfNames = []
         names = dbContext.getAllName("Organisation")
         for name in names:
@@ -159,6 +216,9 @@ class DataController:
         return listOfNames
 
     def getAllMeasuringObject(self, orgName):
+        """
+        Comment
+        """
         listOfNames = []
         if orgName == "":
             names = dbContext.getAllName("MeasuringObject")
@@ -177,6 +237,9 @@ class DataController:
             return listOfNames
 
     def getAllAntenna(self, objectName, OrgName):
+        """
+        Comment
+        """
         listOfNames = []
         if objectName == "":
             names = dbContext.getAllName("Antenna")
@@ -195,6 +258,9 @@ class DataController:
             return listOfNames
 
     def getAllMeasurement(self, antennaName, objectName, OrgName):
+        """
+        Comment
+        """
         listOfNames = []
         if antennaName == "":
             names = dbContext.getAllName("Measurement")
@@ -213,6 +279,9 @@ class DataController:
             return listOfNames
 
     def setAllData(self, orgName, objectName, antennaName, measurementTime):
+        """
+        Comment
+        """
         orgs = dbContext.getAllName("Organisation")
         objects = dbContext.getAllName("MeasuringObject")
         antennas = dbContext.getAllName("Antenna")
@@ -254,6 +323,9 @@ class DataController:
                 self.measurementData.measurementId = line[6]
 
     def newMeasurement(self, lon, lat, alt, antennaid):
+        """
+        Comment
+        """
         _lon = lon
         _lat = lat
         _alt = alt
@@ -270,6 +342,9 @@ class DataController:
         self.pyro = StartAndStop()
 
     def getDistanceFromAUT(self):
+        """
+        Comment
+        """
         position = self.pyro.getStartPosition()
         cal = Calculator(self.measurement.longitude, self.measurement.latitude, self.measurementData.dbValue)
         distance = cal.getDistance(position[0], position[1], self.measurement.longitude, self.measurement.latitude)
