@@ -9,7 +9,8 @@ class Plotter:
 
     def __init__(self, dataController):
         """
-        Comment
+        Class with the purpose of creating plotter for the GUI and FileWriter grafs.
+        Takes a dataController as a parameter. 
         """
         self.DC = dataController
         self.twoDPlot = plt.figure(figsize=(10, 7))
@@ -19,7 +20,8 @@ class Plotter:
 
     def setTwoDPlot(self):
         """
-        Comment
+        Sets the instance variable twoDPlot to a new 2D figure and gets the position of the antenna under test and mark it as a black cross in the figure.
+        Gets the measurement data from the given dataController and places every measuring point och the figure as a dot and colorize it after dbValue.
         """
         self.twoDPlot = plt.figure(figsize=(10, 7))
         ax = self.twoDPlot.add_subplot(111)
@@ -37,7 +39,8 @@ class Plotter:
 
     def setThreeDPlot(self):
         """
-        Comment
+        Sets the instance variable threeDPlot to a new 3D figure and gets the position of the antenna under test and mark it as a black cross in the figure.
+        Gets the measurement data from the given dataController and places every measuring point och the figure as a dot and colorize it after dbValue.
         """
         self.threeDPlot = plt.figure(figsize=(10, 7))
         ax = self.threeDPlot.add_subplot(111, projection="3d")
@@ -60,7 +63,8 @@ class Plotter:
     
     def setGrafPlot(self):
         """
-        Comment
+        Sets the instance variable grafPlot to a new 2D figure and draws a line where the X-axis show the degree between -180 and 180 and the Y-axis show the dbValue.
+        Gets the measurement data from the given dataController.
         """
         self.grafPlot = plt
         autlon = self.DC.measurement.longitude

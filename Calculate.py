@@ -69,7 +69,7 @@ class Calculator:
                 Takes the longitude and latitude from two coordinates and calculates the distance between them. 
                 Returns the distance in meters.
                 """   
-                R = 6373.0 # approximate radius of earth in km                          
+                R = 6373.0 # Approximate radius of earth in km                          
                 lat1r = radians(float(lat1))
                 lon1r = radians(float(lon1))
                 lat2r= radians(float(lat2))

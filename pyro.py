@@ -7,17 +7,11 @@ import FixTypes
 class StartAndStop:
 
     def __init__(self):
-        # Creates a boolean which is used to show if the measurementloop should stop or continue
         self.quitflag = False
-        # Creates the Pyro proxy
-        self.pmu = Pyro4.Proxy("PYRONAME:PMUApp")
-        # Creates a thread with startPmuMeasurement as target
-        self.t = threading.Thread(target=self.startPmuMeasurement)
-        # Creates a float to store the frequency in
+        self.pmu = Pyro4.Proxy("PYRONAME:PMUApp") # Creates the Pyro proxy
+        self.t = threading.Thread(target=self.startPmuMeasurement) # Creates a thread with startPmuMeasurement as target
         self.freq = 0.0
-        # Creates a list to store the complete measurement data
         self.mesurementList = list
-        # Creates a list to store a smaller amount of measurement data for the live plot in GUI
         self.showList = list
 
     def startPmuMeasurement(self):

@@ -12,7 +12,9 @@ class FileWriter:
 
     def __init__(self, dataController, path):
         """
-        Comment      
+        Class with the purpose of saving data to .txt and .pdf.
+        Takes a dataController and a path to where the file should be saved locally as parameters.  
+        Also has a temporary path where images is saved temporary.
         """
         self.DC = dataController
         time = self.DC.measurement.time
@@ -24,7 +26,7 @@ class FileWriter:
 
     def createTxtFile(self):
         """
-        Comment      
+        Saves the measurement as a .txt file including information about the organization, measuring object, antenna, measurement and all of the measurement data. 
         """
         f = open(self.fullPath, "wt")
         f.write("Drönarmätning utförd " + str(self.DC.measurement.time) + '\n')
@@ -45,7 +47,7 @@ class FileWriter:
 
     def createPdfFile(self):
         """
-        Comment      
+        Saves the measurement as a .pdf file including information about the organization, measuring object, antenna, measurement, images of the plotter and all of the measurement data.    
         """
         pdf = FPDF()
         pdf.add_page()

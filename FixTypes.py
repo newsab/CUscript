@@ -1,5 +1,5 @@
 """
-Comment
+Contains a list of all fix statuses.
 """
 
 rtkList = [
