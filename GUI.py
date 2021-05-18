@@ -47,7 +47,9 @@ ptuSc = ShellCommands("192.168.1.9")
 
 def clickStartBtn():
     """
-    Comment
+    Gets the entered frequency and starts the measurement. Sets the frequency to the PTU.
+    As long as the measurement is running the showList will be collected and the most recent input will be displayed in the liveplot ever half second.
+    When the measurement is stopped the instantiated dataController will run setMeasurementList() and the complete measurement will be loaded in the Gui.
     """
     global on
 
@@ -61,7 +63,7 @@ def clickStartBtn():
             on = True
             DC.startMeasurment(frequency)
             try:
-                # ptuSc.setFrequency(frequency)
+                ptuSc.setFrequency(frequency)
                 tbOthers.insert(
                     1.0, 'PTU:s frekvens är nu satt till ' + str(frequency) + '\n \n')
                 tbOthers.update()
@@ -98,7 +100,7 @@ def clickStartBtn():
 
 def clickPosBtn():
     """
-    Comment
+    Updates the fix status and gets the starting position and sets it to the instantiated measurement.
     """
     try:
         updateFixStatus()
@@ -119,7 +121,7 @@ def clickPosBtn():
 
 def clickRtkBtn():
     """
-    Comment
+    Calls for a cold restart of the GNSS-chip on the RBU.
     """
     try:
         msg = rbuSc.coldRestart()
@@ -135,7 +137,7 @@ def clickRtkBtn():
 
 def clickGrafBtn():
     """
-    Comment
+    Calls for a grafPlot to be shown.
     """
     try:
         plt.close()
@@ -149,7 +151,7 @@ def clickGrafBtn():
 
 def clickGraf2dBtn():
     """
-    Comment
+    Calls for a 2D graf to be shown.
     """
     try:
         plt.close()
@@ -163,7 +165,7 @@ def clickGraf2dBtn():
 
 def clickGraf3dBtn():
     """
-    Comment
+    Calls for a 3D graf to be shown.
     """
     try:
         plt.close()
@@ -177,7 +179,7 @@ def clickGraf3dBtn():
 
 def clickNewMeasurementBtn():
     """
-    Comment
+    Calls for a new measurement to be initialized.
     """
     try:
         DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
@@ -194,7 +196,7 @@ def clickNewMeasurementBtn():
 
 def setDcToSave():
     """
-    Comment
+    Method used to set the get inputed information and make them to all lowercases and the run a number of methods to se if they are already save.
     """
     org = orgEnt.get().lower()
     obj = objectEnt.get().lower()
@@ -208,7 +210,7 @@ def setDcToSave():
 
 def clickSaveMeasurementBtn():
     """
-    Comment
+    Calls for a measurement to be saved to database and as .txt.
     """
     try:
         path = getSavePath()
@@ -233,7 +235,7 @@ def clickSaveMeasurementBtn():
 
 def clickSaveAsPdfBtn():
     """
-    Comment
+    Calls for a measurement to be saved to database and as .pdf.
     """
     try:
         path = getSavePath()
@@ -250,7 +252,7 @@ def clickSaveAsPdfBtn():
 
 def clickDistanceBtn():
     """
-    Comment
+    Calls for a distance between PMU and antenna under test.
     """
     try:
         distance = DC.getDistanceFromAUT()
@@ -263,7 +265,7 @@ def clickDistanceBtn():
 
 def clickPmuBtn():
     """
-    Comment
+    Calls for a restart of PMU.
     """
     try:
         pmuSc.rebootRaspi()
@@ -276,7 +278,7 @@ def clickPmuBtn():
 
 def clickRbuBtn():
     """
-    Comment
+    Calls for a restart of RBU.
     """
     try:
         rbuSc.rebootRaspi()
@@ -289,7 +291,7 @@ def clickRbuBtn():
 
 def clickPmuStatusBtn():
     """
-    Comment
+    Calls for status of PMU.
     """
     try:
         msg = pmuSc.getPmuscriptStatus()
@@ -302,7 +304,7 @@ def clickPmuStatusBtn():
 
 def clickFixUpdateBtn():
     """
-    Comment
+    Calls for an update of fix status.
     """
     updateFixStatus()
     try:
@@ -314,7 +316,7 @@ def clickFixUpdateBtn():
 
 def createLiveFig():
     """
-    Comment
+    Creates a figure and canvas to show live plotter.
     """
     global scttLive
     global canvasLive
@@ -335,7 +337,7 @@ def createLiveFig():
 
 def livePlot():
     """
-    Comment
+    Calls for an update of live plotter.
     """
     global scttLive
     global canvasLive
@@ -355,7 +357,7 @@ def livePlot():
 
 def updateFixStatus():
     """
-    Comment
+    Asks the instantiated DC to ask for fix status.
     """
     status = DC.getFixStatus()
     fixStatusLbl.config(text="Fix status: " + status)
@@ -363,7 +365,7 @@ def updateFixStatus():
 
 def updateOrganisationCombobox():
     """
-    Comment
+    Updates the organization combobox.
     """
     typed = orgEnt.get()
     if typed == "":
@@ -378,7 +380,7 @@ def updateOrganisationCombobox():
 
 def updateOrganisationList(data):
     """
-    Comment
+    Takes a parameter of a list and updates the oraganastionList to the given list. 
     """
     global organisationList
     organisationList.clear()
@@ -389,7 +391,7 @@ def updateOrganisationList(data):
 
 def updateMeasuringObjectCombobox():
     """
-    Comment
+    Updates the measuring object combobox.
     """
     typed = objectEnt.get()
     if typed == "":
@@ -404,7 +406,7 @@ def updateMeasuringObjectCombobox():
 
 def updateMeasuringObjectList(data):
     """
-    Comment
+    Takes a parameter of a list and updates the measuringObjectList to the given list. 
     """
     global measuringObjectList
     measuringObjectList.clear()
@@ -415,7 +417,7 @@ def updateMeasuringObjectList(data):
 
 def updateAntennaCombobox():
     """
-    Comment
+    Updates the antenna combobox.
     """
     typed = antennaEnt.get()
     if typed == "":
@@ -430,7 +432,7 @@ def updateAntennaCombobox():
 
 def updateAntennaList(data):
     """
-    Comment
+    Takes a parameter of a list and updates the antennaList to the given list. 
     """
     global antennaList
     antennaList.clear()
@@ -441,7 +443,7 @@ def updateAntennaList(data):
 
 def updateAllComboboxes(e):
     """
-    Comment
+    Runs all the updates of the comboboxes.
     """
     updateOrganisationCombobox()
     updateMeasuringObjectCombobox()
@@ -450,7 +452,8 @@ def updateAllComboboxes(e):
 
 def getSavePath():
     """
-    Comment
+    Calls for a filedialog in which you can choose a local path to where you want to save.
+    Returns that path.
     """
     path = filedialog.askdirectory(initialdir="./Measurements/")
     return(str(path))
@@ -458,7 +461,7 @@ def getSavePath():
 
 def clickOpenOldMeasurementBtn():
     """
-    Comment
+    Calls for opening of a new window in which you could choose a old measuring from the database.
     """
     try:
         global organisationList
@@ -471,7 +474,7 @@ def clickOpenOldMeasurementBtn():
 
         def clickLoadBtn():
             """
-            Comment
+            Calls the instantiated dataController to run the method setAllData() and then updates the Gui and closes the new window.
             """
             DC.setAllData(orgEntNW.get(), objectEntNW.get(),
                           antennaEntNW.get(), measurementEntNW.get())
@@ -480,7 +483,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateOrganisationComboboxNW():
             """
-            Comment
+            Updates the organization combobox in the new window.
             """
             typed = orgEntNW.get()
             if typed == "":
@@ -494,7 +497,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateOrganisationListNW(data):
             """
-            Comment
+            Takes a parameter of a list and updates the organisationList to the given list. 
             """
             global organisationList
             organisationList.clear()
@@ -504,7 +507,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateMeasuringObjectComboboxNW():
             """
-            Comment
+            Updates the measuring object combobox in the new window.
             """
             typed = objectEntNW.get()
             if typed == "":
@@ -519,7 +522,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateMeasuringObjectListNW(data):
             """
-            Comment
+            Takes a parameter of a list and updates the measuringObjectList to the given list. 
             """
             global measuringObjectList
             measuringObjectList.clear()
@@ -529,7 +532,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateAntennaComboboxNW():
             """
-            Comment
+            Updates the antenna combobox in the new window.
             """
             typed = antennaEntNW.get()
             typed2 = objectEntNW.get()
@@ -547,7 +550,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateAntennaListNW(data):
             """
-            Comment
+            Takes a parameter of a list and updates the antennaList to the given list. 
             """
             global antennaList
             antennaList.clear()
@@ -557,7 +560,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateMeasurementComboboxNW():
             """
-            Comment
+            Updates the measurement combobox in the new window.
             """
             typed = measurementEntNW.get()
             typed2 = antennaEntNW.get()
@@ -576,7 +579,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateMeasurementListNW(data):
             """
-            Comment
+            Takes a parameter of a list and updates the measurementList to the given list. 
             """
             global measurementList
             measurementList.clear()
@@ -586,7 +589,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateAllComboboxesNW(e):
             """
-            Comment
+            Runs all the updates of the comboboxes in the new window.
             """
             updateOrganisationComboboxNW()
             updateMeasuringObjectComboboxNW()
@@ -595,7 +598,7 @@ def clickOpenOldMeasurementBtn():
 
         def updateGui():
             """
-            Comment
+            Print out all information about the choose measurement in the Gui.
             """
             tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' +
                             DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency) + '\nInfo: ' + DC.measurement.info + '\n\n')
