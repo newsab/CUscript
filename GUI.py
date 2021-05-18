@@ -266,7 +266,8 @@ def clickPmuBtn():
     Comment
     """
     try:
-        tbOthers.insert(1.0, 'Lägg in funktion för omstart av PMU \n \n')
+        pmuSc.rebootRaspi()
+        tbOthers.insert(1.0, 'PMU omstartad \n \n')
         tbOthers.update()
     except:
         tbOthers.insert(1.0, 'Kunde inte starta om PMU\n \n')
@@ -278,7 +279,8 @@ def clickRbuBtn():
     Comment
     """
     try:
-        tbOthers.insert(1.0, 'Lägg in funktion för omstart av RBU \n \n')
+        rbuSc.rebootRaspi()
+        tbOthers.insert(1.0, 'RBU omstartad \n \n')
         tbOthers.update()
     except:
         tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
@@ -290,7 +292,8 @@ def clickPmuStatusBtn():
     Comment
     """
     try:
-        tbOthers.insert(1.0, 'Lägg in funktion för att få status av PMU \n \n')
+        msg = pmuSc.getPmuscriptStatus()
+        tbOthers.insert(1.0, msg + '\n \n')
         tbOthers.update()
     except:
         tbOthers.insert(1.0, 'Kunde inte hämta status på PMU \n \n')
