@@ -37,12 +37,13 @@ figLive = object
 ax = object
 my_cmap = plt.get_cmap('rainbow')
 organisationList = DC.getAllOrganisation()
-measuringObjectList = []#DC.getAllMeasuringObject("")
-antennaList = []#DC.getAllAntenna("", "")
-measurementList = []#DC.getAllMeasurement("", "", "")
+measuringObjectList = []  # DC.getAllMeasuringObject("")
+antennaList = []  # DC.getAllAntenna("", "")
+measurementList = []  # DC.getAllMeasurement("", "", "")
 pmuSc = ShellCommands("192.168.1.3")
 rbuSc = ShellCommands("192.168.1.6")
 ptuSc = ShellCommands("192.168.1.9")
+
 
 def clickStartBtn():
     """
@@ -60,8 +61,9 @@ def clickStartBtn():
             on = True
             DC.startMeasurment(frequency)
             try:
-                #ptuSc.setFrequency(frequency)
-                tbOthers.insert(1.0, 'PTU:s frekvens är nu satt till ' + str(frequency) + '\n \n')
+                # ptuSc.setFrequency(frequency)
+                tbOthers.insert(
+                    1.0, 'PTU:s frekvens är nu satt till ' + str(frequency) + '\n \n')
                 tbOthers.update()
             except:
                 tbOthers.insert(1.0, 'Kunde inte sätt frekvens på PTU \n \n')
@@ -84,7 +86,7 @@ def clickStartBtn():
             DC.stopMeasurement()
             DC.setMeasurementData()
             length = len(DC.measurementData.longitude)
-            count = 0           
+            count = 0
             while count < length:
                 tim = str(DC.measurementData.time[count])
                 alt = str(DC.measurementData.altitude[count])
@@ -92,6 +94,7 @@ def clickStartBtn():
                 count = count + 1
                 tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
                 tbMeasure.update
+
 
 def clickPosBtn():
     """
@@ -113,6 +116,7 @@ def clickPosBtn():
         tbOthers.insert(1.0, 'Kunde inte hämta position\n \n')
         tbOthers.update()
 
+
 def clickRtkBtn():
     """
     Comment
@@ -121,11 +125,13 @@ def clickRtkBtn():
         msg = rbuSc.coldRestart()
         tbOthers.insert(1.0, msg + '\n \n')
         tbOthers.update()
-        tbOthers.insert(1.0, 'RTK är nu omstartad, vänligen vänta någon minut för att uppnå RTK\n \n')
+        tbOthers.insert(
+            1.0, 'RTK är nu omstartad, vänligen vänta någon minut för att uppnå RTK\n \n')
         tbOthers.update()
     except:
         tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
         tbOthers.update()
+
 
 def clickGrafBtn():
     """
@@ -140,6 +146,7 @@ def clickGrafBtn():
         tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
         tbOthers.update()
 
+
 def clickGraf2dBtn():
     """
     Comment
@@ -152,6 +159,7 @@ def clickGraf2dBtn():
     except:
         tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
         tbOthers.update()
+
 
 def clickGraf3dBtn():
     """
@@ -166,12 +174,14 @@ def clickGraf3dBtn():
         tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
         tbOthers.update()
 
+
 def clickNewMeasurementBtn():
     """
     Comment
     """
     try:
-        DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
+        DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
+                          DC.measurement.altitude, DC.measurement.antennaId)
         tbOthers.insert(1.0, 'Ny mätning startad \n \n')
         tbOthers.update()
         tbMeasure.delete('1.0', tkinter.END)
@@ -181,11 +191,12 @@ def clickNewMeasurementBtn():
         tbOthers.insert(1.0, 'Kunde inte initsiera en ny mätning\n \n')
         tbOthers.update()
 
+
 def setDcToSave():
     """
     Comment
     """
-    org = orgEnt.get().lower() 
+    org = orgEnt.get().lower()
     obj = objectEnt.get().lower()
     ant = antennaEnt.get().lower()
     DC.measurement.info = infoEnt.get("1.0", tkinter.END).lower()
@@ -193,6 +204,7 @@ def setDcToSave():
     DC.checkMeasuringObject(obj)
     DC.checkAntenna(ant)
     return DC
+
 
 def clickSaveMeasurementBtn():
     """
@@ -207,15 +219,17 @@ def clickSaveMeasurementBtn():
     except:
         tbOthers.insert(1.0, 'Kunde inte spara mätningen till databasen\n \n')
         tbOthers.update()
-    try: 
+    try:
         path = getSavePath()
         fileWriter = FileWriter(DC, path)
         fileWriter.createTxtFile()
-        tbOthers.insert(1.0, 'Mätningen har sparats som en .txt-fil\n' + path + '\n \n')
+        tbOthers.insert(
+            1.0, 'Mätningen har sparats som en .txt-fil\n' + path + '\n \n')
         tbOthers.update()
     except:
         tbOthers.insert(1.0, 'Kunde inte spara mätningen som .txt-fil\n \n')
         tbOthers.update()
+
 
 def clickSaveAsPdfBtn():
     """
@@ -226,11 +240,13 @@ def clickSaveAsPdfBtn():
         setDcToSave()
         fileWriter = FileWriter(DC, path)
         fileWriter.createPdfFile()
-        tbOthers.insert(1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
+        tbOthers.insert(
+            1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
         tbOthers.update()
     except:
         tbOthers.insert(1.0, 'Kunde inte spara mätningen som .pdf-fil\n \n')
         tbOthers.update()
+
 
 def clickDistanceBtn():
     """
@@ -240,8 +256,10 @@ def clickDistanceBtn():
         distance = DC.getDistanceFromAUT()
         distanceLbl.config(text=str(distance) + " meter från AUT")
     except:
-        tbOthers.insert(1.0, 'Gick inte att hämta in uppgifter om distans mellan AUT och PMU \n \n')
+        tbOthers.insert(
+            1.0, 'Gick inte att hämta in uppgifter om distans mellan AUT och PMU \n \n')
         tbOthers.update()
+
 
 def clickPmuBtn():
     """
@@ -254,6 +272,7 @@ def clickPmuBtn():
         tbOthers.insert(1.0, 'Kunde inte starta om PMU\n \n')
         tbOthers.update()
 
+
 def clickRbuBtn():
     """
     Comment
@@ -264,6 +283,7 @@ def clickRbuBtn():
     except:
         tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
         tbOthers.update()
+
 
 def clickPmuStatusBtn():
     """
@@ -276,6 +296,7 @@ def clickPmuStatusBtn():
         tbOthers.insert(1.0, 'Kunde inte hämta status på PMU \n \n')
         tbOthers.update()
 
+
 def clickFixUpdateBtn():
     """
     Comment
@@ -286,6 +307,7 @@ def clickFixUpdateBtn():
     except:
         tbOthers.insert(1.0, 'Kunde inte uppdatera fix status \n \n')
         tbOthers.update()
+
 
 def createLiveFig():
     """
@@ -307,11 +329,12 @@ def createLiveFig():
     canvasLive = FigureCanvasTkAgg(figLive, master=win)
     canvasLive.get_tk_widget().grid(row=0, column=6, columnspan=3)
 
+
 def livePlot():
     """
     Comment
     """
-    global scttLive 
+    global scttLive
     global canvasLive
     global ax
     plt.cla()
@@ -326,12 +349,14 @@ def livePlot():
     ax.set_yticklabels([])
     canvasLive.draw_idle()
 
+
 def updateFixStatus():
     """
     Comment
     """
     status = DC.getFixStatus()
     fixStatusLbl.config(text="Fix status: " + status)
+
 
 def updateOrganisationCombobox():
     """
@@ -340,12 +365,13 @@ def updateOrganisationCombobox():
     typed = orgEnt.get()
     if typed == "":
         data = DC.getAllOrganisation()
-    else:  
-        data = []   
+    else:
+        data = []
         for item in DC.getAllOrganisation():
             if typed.lower() in item.lower():
                 data.append(item)
     updateOrganisationList(data)
+
 
 def updateOrganisationList(data):
     """
@@ -354,8 +380,9 @@ def updateOrganisationList(data):
     global organisationList
     organisationList.clear()
     for item in data:
-        organisationList.append(item)       
+        organisationList.append(item)
     orgEnt['values'] = organisationList
+
 
 def updateMeasuringObjectCombobox():
     """
@@ -364,12 +391,13 @@ def updateMeasuringObjectCombobox():
     typed = objectEnt.get()
     if typed == "":
         data = DC.getAllMeasuringObject(orgEnt.get())
-    else:  
-        data = []   
+    else:
+        data = []
         for item in DC.getAllMeasuringObject(orgEnt.get()):
             if typed.lower() in item.lower():
                 data.append(item)
     updateMeasuringObjectList(data)
+
 
 def updateMeasuringObjectList(data):
     """
@@ -378,8 +406,9 @@ def updateMeasuringObjectList(data):
     global measuringObjectList
     measuringObjectList.clear()
     for item in data:
-        measuringObjectList.append(item)       
+        measuringObjectList.append(item)
     objectEnt['values'] = measuringObjectList
+
 
 def updateAntennaCombobox():
     """
@@ -388,12 +417,13 @@ def updateAntennaCombobox():
     typed = antennaEnt.get()
     if typed == "":
         data = DC.getAllAntenna(objectEnt.get(), orgEnt.get())
-    else:  
-        data = []   
+    else:
+        data = []
         for item in DC.getAllAntenna(objectEnt.get(), orgEnt.get()):
             if typed.lower() in item.lower():
                 data.append(item)
     updateAntennaList(data)
+
 
 def updateAntennaList(data):
     """
@@ -402,8 +432,9 @@ def updateAntennaList(data):
     global antennaList
     antennaList.clear()
     for item in data:
-        antennaList.append(item)       
+        antennaList.append(item)
     antennaEnt['values'] = antennaList
+
 
 def updateAllComboboxes(e):
     """
@@ -412,13 +443,15 @@ def updateAllComboboxes(e):
     updateOrganisationCombobox()
     updateMeasuringObjectCombobox()
     updateAntennaCombobox()
-    
+
+
 def getSavePath():
     """
     Comment
     """
     path = filedialog.askdirectory(initialdir="./Measurements/")
     return(str(path))
+
 
 def clickOpenOldMeasurementBtn():
     """
@@ -437,10 +470,11 @@ def clickOpenOldMeasurementBtn():
             """
             Comment
             """
-            DC.setAllData(orgEntNW.get(), objectEntNW.get(), antennaEntNW.get(), measurementEntNW.get())
+            DC.setAllData(orgEntNW.get(), objectEntNW.get(),
+                          antennaEntNW.get(), measurementEntNW.get())
             updateGui()
             newWindow.destroy()
-        
+
         def updateOrganisationComboboxNW():
             """
             Comment
@@ -448,8 +482,8 @@ def clickOpenOldMeasurementBtn():
             typed = orgEntNW.get()
             if typed == "":
                 data = DC.getAllOrganisation()
-            else:  
-                data = []   
+            else:
+                data = []
                 for item in DC.getAllOrganisation():
                     if typed.lower() in item.lower():
                         data.append(item)
@@ -462,22 +496,22 @@ def clickOpenOldMeasurementBtn():
             global organisationList
             organisationList.clear()
             for item in data:
-                organisationList.append(item)       
+                organisationList.append(item)
             orgEntNW['values'] = organisationList
 
         def updateMeasuringObjectComboboxNW():
             """
             Comment
             """
-            typed = objectEntNW.get()    
+            typed = objectEntNW.get()
             if typed == "":
                 data = DC.getAllMeasuringObject(orgEntNW.get())
 
-            else:  
-                data = []   
+            else:
+                data = []
                 for item in DC.getAllMeasuringObject(orgEntNW.get()):
                     if typed.lower() in item.lower():
-                        data.append(item) 
+                        data.append(item)
             updateMeasuringObjectListNW(data)
 
         def updateMeasuringObjectListNW(data):
@@ -487,7 +521,7 @@ def clickOpenOldMeasurementBtn():
             global measuringObjectList
             measuringObjectList.clear()
             for item in data:
-                measuringObjectList.append(item)       
+                measuringObjectList.append(item)
             objectEntNW['values'] = measuringObjectList
 
         def updateAntennaComboboxNW():
@@ -501,8 +535,8 @@ def clickOpenOldMeasurementBtn():
             else:
                 if typed == "":
                     data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
-                else:  
-                    data = []   
+                else:
+                    data = []
                     for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
                         if typed.lower() in item.lower():
                             data.append(item)
@@ -515,7 +549,7 @@ def clickOpenOldMeasurementBtn():
             global antennaList
             antennaList.clear()
             for item in data:
-                antennaList.append(item)       
+                antennaList.append(item)
             antennaEntNW['values'] = antennaList
 
         def updateMeasurementComboboxNW():
@@ -528,9 +562,10 @@ def clickOpenOldMeasurementBtn():
                 data = []
             else:
                 if typed == "":
-                    data = DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
-                else:  
-                    data = []   
+                    data = DC.getAllMeasurement(
+                        antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
+                else:
+                    data = []
                     for item in DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get()):
                         if typed.lower() in item.lower():
                             data.append(item)
@@ -543,7 +578,7 @@ def clickOpenOldMeasurementBtn():
             global measurementList
             measurementList.clear()
             for item in data:
-                measurementList.append(item)       
+                measurementList.append(item)
             measurementEntNW['values'] = measurementList
 
         def updateAllComboboxesNW(e):
@@ -559,11 +594,12 @@ def clickOpenOldMeasurementBtn():
             """
             Comment
             """
-            tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' + DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency)  + '\nInfo: ' + DC.measurement.info + '\n\n')
+            tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' +
+                            DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency) + '\nInfo: ' + DC.measurement.info + '\n\n')
             tbOthers.update()
 
             length = len(DC.measurementData.longitude)
-            count = 0           
+            count = 0
             while count < length:
                 tim = str(DC.measurementData.time[count])
                 alt = str(DC.measurementData.altitude[count])
@@ -573,7 +609,8 @@ def clickOpenOldMeasurementBtn():
                 tbMeasure.update
             livePlot()
     except:
-        tbOthers.insert(1.0, 'Kunde inte öppna fönster för att ladda in tidigare mätning\n \n')
+        tbOthers.insert(
+            1.0, 'Kunde inte öppna fönster för att ladda in tidigare mätning\n \n')
         tbOthers.update()
 
     tbMeasure.delete('1.0', tkinter.END)
@@ -588,8 +625,8 @@ def clickOpenOldMeasurementBtn():
     newWindow = tkinter.Toplevel(win, bg="#ececec")
     newWindow.title("Öppna tidigare mätning")
     newWindow.geometry("300x300")
-    ttk.Label(newWindow, 
-        text ="Välj en tidigare mätning").grid(row=1, column=1)
+    ttk.Label(newWindow,
+              text="Välj en tidigare mätning").grid(row=1, column=1)
     orgEntNW = ttk.Combobox(newWindow, values=organisationList)
     orgEntNW.bind('<KeyRelease>', updateAllComboboxesNW)
     orgEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
@@ -607,8 +644,10 @@ def clickOpenOldMeasurementBtn():
     measurementEntNW.bind('<<ComboboxSelected>>', updateAllComboboxesNW)
     measurementEntNW.grid(row=5, column=1)
 
-    loadBtn = ttk.Button(newWindow, text="Ladda upp mätning", command=clickLoadBtn)
-    loadBtn.grid(row=6, column=1) 
+    loadBtn = ttk.Button(
+        newWindow, text="Ladda upp mätning", command=clickLoadBtn)
+    loadBtn.grid(row=6, column=1)
+
 
 win = tkinter.Tk()
 win.title("CU-applikation för PAMP")
@@ -629,15 +668,19 @@ distanceBtn = ttk.Button(text="Distans till AUT", command=clickDistanceBtn)
 pmuBtn = ttk.Button(text="Starta om PMU", command=clickPmuBtn)
 rbuBtn = ttk.Button(text="Starta om RBU", command=clickRbuBtn)
 pmuStatusBtn = ttk.Button(text="PMU status", command=clickPmuStatusBtn)
-fixUpdateBtn = ttk.Button(text="Uppdatera fix status", command=clickFixUpdateBtn)
+fixUpdateBtn = ttk.Button(text="Uppdatera fix status",
+                          command=clickFixUpdateBtn)
 
 
 posBtn = ttk.Button(text="Ta ut AUT position", command=clickPosBtn)
 rtkBtn = ttk.Button(text="Start om RTK", command=clickRtkBtn)
 startBtn = ttk.Button(text="Starta mätning", command=clickStartBtn)
-saveMeasurementBtn = ttk.Button(text="Spara mätning", command=clickSaveMeasurementBtn)
-newMeasurementBtn = ttk.Button(text="Initsiera ny mätning", command=clickNewMeasurementBtn)
-openOldMeasurementBtn = ttk.Button(text="Öppna mätning", command=clickOpenOldMeasurementBtn)
+saveMeasurementBtn = ttk.Button(
+    text="Spara mätning", command=clickSaveMeasurementBtn)
+newMeasurementBtn = ttk.Button(
+    text="Initsiera ny mätning", command=clickNewMeasurementBtn)
+openOldMeasurementBtn = ttk.Button(
+    text="Öppna mätning", command=clickOpenOldMeasurementBtn)
 saveAsPdfBtn = ttk.Button(text="Skapa PDF", command=clickSaveAsPdfBtn)
 
 
@@ -662,7 +705,7 @@ objectEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
 antennaEnt = ttk.Combobox(win, values=antennaList)
 antennaEnt.bind('<KeyRelease>', updateAllComboboxes)
 antennaEnt.bind('<<ComboboxSelected>>', updateAllComboboxes)
-infoEnt = tkinter.Text(height=10, width=27)
+infoEnt = tkinter.Text(height=8, width=27)
 measurementEnt = ttk.Combobox(win, values=measurementList)
 
 tbOthers.grid(row=0, column=0, columnspan=3)
@@ -671,7 +714,7 @@ tbMeasure.grid(row=0, column=3, columnspan=3)
 posLonLbl.grid(row=4, column=1)
 posLatLbl.grid(row=5, column=1)
 posAltLbl.grid(row=6, column=1)
-distanceLbl.grid(row=7, column=1) 
+distanceLbl.grid(row=7, column=1)
 
 fqEnt.grid(row=27, column=1)
 
