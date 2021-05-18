@@ -1,10 +1,7 @@
 import threading
 import time
-from logging import shutdown
-from os.path import commonpath, exists, lexists
 import Pyro4
 import FixTypes
-import socket
 
 
 class StartAndStop:

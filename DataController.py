@@ -142,7 +142,8 @@ class DataController:
     def checkOrganisation(self, name):
         """
         Takes a name of a organization as a parameter. If the parameter is a empty string the name will be set to "oidentifierad".
-        Then asks the DbController to to check if 
+        Then asks the DbController to to check if name exists in the Database (if it's not in the databse it will be added by the DbController)
+        Takes the returned organization and set its values into the instantiated organisation.
         """
         if name == "":
             name = "Oidentifierad"
@@ -154,7 +155,9 @@ class DataController:
 
     def checkMeasuringObject(self, name):
         """
-        Comment
+        Takes a name of a measuring object as a parameter. If the parameter is a empty string the name will be set to "oidentifierad".
+        Then asks the DbController to to check if name exists in the Database (if it's not in the databse it will be added by the DbController)
+        Takes the returned measuring object and set its values into the instantiated measuringObject.
         """
         if name == "":
             name = "Oidentifierad"
@@ -169,7 +172,9 @@ class DataController:
 
     def checkAntenna(self, name):
         """
-        Comment
+        Takes a name of a antenna as a parameter. If the parameter is a empty string the name will be set to "oidentifierad".
+        Then asks the DbController to to check if name exists in the Database (if it's not in the databse it will be added by the DbController)
+        Takes the returned antenna and set its values into the instantiated antenna.
         """
         if name == "":
             name = "Oidentifierad"
@@ -184,7 +189,8 @@ class DataController:
 
     def getAllOrganisation(self):
         """
-        Comment
+        Asks DbController for a list containing all organizations.
+        Returns that list.
         """
         listOfNames = []
         names = dbContext.getAllName("Organisation")
@@ -194,7 +200,9 @@ class DataController:
 
     def getAllMeasuringObject(self, orgName):
         """
-        Comment
+        Takes a organization name as a parameter.
+        Asks DbController for a list containing all measuring objects connected to the given organization.
+        Returns that list.
         """
         listOfNames = []
         if orgName == "":
@@ -215,7 +223,9 @@ class DataController:
 
     def getAllAntenna(self, objectName, OrgName):
         """
-        Comment
+        Takes a organization name and measuring object name as a parameters.
+        Asks DbController for a list containing all antennas connected to the given measuring objects, which need to be connected to the given organization.
+        Returns that list.
         """
         listOfNames = []
         if objectName == "":
@@ -236,7 +246,9 @@ class DataController:
 
     def getAllMeasurement(self, antennaName, objectName, OrgName):
         """
-        Comment
+        Takes a organization name, a measuring object name and a antenna name as a parameters.
+        Asks DbController for a list containing all measurements connected to the given antenna, which need to be connected to the given measuring objects, which need to be connected to the given organization.
+        Returns that list.
         """
         listOfNames = []
         if antennaName == "":
@@ -257,7 +269,9 @@ class DataController:
 
     def setAllData(self, orgName, objectName, antennaName, measurementTime):
         """
-        Comment
+        Takes a organization name, a measuring object name, a antenna name and a measurement time as a parameters.
+        Asks DbController for a list containing all measurement data connected to the given measurement, which need to be connected to the given antenna, which need to be connected to the given measuring objects, which need to be connected to the given organization.
+        Returns that list.
         """
         orgs = dbContext.getAllName("Organisation")
         objects = dbContext.getAllName("MeasuringObject")
@@ -301,7 +315,9 @@ class DataController:
 
     def newMeasurement(self, lon, lat, alt, antennaid):
         """
-        Comment
+        Takes antenna under tests longitude, latitude, altitude and antennaId as parameters.
+        Deletes the instantiated measurementData, measurement and pyro. 
+        Instantiate new measurementData, measurement and pyro and sets the given values to the instantiated measurement.
         """
         _lon = lon
         _lat = lat
@@ -320,7 +336,10 @@ class DataController:
 
     def getDistanceFromAUT(self):
         """
-        Comment
+        Asks the instantiated pyro for the current position of the PMU.
+        Instantiate a new Calculator with the longitude and latitude of the antenna under test as parameter (and the list of dbValues from the instantiated measurementData even though its not used).
+        The asks the calculator for the distance between antenna under test and the PMU.
+        Returns the distance in meters.
         """
         position = self.pyro.getStartPosition()
         cal = Calculator(self.measurement.longitude, self.measurement.latitude, self.measurementData.dbValue)

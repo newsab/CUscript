@@ -2,7 +2,10 @@ import sqlite3
 
 def insertData(table, column, input):
 	"""
-	Comment
+	Takes a parameter of a database table, database column and input value. 
+	Open a connection to the database.
+	Inserts the given input to the given database column in the given database table.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -15,7 +18,11 @@ def insertData(table, column, input):
 
 def getLatestId(table):
 	"""
-	Comment
+	Takes a parameter of a database table. 
+	Open a connection to the database.
+	Asks for the latest added row in database.
+	Saves and closes the connection.
+	Returns the id of the row.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -30,7 +37,12 @@ def getLatestId(table):
 
 def checkIfOrganisationExists(table, name):
 	"""
-	Comment
+	Takes a parameter of a database table and a name. 
+	Open a connection to the database.
+	Selects all rows from given table where the name matches the given name.
+	Checks if there is no rows and save the given name if not. 
+	Returns an object of the organizations data.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -55,7 +67,13 @@ def checkIfOrganisationExists(table, name):
 
 def checkIfMeasuringObjectExists(table, name, fk):
 	"""
-	Comment
+	Takes a parameter of a database table, a name and a foreign key. 
+	Open a connection to the database.
+	Selects all rows from given table where the name matches the given name.
+	Checks if there is no rows with matching name and save the given name if not the return a object of the measurement object. 
+	Otherwise loops through the list of rows to see if any one of the rows has the given foreign key as foreign key. If it does the boolean bo is set to true and a object of the measurement object is returned.
+	If the boo is still False the given name will be saved to the given database table with the given foreign key and a object of the measurement object is returned.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -89,7 +107,13 @@ def checkIfMeasuringObjectExists(table, name, fk):
 
 def checkIfAntennaExists(table, name, fk):
 	"""
-	Comment
+	Takes a parameter of a database table, a name and a foreign key. 
+	Open a connection to the database.
+	Selects all rows from given table where the name matches the given name.
+	Checks if there is no rows with matching name and save the given name if not the return a object of the antenna. 
+	Otherwise loops through the list of rows to see if any one of the rows has the given foreign key as foreign key. If it does the boolean bo is set to true and a object of the antenna is returned.
+	If the boo is still False the given name will be saved to the given database table with the given foreign key and a object of the antenna is returned.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -123,7 +147,10 @@ def checkIfAntennaExists(table, name, fk):
 
 def getAllName(table):
 	"""
-	Comment
+	Takes a parameter of a database table. 
+	Open a connection to the database.
+	Collects all rows from that table and return as a list.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -138,7 +165,11 @@ def getAllName(table):
 
 def getAllWhereNameIs(table, name):
 	"""
-	Comment
+	Takes a parameter of a database table and a name. 
+	Open a connection to the database.
+	Select the rowa from given table where name matches the given name.
+	If no match returns an empty string otherwise returns an object of the matching organization.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -157,7 +188,11 @@ def getAllWhereNameIs(table, name):
 
 def getAllWhereNameIs2(table, name, orgName):
 	"""
-	Comment
+	Takes a parameter of a database table, a name and a organization name. 
+	Open a connection to the database.
+	Select the row from given table where name matches the given name and the foreign key matches the organisationsId from the organization with the given name.
+	If no match returns an empty string otherwise returns an object of the matching organization.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
@@ -176,7 +211,11 @@ def getAllWhereNameIs2(table, name, orgName):
 
 def getAllWhereNameIs3(table, name, objectName, orgName):
 	"""
-	Comment
+	Takes a parameter of a database table, a name, a measuring object name and a organization name. 
+	Open a connection to the database.
+	Select the row from given table where name matches the given name and the foreign key matches the measuringObjectId from the measuring object with the given name, which foreign key should match the organisationsId from the organization with the given name.
+	If no match returns an empty string otherwise returns an object of the matching organization.
+	Saves and closes the connection.
 	"""
 	try:
 		con = sqlite3.connect('PampDb.db')
