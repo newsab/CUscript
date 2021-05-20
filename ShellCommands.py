@@ -56,15 +56,15 @@ class ShellCommands:
         print(command)
         try:
             print("8")
-            while on:
-                stdin, stderr = self.client.exec_command(command)
-                print("9")
+            stdin, stderr = self.client.exec_command(command)
+            print("9")
             self.client.close()
             return('PTU:s frekvens är nu satt till ')
 
         except:
+            err = stderr.read().decode()
             self.client.close()
-            return("Kunde inte kontakta PTU")
+            return(err)
 
     def getPmuscriptStatus(self):
         """
@@ -104,7 +104,7 @@ class ShellCommands:
         Tells executeCmd() to execute a command which will tell the HackRF to stop transmitting.
         """
         command = "sudo killall -9 hackrf_transfer"
-        msg = self.executeCmdNoReturn(command)
+        msg = self.executeCmd(command)
 
         return "PTU har slutat sända"
 
@@ -113,4 +113,4 @@ class ShellCommands:
         Tells executeCmd() to execute a command which will tell the HackRF to reset.
         """
         command = "sudo hackrf_info"
-        msg2 = self.executeCmdNoReturn(command)
+        msg2 = self.executeCmd(command)

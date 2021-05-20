@@ -219,8 +219,8 @@ class DataController:
                 listOfNames.append("")
             else:
                 for name in names:
-                    if name[2]==org[0]:
-                        listOfNames.append(str(name[1]))              
+                    if name[2] == org[0]:
+                        listOfNames.append(str(name[1]))
             return listOfNames
 
     def getAllAntenna(self, objectName, OrgName):
@@ -236,14 +236,15 @@ class DataController:
                 listOfNames.append(str(name[1]))
             return listOfNames
         else:
-            obj = dbContext.getAllWhereNameIs2('MeasuringObject', objectName, OrgName)
+            obj = dbContext.getAllWhereNameIs2(
+                'MeasuringObject', objectName, OrgName)
             names = dbContext.getAllName("Antenna")
             if not obj:
                 listOfNames.append("")
             else:
                 for name in names:
-                    if name[2]==obj[0]:
-                        listOfNames.append(str(name[1]))              
+                    if name[2] == obj[0]:
+                        listOfNames.append(str(name[1]))
             return listOfNames
 
     def getAllMeasurement(self, antennaName, objectName, OrgName):
@@ -259,14 +260,15 @@ class DataController:
                 listOfNames.append(str(name[1]))
             return listOfNames
         else:
-            ant = dbContext.getAllWhereNameIs3('Antenna', antennaName, objectName, OrgName)
+            ant = dbContext.getAllWhereNameIs3(
+                'Antenna', antennaName, objectName, OrgName)
             names = dbContext.getAllName("Measurement")
             if not ant:
                 listOfNames.append("")
             else:
                 for name in names:
-                    if name[7]==ant[0]:
-                        listOfNames.append(str(name[1]))              
+                    if name[7] == ant[0]:
+                        listOfNames.append(str(name[1]))
             return listOfNames
 
     def setAllData(self, orgName, objectName, antennaName, measurementTime):
@@ -343,7 +345,9 @@ class DataController:
         """
         self.pyro = StartAndStop()
         position = self.pyro.getStartPosition()
-        cal = Calculator(self.measurement.longitude, self.measurement.latitude, self.measurementData.dbValue)
-        distance = cal.getDistance(position[0], position[1], self.measurement.longitude, self.measurement.latitude)
+        cal = Calculator(self.measurement.longitude,
+                         self.measurement.latitude, self.measurementData.dbValue)
+        distance = cal.getDistance(
+            position[0], position[1], self.measurement.longitude, self.measurement.latitude)
         del self.pyro
         return distance

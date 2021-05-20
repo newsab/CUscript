@@ -28,6 +28,7 @@ global plotter
 global orgEnt
 global objectEnt
 global antennaEnt
+global ptuSc
 
 DC = DataController()
 on = False
@@ -52,6 +53,7 @@ def clickStartBtn():
     When the measurement is stopped the instantiated dataController will run setMeasurementList() and the complete measurement will be loaded in the Gui.
     """
     global on
+    global ptuSc
     try:
         DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
                           DC.measurement.altitude, DC.measurement.antennaId)
@@ -71,6 +73,7 @@ def clickStartBtn():
                 on = True
                 try:
                     msg = ptuSc.setFrequency(frequency)
+                    del ptuSc
                     tbOthers.insert(1.0, msg + str(frequency) + '\n \n')
                     tbOthers.update()
                 except:
@@ -96,6 +99,7 @@ def clickStartBtn():
                 on = False
                 DC.stopMeasurement()
                 try:
+                    ptuSc = ShellCommands("192.168.1.9")
                     msg = ptuSc.stopTransmitting()
                     ptuSc.resetHackRF()
                     tbOthers.insert(1.0, msg + ' \n \n')
@@ -233,8 +237,8 @@ def clickSaveMeasurementBtn():
     """
     Calls for a measurement to be saved to database and as .txt.
     """
+    path = getSavePath()
     try:
-        path = getSavePath()
         setDcToSave()
         DC.insertMeasurementToDb()
         tbOthers.insert(1.0, 'Mätningen har sparats till databasen\n \n')
@@ -243,7 +247,6 @@ def clickSaveMeasurementBtn():
         tbOthers.insert(1.0, 'Kunde inte spara mätningen till databasen\n \n')
         tbOthers.update()
     try:
-        path = getSavePath()
         fileWriter = FileWriter(DC, path)
         fileWriter.createTxtFile()
         tbOthers.insert(
@@ -363,7 +366,9 @@ def livePlot():
     global scttLive
     global canvasLive
     global ax
+    print(1)
     plt.cla()
+    print(2)
     autlon = DC.measurement.longitude
     autlat = DC.measurement.latitude
     x = DC.measurementData.longitude
