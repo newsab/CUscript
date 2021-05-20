@@ -60,7 +60,7 @@ def clickStartBtn():
         tbMeasure.delete('1.0', tkinter.END)
         tbMeasure.update()
         livePlot()
-  
+
         frequency = fqEnt.get()
         if frequency == "":
             tbOthers.insert(1.0, 'Ange frekvens \n \n')
@@ -70,11 +70,12 @@ def clickStartBtn():
                 startBtn.config(text="Stoppa mätning")
                 on = True
                 try:
-                    msg = "hej"  # ptuSc.setFrequency(frequency)
+                    msg = ptuSc.setFrequency(frequency)
                     tbOthers.insert(1.0, msg + str(frequency) + '\n \n')
                     tbOthers.update()
                 except:
-                    tbOthers.insert(1.0, 'Kunde inte sätt frekvens på PTU \n \n')
+                    tbOthers.insert(
+                        1.0, 'Kunde inte sätt frekvens på PTU \n \n')
                     tbOthers.update()
                 DC.startMeasurment(frequency)
                 while on:
@@ -83,7 +84,8 @@ def clickStartBtn():
                         tim = str(DC.measurementData.time[-1])
                         alt = str(DC.measurementData.altitude[-1])
                         db = str(DC.measurementData.dbValue[-1])
-                        tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
+                        tbMeasure.insert(1.0, tim + ", " +
+                                         alt + ", " + db + '\n')
                         tbMeasure.update()
                         livePlot()
                     except:
@@ -91,14 +93,16 @@ def clickStartBtn():
                     time.sleep(0.5)
             else:
                 startBtn.config(text="Starta mätning")
-                on = False               
+                on = False
                 DC.stopMeasurement()
                 try:
-                    msg = "hheee"  # ptuSc.stopTransmitting()
+                    msg = ptuSc.stopTransmitting()
+                    ptuSc.resetHackRF()
                     tbOthers.insert(1.0, msg + ' \n \n')
                     tbOthers.update()
                 except:
-                    tbOthers.insert(1.0, 'Kunde inte få PTU att sluta sända \n \n')
+                    tbOthers.insert(
+                        1.0, 'Kunde inte få PTU att sluta sända \n \n')
                     tbOthers.update()
                 length = len(DC.measurementData.longitude)
                 count = 0
