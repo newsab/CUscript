@@ -60,7 +60,6 @@ def clickStartBtn():
         tbMeasure.delete('1.0', tkinter.END)
         tbMeasure.update()
         livePlot()
-
         frequency = fqEnt.get()
         if frequency == "":
             tbOthers.insert(1.0, 'Ange frekvens \n \n')
@@ -70,8 +69,11 @@ def clickStartBtn():
                 tbOthers.insert(1.0, 'Mätning är startad \n \n')
                 tbOthers.update()
                 startBtn.config(text="Stoppa mätning")
-                on = True              
-                msg = ptuSc.setFrequency(frequency)
+                on = True 
+                try:             
+                    msg = ptuSc.setFrequency(frequency)
+                except:
+                    pass
                 del ptuSc
                 tbOthers.insert(1.0, 'Frekvens på PTU satt till: ' + str(frequency) + 'MHz \n \n')
                 tbOthers.update()         
@@ -549,161 +551,166 @@ def clickOpenOldMeasurementBtn():
     """
     Calls for opening of a new window in which you could choose a old measuring from the database.
     """
-    try:
-        global organisationList
-        global measuringObjectList
-        global antennaList
-        global measurementList
-        global orgEnt
-        global objectEnt
-        global antennaEnt
-
-        def clickLoadBtn():
-            """
-            Calls the instantiated dataController to run the method setAllData() and then updates the Gui and closes the new window.
-            """
-            DC.setAllData(orgEntNW.get(), objectEntNW.get(),
-                          antennaEntNW.get(), measurementEntNW.get())
-            updateGui()
-            newWindow.destroy()
-
-        def updateOrganisationComboboxNW():
-            """
-            Updates the organization combobox in the new window.
-            """
-            typed = orgEntNW.get()
-            if typed == "":
-                data = DC.getAllOrganisation()
-            else:
-                data = []
-                for item in DC.getAllOrganisation():
-                    if typed.lower() in item.lower():
-                        data.append(item)
-            updateOrganisationListNW(data)
-
-        def updateOrganisationListNW(data):
-            """
-            Takes a parameter of a list and updates the organisationList to the given list. 
-            """
-            global organisationList
-            organisationList.clear()
-            for item in data:
-                organisationList.append(item)
-            orgEntNW['values'] = organisationList
-
-        def updateMeasuringObjectComboboxNW():
-            """
-            Updates the measuring object combobox in the new window.
-            """
-            typed = objectEntNW.get()
-            if typed == "":
-                data = DC.getAllMeasuringObject(orgEntNW.get())
-
-            else:
-                data = []
-                for item in DC.getAllMeasuringObject(orgEntNW.get()):
-                    if typed.lower() in item.lower():
-                        data.append(item)
-            updateMeasuringObjectListNW(data)
-
-        def updateMeasuringObjectListNW(data):
-            """
-            Takes a parameter of a list and updates the measuringObjectList to the given list. 
-            """
-            global measuringObjectList
-            measuringObjectList.clear()
-            for item in data:
-                measuringObjectList.append(item)
-            objectEntNW['values'] = measuringObjectList
-
-        def updateAntennaComboboxNW():
-            """
-            Updates the antenna combobox in the new window.
-            """
-            typed = antennaEntNW.get()
-            typed2 = objectEntNW.get()
-            if typed2 == "":
-                data = []
-            else:
-                if typed == "":
-                    data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
-                else:
-                    data = []
-                    for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
-                        if typed.lower() in item.lower():
-                            data.append(item)
-            updateAntennaListNW(data)
-
-        def updateAntennaListNW(data):
-            """
-            Takes a parameter of a list and updates the antennaList to the given list. 
-            """
-            global antennaList
-            antennaList.clear()
-            for item in data:
-                antennaList.append(item)
-            antennaEntNW['values'] = antennaList
-
-        def updateMeasurementComboboxNW():
-            """
-            Updates the measurement combobox in the new window.
-            """
-            typed = measurementEntNW.get()
-            typed2 = antennaEntNW.get()
-            if typed2 == "":
-                data = []
-            else:
-                if typed == "":
-                    data = DC.getAllMeasurement(
-                        antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
-                else:
-                    data = []
-                    for item in DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get()):
-                        if typed.lower() in item.lower():
-                            data.append(item)
-            updateMeasurementListNW(data)
-
-        def updateMeasurementListNW(data):
-            """
-            Takes a parameter of a list and updates the measurementList to the given list. 
-            """
-            global measurementList
-            measurementList.clear()
-            for item in data:
-                measurementList.append(item)
-            measurementEntNW['values'] = measurementList
-
-        def updateAllComboboxesNW(e):
-            """
-            Runs all the updates of the comboboxes in the new window.
-            """
-            updateOrganisationComboboxNW()
-            updateMeasuringObjectComboboxNW()
-            updateAntennaComboboxNW()
-            updateMeasurementComboboxNW()
-
-        def updateGui():
-            """
-            Print out all information about the choose measurement in the Gui.
-            """
-            tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' +
-                            DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency) + '\nInfo: ' + DC.measurement.info + '\n\n')
-            tbOthers.update()
-
-            length = len(DC.measurementData.longitude)
-            count = 0
-            while count < length:
-                tim = str(DC.measurementData.time[count])
-                alt = str(DC.measurementData.altitude[count])
-                db = str(DC.measurementData.dbValue[count])
-                count = count + 1
-                tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
-                tbMeasure.update
-            livePlot()
-    except:
-        tbOthers.insert(
-            1.0, 'Kunde inte öppna fönster för att ladda in tidigare mätning\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
+    else:
+        try:
+            global organisationList
+            global measuringObjectList
+            global antennaList
+            global measurementList
+            global orgEnt
+            global objectEnt
+            global antennaEnt
+
+            def clickLoadBtn():
+                """
+                Calls the instantiated dataController to run the method setAllData() and then updates the Gui and closes the new window.
+                """
+                DC.setAllData(orgEntNW.get(), objectEntNW.get(),
+                            antennaEntNW.get(), measurementEntNW.get())
+                updateGui()
+                newWindow.destroy()
+
+            def updateOrganisationComboboxNW():
+                """
+                Updates the organization combobox in the new window.
+                """
+                typed = orgEntNW.get()
+                if typed == "":
+                    data = DC.getAllOrganisation()
+                else:
+                    data = []
+                    for item in DC.getAllOrganisation():
+                        if typed.lower() in item.lower():
+                            data.append(item)
+                updateOrganisationListNW(data)
+
+            def updateOrganisationListNW(data):
+                """
+                Takes a parameter of a list and updates the organisationList to the given list. 
+                """
+                global organisationList
+                organisationList.clear()
+                for item in data:
+                    organisationList.append(item)
+                orgEntNW['values'] = organisationList
+
+            def updateMeasuringObjectComboboxNW():
+                """
+                Updates the measuring object combobox in the new window.
+                """
+                typed = objectEntNW.get()
+                if typed == "":
+                    data = DC.getAllMeasuringObject(orgEntNW.get())
+
+                else:
+                    data = []
+                    for item in DC.getAllMeasuringObject(orgEntNW.get()):
+                        if typed.lower() in item.lower():
+                            data.append(item)
+                updateMeasuringObjectListNW(data)
+
+            def updateMeasuringObjectListNW(data):
+                """
+                Takes a parameter of a list and updates the measuringObjectList to the given list. 
+                """
+                global measuringObjectList
+                measuringObjectList.clear()
+                for item in data:
+                    measuringObjectList.append(item)
+                objectEntNW['values'] = measuringObjectList
+
+            def updateAntennaComboboxNW():
+                """
+                Updates the antenna combobox in the new window.
+                """
+                typed = antennaEntNW.get()
+                typed2 = objectEntNW.get()
+                if typed2 == "":
+                    data = []
+                else:
+                    if typed == "":
+                        data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
+                    else:
+                        data = []
+                        for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
+                            if typed.lower() in item.lower():
+                                data.append(item)
+                updateAntennaListNW(data)
+
+            def updateAntennaListNW(data):
+                """
+                Takes a parameter of a list and updates the antennaList to the given list. 
+                """
+                global antennaList
+                antennaList.clear()
+                for item in data:
+                    antennaList.append(item)
+                antennaEntNW['values'] = antennaList
+
+            def updateMeasurementComboboxNW():
+                """
+                Updates the measurement combobox in the new window.
+                """
+                typed = measurementEntNW.get()
+                typed2 = antennaEntNW.get()
+                if typed2 == "":
+                    data = []
+                else:
+                    if typed == "":
+                        data = DC.getAllMeasurement(
+                            antennaEntNW.get(), objectEntNW.get(), orgEntNW.get())
+                    else:
+                        data = []
+                        for item in DC.getAllMeasurement(antennaEntNW.get(), objectEntNW.get(), orgEntNW.get()):
+                            if typed.lower() in item.lower():
+                                data.append(item)
+                updateMeasurementListNW(data)
+
+            def updateMeasurementListNW(data):
+                """
+                Takes a parameter of a list and updates the measurementList to the given list. 
+                """
+                global measurementList
+                measurementList.clear()
+                for item in data:
+                    measurementList.append(item)
+                measurementEntNW['values'] = measurementList
+
+            def updateAllComboboxesNW(e):
+                """
+                Runs all the updates of the comboboxes in the new window.
+                """
+                updateOrganisationComboboxNW()
+                updateMeasuringObjectComboboxNW()
+                updateAntennaComboboxNW()
+                updateMeasurementComboboxNW()
+
+            def updateGui():
+                """
+                Print out all information about the choose measurement in the Gui.
+                """
+                tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' +
+                                DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency) + '\nInfo: ' + DC.measurement.info + '\n\n')
+                tbOthers.update()
+
+                length = len(DC.measurementData.longitude)
+                count = 0
+                while count < length:
+                    tim = str(DC.measurementData.time[count])
+                    alt = str(DC.measurementData.altitude[count])
+                    db = str(DC.measurementData.dbValue[count])
+                    count = count + 1
+                    tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
+                    tbMeasure.update
+                livePlot()
+        except:
+            tbOthers.insert(
+                1.0, 'Kunde inte öppna fönster för att ladda in tidigare mätning\n \n')
+            tbOthers.update()
 
     tbMeasure.delete('1.0', tkinter.END)
     orgEnt.set("")
