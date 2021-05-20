@@ -57,8 +57,6 @@ def clickStartBtn():
     try:
         DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
                           DC.measurement.altitude, DC.measurement.antennaId)
-        tbOthers.insert(1.0, 'Ny mätning startad \n \n')
-        tbOthers.update()
         tbMeasure.delete('1.0', tkinter.END)
         tbMeasure.update()
         livePlot()
@@ -69,17 +67,14 @@ def clickStartBtn():
             tbOthers.update()
         else:
             if not on:
+                tbOthers.insert(1.0, 'Mätning är startad \n \n')
+                tbOthers.update()
                 startBtn.config(text="Stoppa mätning")
-                on = True
-                try:
-                    msg = ptuSc.setFrequency(frequency)
-                    del ptuSc
-                    tbOthers.insert(1.0, msg + str(frequency) + '\n \n')
-                    tbOthers.update()
-                except:
-                    tbOthers.insert(
-                        1.0, 'Kunde inte sätt frekvens på PTU \n \n')
-                    tbOthers.update()
+                on = True              
+                msg = ptuSc.setFrequency(frequency)
+                del ptuSc
+                tbOthers.insert(1.0, 'Frekvens på PTU satt till: ' + str(frequency) + 'MHz \n \n')
+                tbOthers.update()         
                 DC.startMeasurment(frequency)
                 while on:
                     DC.setShowList()
@@ -153,75 +148,100 @@ def clickRtkBtn():
     """
     Calls for a cold restart of the GNSS-chip on the RBU.
     """
-    try:
-        msg = rbuSc.coldRestart()
-        tbOthers.insert(1.0, msg + '\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-        tbOthers.insert(
-            1.0, 'RTK är nu omstartad, vänligen vänta någon minut för att uppnå RTK\n \n')
-        tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
-        tbOthers.update()
+    else:
+        try:
+            msg = rbuSc.coldRestart()
+            tbOthers.insert(1.0, msg + '\n \n')
+            tbOthers.update()
+            tbOthers.insert(
+                1.0, 'RTK är nu omstartad, vänligen vänta någon minut för att uppnå RTK\n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
+            tbOthers.update()
 
 
 def clickGrafBtn():
     """
     Calls for a grafPlot to be shown.
     """
-    try:
-        plt.close()
-        plotter.setGrafPlot()
-        fig = plotter.grafPlot
-        fig.show()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
+    else:
+        try:
+            plt.close()
+            plotter.setGrafPlot()
+            fig = plotter.grafPlot
+            fig.show()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
+            tbOthers.update()
 
 
 def clickGraf2dBtn():
     """
     Calls for a 2D graf to be shown.
     """
-    try:
-        plt.close()
-        plotter.setTwoDPlot()
-        fig2d = plotter.twoDPlot
-        fig2d.show()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
+    else:
+        try:
+            plt.close()
+            plotter.setTwoDPlot()
+            fig2d = plotter.twoDPlot
+            fig2d.show()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
+            tbOthers.update()
 
 
 def clickGraf3dBtn():
     """
     Calls for a 3D graf to be shown.
     """
-    try:
-        plt.close()
-        plotter.setThreeDPlot()
-        fig3d = plotter.threeDPlot
-        fig3d.show()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
+    else:
+        try:
+            plt.close()
+            plotter.setThreeDPlot()
+            fig3d = plotter.threeDPlot
+            fig3d.show()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte öppna grafen\n \n')
+            tbOthers.update()
 
 
 def clickNewMeasurementBtn():
     """
     Calls for a new measurement to be initialized.
     """
-    try:
-        DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
-                          DC.measurement.altitude, DC.measurement.antennaId)
-        tbOthers.insert(1.0, 'Ny mätning startad \n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-        tbMeasure.delete('1.0', tkinter.END)
-        tbMeasure.update()
-        livePlot()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte initsiera en ny mätning\n \n')
-        tbOthers.update()
+    else:
+        try:
+            DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
+                            DC.measurement.altitude, DC.measurement.antennaId)
+            tbOthers.insert(1.0, 'Ny mätning startad \n \n')
+            tbOthers.update()
+            tbMeasure.delete('1.0', tkinter.END)
+            tbMeasure.update()
+            livePlot()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte initsiera en ny mätning\n \n')
+            tbOthers.update()
 
 
 def setDcToSave():
@@ -242,105 +262,140 @@ def clickSaveMeasurementBtn():
     """
     Calls for a measurement to be saved to database and as .txt.
     """
-    path = getSavePath()
-    try:
-        setDcToSave()
-        DC.insertMeasurementToDb()
-        tbOthers.insert(1.0, 'Mätningen har sparats till databasen\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte spara mätningen till databasen\n \n')
-        tbOthers.update()
-    try:
-        fileWriter = FileWriter(DC, path)
-        fileWriter.createTxtFile()
-        tbOthers.insert(
-            1.0, 'Mätningen har sparats som en .txt-fil\n' + path + '\n \n')
-        tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte spara mätningen som .txt-fil\n \n')
-        tbOthers.update()
+    else:
+        path = getSavePath()
+        try:
+            setDcToSave()
+            DC.insertMeasurementToDb()
+            tbOthers.insert(1.0, 'Mätningen har sparats till databasen\n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte spara mätningen till databasen\n \n')
+            tbOthers.update()
+        try:
+            fileWriter = FileWriter(DC, path)
+            fileWriter.createTxtFile()
+            tbOthers.insert(
+                1.0, 'Mätningen har sparats som en .txt-fil\n' + path + '\n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte spara mätningen som .txt-fil\n \n')
+            tbOthers.update()
 
 
 def clickSaveAsPdfBtn():
     """
     Calls for a measurement to be saved to database and as .pdf.
     """
-    try:
-        path = getSavePath()
-        setDcToSave()
-        fileWriter = FileWriter(DC, path)
-        fileWriter.createPdfFile()
-        tbOthers.insert(
-            1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte spara mätningen som .pdf-fil\n \n')
-        tbOthers.update()
+    else:
+        try:
+            path = getSavePath()
+            setDcToSave()
+            fileWriter = FileWriter(DC, path)
+            fileWriter.createPdfFile()
+            tbOthers.insert(
+                1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte spara mätningen som .pdf-fil\n \n')
+            tbOthers.update()
 
 
 def clickDistanceBtn():
     """
     Calls for a distance between PMU and antenna under test.
     """
-    try:
-        distance = DC.getDistanceFromAUT()
-        distanceLbl.config(text=str(distance) + " meter från AUT")
-    except:
-        tbOthers.insert(
-            1.0, 'Gick inte att hämta in uppgifter om distans mellan AUT och PMU \n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
+    else:
+        try:
+            distance = DC.getDistanceFromAUT()
+            distanceLbl.config(text=str(distance) + " meter från AUT")
+        except:
+            tbOthers.insert(
+                1.0, 'Gick inte att hämta in uppgifter om distans mellan AUT och PMU \n \n')
+            tbOthers.update()
 
 
 def clickPmuBtn():
     """
     Calls for a restart of PMU.
     """
-    try:
-        pmuSc.rebootRaspi()
-        tbOthers.insert(1.0, 'PMU omstartad \n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte starta om PMU\n \n')
-        tbOthers.update()
+    else:
+        try:
+            pmuSc.rebootRaspi()
+            tbOthers.insert(1.0, 'PMU omstartad \n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte starta om PMU\n \n')
+            tbOthers.update()
 
 
 def clickRbuBtn():
     """
     Calls for a restart of RBU.
     """
-    try:
-        rbuSc.rebootRaspi()
-        tbOthers.insert(1.0, 'RBU omstartad \n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
-        tbOthers.update()
+    else:
+        try:
+            rbuSc.rebootRaspi()
+            tbOthers.insert(1.0, 'RBU omstartad \n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte starta om RBU\n \n')
+            tbOthers.update()
 
 
 def clickPmuStatusBtn():
     """
     Calls for status of PMU.
     """
-    try:
-        msg = pmuSc.getPmuscriptStatus()
-        tbOthers.insert(1.0, msg + '\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte hämta status på PMU \n \n')
-        tbOthers.update()
+    else:
+        try:
+            msg = pmuSc.getPmuscriptStatus()
+            tbOthers.insert(1.0, msg + '\n \n')
+            tbOthers.update()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte hämta status på PMU \n \n')
+            tbOthers.update()
 
 
 def clickFixUpdateBtn():
     """
     Calls for an update of fix status.
     """
-    updateFixStatus()
-    try:
-        updateFixStatus()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte uppdatera fix status \n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
+    else:
+        updateFixStatus()
+        try:
+            updateFixStatus()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte uppdatera fix status \n \n')
+            tbOthers.update()
 
 
 def createLiveFig():
@@ -715,8 +770,6 @@ rtkBtn = ttk.Button(text="Start om RTK", command=clickRtkBtn)
 startBtn = ttk.Button(text="Starta mätning", command=clickStartBtn)
 saveMeasurementBtn = ttk.Button(
     text="Spara mätning", command=clickSaveMeasurementBtn)
-newMeasurementBtn = ttk.Button(
-    text="Initsiera ny mätning", command=clickNewMeasurementBtn)
 openOldMeasurementBtn = ttk.Button(
     text="Öppna mätning", command=clickOpenOldMeasurementBtn)
 saveAsPdfBtn = ttk.Button(text="Skapa PDF", command=clickSaveAsPdfBtn)
@@ -761,7 +814,6 @@ posBtn.grid(row=6, column=2)
 distanceBtn.grid(row=7, column=2)
 
 startBtn.grid(row=27, column=2)
-newMeasurementBtn.grid(row=26, column=2)
 
 fixUpdateBtn.grid(row=6, column=4)
 pmuStatusBtn.grid(row=7, column=4)
