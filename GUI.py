@@ -91,9 +91,8 @@ def clickStartBtn():
                     time.sleep(0.5)
             else:
                 startBtn.config(text="Starta mätning")
-                on = False
+                on = False               
                 DC.stopMeasurement()
-                DC.setMeasurementData()
                 try:
                     msg = "hheee"  # ptuSc.stopTransmitting()
                     tbOthers.insert(1.0, msg + ' \n \n')

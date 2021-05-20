@@ -20,20 +20,23 @@ class DataController:
         self.antenna = Antennas()
         self.measurement = Measurements()
         self.measurementData = MeasurementData()
-        self.pyro = StartAndStop()
+        self.pyro = object
 
     def getFixStatus(self):
         """
         Ask the instantiated pyro for the fix status.
         Returns fix status as a string.
         """
+        self.pyro = StartAndStop()
         fixStatus = self.pyro.getFixStatus()
+        del self.pyro
         return fixStatus
 
     def setStartPosition(self):
         """
         Ask the instantiated pyro for the start position of the antenna under test and sets the longitude, latitude and altitude of the instantiated measurement.
         """
+        self.pyro = StartAndStop()
         startPosition = self.pyro.getStartPosition()
         lon = startPosition[0]
         lat = startPosition[1]
@@ -41,20 +44,42 @@ class DataController:
         self.measurement.longitude = float(lon)
         self.measurement.latitude = float(lat)
         self.measurement.altitude = float(alt)
+        del self.pyro
 
     def startMeasurment(self, freq):
         """
         Take a frequency as a parameter.
         Sets the frequency of the instantiated measurement to the given frequency and asks the instantiated pyro to start a measurement with the given frequency.
         """
+        self.pyro = StartAndStop()
         self.measurement.frequency = freq
         self.pyro.start(freq)
 
     def stopMeasurement(self):
         """
         Asks the instantiated pyro to stop the measurement.
+        Then asks the instantiated pyro for the showList and take the last stored line. 
+        Then picks out the data and append it to the instantiated measurementDatas lists.
         """
         self.pyro.stop()
+        measurementList = self.pyro.mesurementList
+        self.measurementData.time.clear()
+        self.measurementData.longitude.clear()
+        self.measurementData.latitude.clear()
+        self.measurementData.altitude.clear()
+        self.measurementData.dbValue.clear()
+        for line in measurementList:
+            tim = line[0]
+            lon = float(line[1])
+            lat = float(line[2])
+            alt = float(line[3])
+            db = float(line[4])
+            self.measurementData.time.append(tim)
+            self.measurementData.longitude.append(lon)
+            self.measurementData.latitude.append(lat)
+            self.measurementData.altitude.append(alt)
+            self.measurementData.dbValue.append(db)
+        del self.pyro
 
     def setShowList(self):
         """
@@ -76,29 +101,6 @@ class DataController:
             self.measurementData.dbValue.append(db)
         except:
             pass
-
-    def setMeasurementData(self):
-        """
-        Asks the instantiated pyro for the measurementList.
-        Then clear the instantiated measurmentData lists and replace it by appending each line in the measuringList.
-        """
-        measurementList = self.pyro.mesurementList
-        self.measurementData.time.clear()
-        self.measurementData.longitude.clear()
-        self.measurementData.latitude.clear()
-        self.measurementData.altitude.clear()
-        self.measurementData.dbValue.clear()
-        for line in measurementList:
-            tim = line[0]
-            lon = float(line[1])
-            lat = float(line[2])
-            alt = float(line[3])
-            db = float(line[4])
-            self.measurementData.time.append(tim)
-            self.measurementData.longitude.append(lon)
-            self.measurementData.latitude.append(lat)
-            self.measurementData.altitude.append(alt)
-            self.measurementData.dbValue.append(db)
 
     def insertMeasurementToDb(self):
         """
@@ -325,14 +327,12 @@ class DataController:
         _antennaid = antennaid
         del self.measurementData
         del self.measurement
-        del self.pyro
         self.measurementData = MeasurementData()
         self.measurement = Measurements()
         self.measurement.longitude = _lon
         self.measurement.latitude = _lat
         self.measurement.altitude = _alt
         self.measurement.antennaId = _antennaid
-        self.pyro = StartAndStop()
 
     def getDistanceFromAUT(self):
         """
@@ -341,7 +341,9 @@ class DataController:
         The asks the calculator for the distance between antenna under test and the PMU.
         Returns the distance in meters.
         """
+        self.pyro = StartAndStop()
         position = self.pyro.getStartPosition()
         cal = Calculator(self.measurement.longitude, self.measurement.latitude, self.measurementData.dbValue)
         distance = cal.getDistance(position[0], position[1], self.measurement.longitude, self.measurement.latitude)
+        del self.pyro
         return distance
