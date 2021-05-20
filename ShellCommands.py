@@ -45,6 +45,25 @@ class ShellCommands:
             self.client.close()
             return(err)
 
+    def executeCmdNoReturn(self, cmd):
+        """
+        Takes a command as a parameter.
+        Then executes the command.
+        Does not return a decoded string with information from the command instead it rerurn a fixed string.
+        """
+        self.connect()
+        command = cmd
+        try:
+            stdin, stdout, stderr = self.client.exec_command(command)
+            returnString = stdout.read().decode()
+            self.client.close()
+            return('PTU:s frekvens är nu satt till ')
+
+        except:
+            err = stderr.read().decode()
+            self.client.close()
+            return(err)
+
     def getPmuscriptStatus(self):
         """
         Tells executeCmd() to execute a command which will return information about if PMUscript is running.
@@ -73,4 +92,16 @@ class ShellCommands:
         """
         frequency = (float(freq)*1000000.0)
         command = "hackrf_transfer -f" + str(frequency) + " -a1 -x47 -c127"
-        return self.executeCmd(command)
+        return self.executeCmdNoReturn(command)
+
+    def stopTransmitting(self):
+        """
+        Tells executeCmd() to execute a command which will tell the HackRF to stop transmitting.
+        """
+        command = "killall -9 hackrf_transfer"
+        msg = self.executeCmdNoReturn(command)
+
+        command2 = "hackrf_info"
+        msg2 = self.executeCmdNoReturn(command2)
+
+        return "PTU har slutat sända"

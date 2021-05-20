@@ -61,15 +61,14 @@ def clickStartBtn():
         if not on:
             startBtn.config(text="Stoppa mätning")
             on = True
-            DC.startMeasurment(frequency)
             try:
-                ptuSc.setFrequency(frequency)
-                tbOthers.insert(
-                    1.0, 'PTU:s frekvens är nu satt till ' + str(frequency) + '\n \n')
+                msg = "hej"  # ptuSc.setFrequency(frequency)
+                tbOthers.insert(1.0, msg + str(frequency) + '\n \n')
                 tbOthers.update()
             except:
                 tbOthers.insert(1.0, 'Kunde inte sätt frekvens på PTU \n \n')
                 tbOthers.update()
+            DC.startMeasurment(frequency)
             while on:
                 DC.setShowList()
                 try:
@@ -87,6 +86,13 @@ def clickStartBtn():
             on = False
             DC.stopMeasurement()
             DC.setMeasurementData()
+            try:
+                msg = "hheee"  # ptuSc.stopTransmitting()
+                tbOthers.insert(1.0, msg + ' \n \n')
+                tbOthers.update()
+            except:
+                tbOthers.insert(1.0, 'Kunde inte få PTU att sluta sända \n \n')
+                tbOthers.update()
             length = len(DC.measurementData.longitude)
             count = 0
             while count < length:
@@ -114,6 +120,7 @@ def clickPosBtn():
         tbOthers.insert(1.0, 'Position på AUT: \n' +
                         'Longitud:\n' + str(lon) + '\nLatitud:\n' + str(lat) + '\nAltitud:\n' + str(alt) + '\n \n')
         tbOthers.update()
+        livePlot()
     except:
         tbOthers.insert(1.0, 'Kunde inte hämta position\n \n')
         tbOthers.update()
@@ -657,7 +664,7 @@ def clickOpenOldMeasurementBtn():
 
 win = tkinter.Tk()
 win.title("CU-applikation för PAMP")
-win.geometry('1200x700')
+win.geometry('1366x768')
 win.configure(bg="#ececec")
 
 
