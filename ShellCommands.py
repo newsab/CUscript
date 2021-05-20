@@ -53,15 +53,18 @@ class ShellCommands:
         """
         self.connect()
         command = cmd
+        print(command)
         try:
-            stdin, stderr = self.client.exec_command(command)
+            print("8")
+            while on:
+                stdin, stderr = self.client.exec_command(command)
+                print("9")
             self.client.close()
             return('PTU:s frekvens är nu satt till ')
 
         except:
-            err = stderr.read().decode()
             self.client.close()
-            return("Kunde inte kontakta PTU" + err)
+            return("Kunde inte kontakta PTU")
 
     def getPmuscriptStatus(self):
         """
