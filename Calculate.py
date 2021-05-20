@@ -79,6 +79,6 @@ class Calculator:
         dlat = lat2r - lat1r
         a = sin(dlat / 2)**2 + cos(lat1r) * cos(lat2r) * sin(dlon / 2)**2
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        distance = (R * c)*100
+        distance = (R * c)*1000
 
         return distance

@@ -52,56 +52,67 @@ def clickStartBtn():
     When the measurement is stopped the instantiated dataController will run setMeasurementList() and the complete measurement will be loaded in the Gui.
     """
     global on
-
-    frequency = fqEnt.get()
-    if frequency == "":
-        tbOthers.insert(1.0, 'Ange frekvens \n \n')
+    try:
+        DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
+                          DC.measurement.altitude, DC.measurement.antennaId)
+        tbOthers.insert(1.0, 'Ny mätning startad \n \n')
         tbOthers.update()
-    else:
-        if not on:
-            startBtn.config(text="Stoppa mätning")
-            on = True
-            try:
-                msg = "hej"  # ptuSc.setFrequency(frequency)
-                tbOthers.insert(1.0, msg + str(frequency) + '\n \n')
-                tbOthers.update()
-            except:
-                tbOthers.insert(1.0, 'Kunde inte sätt frekvens på PTU \n \n')
-                tbOthers.update()
-            DC.startMeasurment(frequency)
-            while on:
-                DC.setShowList()
-                try:
-                    tim = str(DC.measurementData.time[-1])
-                    alt = str(DC.measurementData.altitude[-1])
-                    db = str(DC.measurementData.dbValue[-1])
-                    tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
-                    tbMeasure.update()
-                    livePlot()
-                except:
-                    pass
-                time.sleep(0.5)
+        tbMeasure.delete('1.0', tkinter.END)
+        tbMeasure.update()
+        livePlot()
+  
+        frequency = fqEnt.get()
+        if frequency == "":
+            tbOthers.insert(1.0, 'Ange frekvens \n \n')
+            tbOthers.update()
         else:
-            startBtn.config(text="Starta mätning")
-            on = False
-            DC.stopMeasurement()
-            DC.setMeasurementData()
-            try:
-                msg = "hheee"  # ptuSc.stopTransmitting()
-                tbOthers.insert(1.0, msg + ' \n \n')
-                tbOthers.update()
-            except:
-                tbOthers.insert(1.0, 'Kunde inte få PTU att sluta sända \n \n')
-                tbOthers.update()
-            length = len(DC.measurementData.longitude)
-            count = 0
-            while count < length:
-                tim = str(DC.measurementData.time[count])
-                alt = str(DC.measurementData.altitude[count])
-                db = str(DC.measurementData.dbValue[count])
-                count = count + 1
-                tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
-                tbMeasure.update
+            if not on:
+                startBtn.config(text="Stoppa mätning")
+                on = True
+                try:
+                    msg = "hej"  # ptuSc.setFrequency(frequency)
+                    tbOthers.insert(1.0, msg + str(frequency) + '\n \n')
+                    tbOthers.update()
+                except:
+                    tbOthers.insert(1.0, 'Kunde inte sätt frekvens på PTU \n \n')
+                    tbOthers.update()
+                DC.startMeasurment(frequency)
+                while on:
+                    DC.setShowList()
+                    try:
+                        tim = str(DC.measurementData.time[-1])
+                        alt = str(DC.measurementData.altitude[-1])
+                        db = str(DC.measurementData.dbValue[-1])
+                        tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
+                        tbMeasure.update()
+                        livePlot()
+                    except:
+                        pass
+                    time.sleep(0.5)
+            else:
+                startBtn.config(text="Starta mätning")
+                on = False
+                DC.stopMeasurement()
+                DC.setMeasurementData()
+                try:
+                    msg = "hheee"  # ptuSc.stopTransmitting()
+                    tbOthers.insert(1.0, msg + ' \n \n')
+                    tbOthers.update()
+                except:
+                    tbOthers.insert(1.0, 'Kunde inte få PTU att sluta sända \n \n')
+                    tbOthers.update()
+                length = len(DC.measurementData.longitude)
+                count = 0
+                while count < length:
+                    tim = str(DC.measurementData.time[count])
+                    alt = str(DC.measurementData.altitude[count])
+                    db = str(DC.measurementData.dbValue[count])
+                    count = count + 1
+                    tbMeasure.insert(1.0, tim + ", " + alt + ", " + db + '\n')
+                    tbMeasure.update
+    except:
+        tbOthers.insert(1.0, 'Kunde inte initsiera en ny mätning\n \n')
+        tbOthers.update()
 
 
 def clickPosBtn():
