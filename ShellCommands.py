@@ -53,11 +53,8 @@ class ShellCommands:
         """
         self.connect()
         command = cmd
-        print(command)
         try:
-            print("8")
             stdin, stderr = self.client.exec_command(command)
-            print("9")
             self.client.close()
             return('PTU:s frekvens är nu satt till ')
 
@@ -96,7 +93,6 @@ class ShellCommands:
 
         command = "sudo hackrf_transfer -f" + \
             str(frequency) + " -a1 -x47 -c127"
-        print(command)
         return self.executeCmdNoReturn(command)
 
     def stopTransmitting(self):

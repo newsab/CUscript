@@ -69,14 +69,15 @@ def clickStartBtn():
                 tbOthers.insert(1.0, 'Mätning är startad \n \n')
                 tbOthers.update()
                 startBtn.config(text="Stoppa mätning")
-                on = True 
-                try:             
+                on = True
+                try:
                     msg = ptuSc.setFrequency(frequency)
                 except:
                     pass
                 del ptuSc
-                tbOthers.insert(1.0, 'Frekvens på PTU satt till: ' + str(frequency) + 'MHz \n \n')
-                tbOthers.update()         
+                tbOthers.insert(
+                    1.0, 'Frekvens på PTU satt till: ' + str(frequency) + 'MHz \n \n')
+                tbOthers.update()
                 DC.startMeasurment(frequency)
                 while on:
                     DC.setShowList()
@@ -125,7 +126,8 @@ def clickPosBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -152,7 +154,8 @@ def clickRtkBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -173,10 +176,12 @@ def clickGrafBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
+            plt.cla()
             plt.close()
             plotter.setGrafPlot()
             fig = plotter.grafPlot
@@ -192,7 +197,8 @@ def clickGraf2dBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -211,7 +217,8 @@ def clickGraf3dBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -230,12 +237,13 @@ def clickNewMeasurementBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
             DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
-                            DC.measurement.altitude, DC.measurement.antennaId)
+                              DC.measurement.altitude, DC.measurement.antennaId)
             tbOthers.insert(1.0, 'Ny mätning startad \n \n')
             tbOthers.update()
             tbMeasure.delete('1.0', tkinter.END)
@@ -266,7 +274,8 @@ def clickSaveMeasurementBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         path = getSavePath()
@@ -276,7 +285,8 @@ def clickSaveMeasurementBtn():
             tbOthers.insert(1.0, 'Mätningen har sparats till databasen\n \n')
             tbOthers.update()
         except:
-            tbOthers.insert(1.0, 'Kunde inte spara mätningen till databasen\n \n')
+            tbOthers.insert(
+                1.0, 'Kunde inte spara mätningen till databasen\n \n')
             tbOthers.update()
         try:
             fileWriter = FileWriter(DC, path)
@@ -285,7 +295,8 @@ def clickSaveMeasurementBtn():
                 1.0, 'Mätningen har sparats som en .txt-fil\n' + path + '\n \n')
             tbOthers.update()
         except:
-            tbOthers.insert(1.0, 'Kunde inte spara mätningen som .txt-fil\n \n')
+            tbOthers.insert(
+                1.0, 'Kunde inte spara mätningen som .txt-fil\n \n')
             tbOthers.update()
 
 
@@ -295,7 +306,8 @@ def clickSaveAsPdfBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -307,7 +319,8 @@ def clickSaveAsPdfBtn():
                 1.0, 'Mätningen har sparats som en .pdf-fil\n' + path + '\n \n')
             tbOthers.update()
         except:
-            tbOthers.insert(1.0, 'Kunde inte spara mätningen som .pdf-fil\n \n')
+            tbOthers.insert(
+                1.0, 'Kunde inte spara mätningen som .pdf-fil\n \n')
             tbOthers.update()
 
 
@@ -317,7 +330,8 @@ def clickDistanceBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -335,7 +349,8 @@ def clickPmuBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -353,7 +368,8 @@ def clickRbuBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -371,7 +387,8 @@ def clickPmuStatusBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -389,7 +406,8 @@ def clickFixUpdateBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         updateFixStatus()
@@ -428,9 +446,7 @@ def livePlot():
     global scttLive
     global canvasLive
     global ax
-    print(1)
     plt.cla()
-    print(2)
     autlon = DC.measurement.longitude
     autlat = DC.measurement.latitude
     x = DC.measurementData.longitude
@@ -553,7 +569,8 @@ def clickOpenOldMeasurementBtn():
     """
     global on
     if on:
-        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
+        tbOthers.insert(
+            1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
     else:
         try:
@@ -570,9 +587,10 @@ def clickOpenOldMeasurementBtn():
                 Calls the instantiated dataController to run the method setAllData() and then updates the Gui and closes the new window.
                 """
                 DC.setAllData(orgEntNW.get(), objectEntNW.get(),
-                            antennaEntNW.get(), measurementEntNW.get())
-                updateGui()
+                              antennaEntNW.get(), measurementEntNW.get())
+
                 newWindow.destroy()
+                updateGui()
 
             def updateOrganisationComboboxNW():
                 """
@@ -633,7 +651,8 @@ def clickOpenOldMeasurementBtn():
                     data = []
                 else:
                     if typed == "":
-                        data = DC.getAllAntenna(objectEntNW.get(), orgEntNW.get())
+                        data = DC.getAllAntenna(
+                            objectEntNW.get(), orgEntNW.get())
                     else:
                         data = []
                         for item in DC.getAllAntenna(objectEntNW.get(), orgEntNW.get()):
