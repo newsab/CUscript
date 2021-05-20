@@ -126,22 +126,27 @@ def clickPosBtn():
     """
     Updates the fix status and gets the starting position and sets it to the instantiated measurement.
     """
-    try:
-        updateFixStatus()
-        DC.setStartPosition()
-        lon = DC.measurement.longitude
-        lat = DC.measurement.latitude
-        alt = DC.measurement.altitude
-        posLonLbl.config(text=str(lon))
-        posLatLbl.config(text=str(lat))
-        posAltLbl.config(text=str(alt))
-        tbOthers.insert(1.0, 'Position på AUT: \n' +
-                        'Longitud:\n' + str(lon) + '\nLatitud:\n' + str(lat) + '\nAltitud:\n' + str(alt) + '\n \n')
+    global on
+    if on:
+        tbOthers.insert(1.0, 'Mätning är igång, vänligen stoppa mätningen för att utföra detta. \n \n')
         tbOthers.update()
-        livePlot()
-    except:
-        tbOthers.insert(1.0, 'Kunde inte hämta position\n \n')
-        tbOthers.update()
+    else:
+        try:
+            updateFixStatus()
+            DC.setStartPosition()
+            lon = DC.measurement.longitude
+            lat = DC.measurement.latitude
+            alt = DC.measurement.altitude
+            posLonLbl.config(text=str(lon))
+            posLatLbl.config(text=str(lat))
+            posAltLbl.config(text=str(alt))
+            tbOthers.insert(1.0, 'Position på AUT: \n' +
+                            'Longitud:\n' + str(lon) + '\nLatitud:\n' + str(lat) + '\nAltitud:\n' + str(alt) + '\n \n')
+            tbOthers.update()
+            livePlot()
+        except:
+            tbOthers.insert(1.0, 'Kunde inte hämta position\n \n')
+            tbOthers.update()
 
 
 def clickRtkBtn():
