@@ -58,7 +58,7 @@ class FileWriter:
         pdf.cell(200, 8, txt = "Mätobjekt: " + self.DC.measuringObject.name, ln = 1)
         pdf.cell(200, 8, txt = "Antenn: " + self.DC.antenna.name, ln = 1)
         pdf.cell(200, 8, txt = "Placering: lon:" + str(self.DC.measurement.longitude) + " lat:" + str(self.DC.measurement.latitude) + " alt:" + str(self.DC.measurement.altitude), ln = 1)
-        pdf.cell(200, 8, txt = "Frekvens: " + str(self.DC.measurement.frequency), ln = 1 + "MHz")
+        pdf.cell(200, 8, txt = "Frekvens: " + str(self.DC.measurement.frequency) + "MHz", ln = 1)
         pdf.multi_cell(190, 8, txt = "Info: " + self.DC.measurement.info)
 
         plotter = Plotter(self.DC)
