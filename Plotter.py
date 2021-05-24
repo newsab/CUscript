@@ -66,7 +66,9 @@ class Plotter:
         Sets the instance variable grafPlot to a new 2D figure and draws a line where the X-axis show the degree between -180 and 180 and the Y-axis show the dbValue.
         Gets the measurement data from the given dataController.
         """
-        self.grafPlot = plt
+
+        self.grafPlot = plt.figure(figsize=(10, 7))
+        ax = self.grafPlot.add_subplot(111)
         autlon = self.DC.measurement.longitude
         autlat = self.DC.measurement.latitude
         dbValues = self.DC.measurementData 
@@ -74,7 +76,5 @@ class Plotter:
         cal.fillLists()
         ang = cal.angleList
         db = cal.dbList
-        self.grafPlot.plot(ang, db)
-        self.grafPlot.ylim(-100, 10)
-        self.grafPlot.xlim(-180, 180)
-        self.grafPlot.grid(True)
+        ax.plot(ang, db)
+        self.grafPlot.legend()

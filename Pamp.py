@@ -55,8 +55,6 @@ def clickStartBtn():
     global on
     global ptuSc
     try:
-        DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude,
-                          DC.measurement.altitude, DC.measurement.antennaId)
         tbMeasure.delete('1.0', tkinter.END)
         tbMeasure.update()
         livePlot()
@@ -66,10 +64,12 @@ def clickStartBtn():
             tbOthers.update()
         else:
             if not on:
+                DC.newMeasurement(DC.measurement.longitude, DC.measurement.latitude, DC.measurement.altitude, DC.measurement.antennaId)
+                
                 tbOthers.insert(1.0, 'Mätning är startad \n \n')
                 tbOthers.update()
                 startBtn.config(text="Stoppa mätning")
-                on = True
+                on = True       
                 try:
                     msg = ptuSc.setFrequency(frequency)
                 except:
@@ -713,9 +713,11 @@ def clickOpenOldMeasurementBtn():
                 Print out all information about the choose measurement in the Gui.
                 """
                 tbOthers.insert(1.0, 'Visar gammal mätning utförd på:\nOrganisation: ' + DC.organisation.name + '\nUtförd: ' + str(DC.measurement.time) + '\nMärobjekt: ' +
-                                DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency) + '\nInfo: ' + DC.measurement.info + '\n\n')
+                                DC.measuringObject.name + '\nAntenn: ' + DC.antenna.name + '\nFrekvens: ' + str(DC.measurement.frequency) + ' MHz\nInfo: ' + DC.measurement.info + '\n\n')
                 tbOthers.update()
-
+                orgEnt.set(DC.organisation.name)
+                objectEnt.set(DC.measuringObject.name)
+                antennaEnt.set(DC.antenna.name)
                 length = len(DC.measurementData.longitude)
                 count = 0
                 while count < length:
@@ -780,7 +782,7 @@ tbMeasure = tkinter.Text(width=50, bg="#ececec")
 posLonLbl = ttk.Label(text="")
 posLatLbl = ttk.Label(text="")
 posAltLbl = ttk.Label(text="")
-fqLbl = ttk.Label(text="Ange frekvens:")
+fqLbl = ttk.Label(text="Ange frekvens i MHz:")
 fqEnt = ttk.Entry(width=10)
 distanceLbl = ttk.Label(text="")
 distanceBtn = ttk.Button(text="Distans till AUT", command=clickDistanceBtn)

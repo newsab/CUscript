@@ -51,8 +51,8 @@ class DataController:
         Take a frequency as a parameter.
         Sets the frequency of the instantiated measurement to the given frequency and asks the instantiated pyro to start a measurement with the given frequency.
         """
+        self.measurement.frequency = float(freq)
         self.pyro = StartAndStop()
-        self.measurement.frequency = freq
         self.pyro.start(freq)
 
     def stopMeasurement(self):

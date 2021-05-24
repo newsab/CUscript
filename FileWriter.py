@@ -17,8 +17,7 @@ class FileWriter:
         Also has a temporary path where images is saved temporary.
         """
         self.DC = dataController
-        time = self.DC.measurement.time
-        self.name = self.DC.organisation.name + "_" + self.DC.measuringObject.name + "_" + self.DC.antenna.name + "_" + str(self.DC.measurement.frequency)+ "_" + time.strftime("%Y_%b_%d_%H%M%S")
+        self.name = self.DC.organisation.name + "_" + self.DC.measuringObject.name + "_" + self.DC.antenna.name + "_" + str(self.DC.measurement.frequency)
         self.fileName = self.name + ".txt"
         self.path = path + "/"
         self.tempPath = sys.path[0] + "/Measurements/"
@@ -34,7 +33,7 @@ class FileWriter:
         f.write("Mätobjekt: " + self.DC.measuringObject.name + "\n")
         f.write("Antenn: " + self.DC.antenna.name + "\n")
         f.write("Placering: lon:" + str(self.DC.measurement.longitude) + " lat:" + str(self.DC.measurement.latitude) + " alt:" + str(self.DC.measurement.altitude) + "\n")
-        f.write("Frekvens: " + str(self.DC.measurement.frequency) + "\n")
+        f.write("Frekvens: " + str(self.DC.measurement.frequency) + "MHz" + "\n")
         f.write("Info: " + self.DC.measurement.info + "\n \n")
         f.close()
         count = 0
@@ -59,7 +58,7 @@ class FileWriter:
         pdf.cell(200, 8, txt = "Mätobjekt: " + self.DC.measuringObject.name, ln = 1)
         pdf.cell(200, 8, txt = "Antenn: " + self.DC.antenna.name, ln = 1)
         pdf.cell(200, 8, txt = "Placering: lon:" + str(self.DC.measurement.longitude) + " lat:" + str(self.DC.measurement.latitude) + " alt:" + str(self.DC.measurement.altitude), ln = 1)
-        pdf.cell(200, 8, txt = "Frekvens: " + str(self.DC.measurement.frequency), ln = 1)
+        pdf.cell(200, 8, txt = "Frekvens: " + str(self.DC.measurement.frequency), ln = 1 + "MHz")
         pdf.multi_cell(190, 8, txt = "Info: " + self.DC.measurement.info)
 
         plotter = Plotter(self.DC)
